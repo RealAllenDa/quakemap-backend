@@ -1,0 +1,202 @@
+{
+  "Head": {
+    "Title": "\u7dca\u6025\u5730\u9707\u901f\u5831\uff08\u4e88\u5831\uff09",
+    "DateTime": "2018-07-07T20:25:20+09:00",
+    "EditorialOffice": "\u5927\u962a\u7ba1\u533a\u6c17\u8c61\u53f0",
+    "PublishingOffice": "\u6c17\u8c61\u5e81",
+    "EventID": "20180707202357",
+    "Status": "\u901a\u5e38",
+    "Serial": "17",
+    "Version": "1.1"
+  },
+  "Body": {
+    "Earthquake": {
+      "OriginTime": "2018-07-07T20:23:49+09:00",
+      "Hypocenter": {
+        "Name": "\u5343\u8449\u770c\u6771\u65b9\u6c96",
+        "Code": "473",
+        "Lat": "+35.1",
+        "Lon": "+140.7",
+        "Depth": "40",
+        "LandOrSea": "\u6d77\u57df"
+      },
+      "Accuracy": {
+        "Epicenter": [
+          "6",
+          "4"
+        ],
+        "Depth": "6",
+        "MagnitudeCalculation": "5",
+        "NumberOfMagnitudeCalculation": "5"
+      },
+      "Magnitude": "6.2"
+    },
+    "Intensity": {
+      "MaxInt": "5-",
+      "TextInt": "\u9707\u5ea6\uff15\u5f31\u7a0b\u5ea6",
+      "ForecastInt": {
+        "From": "5-",
+        "To": "5-"
+      },
+      "Appendix": {
+        "MaxIntChange": "0",
+        "MaxIntChangeReason": "0"
+      },
+      "Areas": [
+        {
+          "Name": "\u5343\u8449\u770c\u5317\u6771\u90e8",
+          "Code": "340",
+          "Kind": {
+            "Name": "\u7dca\u6025\u5730\u9707\u901f\u5831\uff08\u8b66\u5831\uff09",
+            "Code": "11"
+          },
+          "MaxInt": "5-",
+          "TextInt": "\u9707\u5ea6\uff15\u5f31\u7a0b\u5ea6",
+          "ForecastInt": {
+            "From": "5-",
+            "To": "5-"
+          },
+          "Condition": "\u65e2\u306b\u4e3b\u8981\u52d5\u5230\u9054\u3068\u63a8\u6e2c"
+        },
+        {
+          "Name": "\u5343\u8449\u770c\u5357\u90e8",
+          "Code": "342",
+          "Kind": {
+            "Name": "\u7dca\u6025\u5730\u9707\u901f\u5831\uff08\u8b66\u5831\uff09",
+            "Code": "11"
+          },
+          "MaxInt": "4",
+          "TextInt": "\u9707\u5ea6\uff14\u7a0b\u5ea6",
+          "ForecastInt": {
+            "From": "4",
+            "To": "4"
+          },
+          "Condition": "\u65e2\u306b\u4e3b\u8981\u52d5\u5230\u9054\u3068\u63a8\u6e2c"
+        },
+        {
+          "Name": "\u5343\u8449\u770c\u5317\u897f\u90e8",
+          "Code": "341",
+          "Kind": {
+            "Name": "\u7dca\u6025\u5730\u9707\u901f\u5831\uff08\u8b66\u5831\uff09",
+            "Code": "11"
+          },
+          "MaxInt": "4",
+          "TextInt": "\u9707\u5ea6\uff14\u7a0b\u5ea6",
+          "ForecastInt": {
+            "From": "4",
+            "To": "4"
+          },
+          "Condition": "\u65e2\u306b\u4e3b\u8981\u52d5\u5230\u9054\u3068\u63a8\u6e2c"
+        },
+        {
+          "Name": "\u6771\u4eac\u90fd\uff12\uff13\u533a",
+          "Code": "350",
+          "Kind": {
+            "Name": "\u7dca\u6025\u5730\u9707\u901f\u5831\uff08\u4e88\u5831\uff09",
+            "Code": "01"
+          },
+          "MaxInt": "4",
+          "TextInt": "\u9707\u5ea6\uff14\u7a0b\u5ea6",
+          "ForecastInt": {
+            "From": "4",
+            "To": "4"
+          },
+          "Condition": "\u65e2\u306b\u4e3b\u8981\u52d5\u5230\u9054\u3068\u63a8\u6e2c"
+        },
+        {
+          "Name": "\u8328\u57ce\u770c\u5357\u90e8",
+          "Code": "301",
+          "Kind": {
+            "Name": "\u7dca\u6025\u5730\u9707\u901f\u5831\uff08\u8b66\u5831\uff09",
+            "Code": "11"
+          },
+          "MaxInt": "4",
+          "TextInt": "\u9707\u5ea6\uff14\u7a0b\u5ea6",
+          "ForecastInt": {
+            "From": "4",
+            "To": "4"
+          },
+          "Condition": "\u65e2\u306b\u4e3b\u8981\u52d5\u5230\u9054\u3068\u63a8\u6e2c"
+        },
+        {
+          "Name": "\u795e\u5948\u5ddd\u770c\u6771\u90e8",
+          "Code": "360",
+          "Kind": {
+            "Name": "\u7dca\u6025\u5730\u9707\u901f\u5831\uff08\u4e88\u5831\uff09",
+            "Code": "01"
+          },
+          "MaxInt": "4",
+          "TextInt": "\u9707\u5ea6\uff14\u7a0b\u5ea6",
+          "ForecastInt": {
+            "From": "4",
+            "To": "4"
+          },
+          "Condition": "\u65e2\u306b\u4e3b\u8981\u52d5\u5230\u9054\u3068\u63a8\u6e2c"
+        },
+        {
+          "Name": "\u8328\u57ce\u770c\u5317\u90e8",
+          "Code": "300",
+          "Kind": {
+            "Name": "\u7dca\u6025\u5730\u9707\u901f\u5831\uff08\u4e88\u5831\uff09",
+            "Code": "01"
+          },
+          "MaxInt": "4",
+          "TextInt": "\u9707\u5ea6\uff14\u7a0b\u5ea6",
+          "ForecastInt": {
+            "From": "4",
+            "To": "4"
+          },
+          "Condition": "\u65e2\u306b\u4e3b\u8981\u52d5\u5230\u9054\u3068\u63a8\u6e2c"
+        },
+        {
+          "Name": "\u57fc\u7389\u770c\u5357\u90e8",
+          "Code": "331",
+          "Kind": {
+            "Name": "\u7dca\u6025\u5730\u9707\u901f\u5831\uff08\u8b66\u5831\uff09",
+            "Code": "11"
+          },
+          "MaxInt": "4",
+          "TextInt": "\u9707\u5ea6\uff14\u7a0b\u5ea6",
+          "ForecastInt": {
+            "From": "4",
+            "To": "4"
+          },
+          "Condition": "\u65e2\u306b\u4e3b\u8981\u52d5\u5230\u9054\u3068\u63a8\u6e2c"
+        },
+        {
+          "Name": "\u6803\u6728\u770c\u5357\u90e8",
+          "Code": "311",
+          "Kind": {
+            "Name": "\u7dca\u6025\u5730\u9707\u901f\u5831\uff08\u4e88\u5831\uff09",
+            "Code": "01"
+          },
+          "MaxInt": "4",
+          "TextInt": "\u9707\u5ea6\uff14\u7a0b\u5ea6",
+          "ForecastInt": {
+            "From": "4",
+            "To": "4"
+          },
+          "Condition": "\u65e2\u306b\u4e3b\u8981\u52d5\u5230\u9054\u3068\u63a8\u6e2c"
+        },
+        {
+          "Name": "\u57fc\u7389\u770c\u5317\u90e8",
+          "Code": "330",
+          "Kind": {
+            "Name": "\u7dca\u6025\u5730\u9707\u901f\u5831\uff08\u4e88\u5831\uff09",
+            "Code": "01"
+          },
+          "MaxInt": "4",
+          "TextInt": "\u9707\u5ea6\uff13\u304b\u3089\u9707\u5ea6\uff14\u7a0b\u5ea6",
+          "ForecastInt": {
+            "From": "3",
+            "To": "4"
+          },
+          "Condition": "\u65e2\u306b\u4e3b\u8981\u52d5\u5230\u9054\u3068\u63a8\u6e2c"
+        }
+      ]
+    },
+    "PLUMFlag": "0",
+    "WarningFlag": "1",
+    "EndFlag": "1"
+  }
+}

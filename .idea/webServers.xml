@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="WebServers">
+    <option name="servers">
+      <webServer id="c977b8ee-3476-4d83-b2f7-b8f70d1a8467" name="eew" url="http://eqweb.daziannetwork.com">
+        <fileTransfer rootFolder="/www/wwwroot/eqweb.daziannetwork.com" accessType="SFTP" host="admin.daziannetwork.com" port="1457" sshConfigId="8cf00d84-2473-46f9-9daa-591facd02e08" sshConfig="root@admin.daziannetwork.com:1457 key" keyPair="true">
+          <advancedOptions>
+            <advancedOptions dataProtectionLevel="Private" passiveMode="true" shareSSLContext="true" />
+          </advancedOptions>
+        </fileTransfer>
+      </webServer>
+    </option>
+  </component>
+</project>
