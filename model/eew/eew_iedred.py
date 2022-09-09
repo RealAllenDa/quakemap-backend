@@ -9,7 +9,6 @@ from typing import Optional
 from pydantic import BaseModel
 
 from model.eew import EEWIntensityEnum
-from model.eew.eew_svir import SvirEventType
 
 Unknown = str
 
@@ -19,7 +18,7 @@ class IedredTypeEnum(str, Enum):
     forecast = "緊急地震速報（予報）"
 
 
-class IedredEventTypeEnum(int, Enum):
+class IedredEventTypeEnum(str, Enum):
     final = 9
     not_final = 0
 
@@ -200,8 +199,8 @@ class IedredCodeStringDetail(BaseModel):
 
 class IedredEventType(BaseModel):
     code: Optional[str]
-    string: Optional[SvirEventType]
-    detail: Optional[IedredEventTypeEnum]
+    string: Optional[str]
+    detail: Optional[str]
 
     class Config:
         allow_population_by_field_name = True
