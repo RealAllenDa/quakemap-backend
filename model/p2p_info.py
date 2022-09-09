@@ -16,12 +16,12 @@ __all__ = ["EarthquakeInfoReturnModel",
            "EarthquakeAreaIntensityParsingModel", "EarthquakeAreaIntensityPointModel",
            "EarthquakeStationIntensityPointModel",
 
-           "TsunamiAreaModel", "TsunamiReturnModel"]
+           "TsunamiAreaGradeEnum", "TsunamiAreaModel", "TsunamiReturnModel"]
 
 # Not really optional, since all the data tagged with this
 # would be filled after variable initialization.
 from model.eew import EEWParseReturnModel
-from model.geojson import GeoJsonModel
+from model.geojson import TsunamiGeoJsonModel
 
 FakeOptional = Optional
 # The dict which shall always be blank.
@@ -162,7 +162,7 @@ class P2PQuakeModel(_BasicDataModel):
 
 
 # --- Tsunami - Area
-class _TsunamiAreaGradeEnum(str, Enum):
+class TsunamiAreaGradeEnum(str, Enum):
     MajorWarning = "MajorWarning"
     Warning = "Warning"
     Watch = "Watch"
@@ -170,7 +170,7 @@ class _TsunamiAreaGradeEnum(str, Enum):
 
 
 class TsunamiAreaModel(BaseModel):
-    grade: Optional[_TsunamiAreaGradeEnum]
+    grade: Optional[TsunamiAreaGradeEnum]
     immediate: Optional[bool]
     name: Optional[str]
 
@@ -256,7 +256,7 @@ class EarthquakeReturnModel(BaseModel):
 
 class TsunamiReturnModel(BaseModel):
     time: Optional[str]
-    areas: Optional[GeoJsonModel]
+    areas: Optional[TsunamiGeoJsonModel]
 
 
 class P2PTotalInfoModel(BaseModel):
