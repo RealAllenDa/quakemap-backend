@@ -1,7 +1,7 @@
 import importlib
 import importlib.util
 import sys
-from typing import Callable
+from typing import Callable, Any
 
 from apscheduler.executors.pool import ThreadPoolExecutor
 from apscheduler.jobstores.memory import MemoryJobStore
@@ -145,7 +145,7 @@ class ModuleManager:
         # TODO: Reload timer
         logger.success(f"Successfully reloaded module {name}.")
 
-    def get_module_info(self, name: str) -> any:
+    def get_module_info(self, name: str) -> Any:
         """
         Gets the module info by getting its 'info' property.
         :param name: The module name
@@ -211,6 +211,10 @@ class ModuleManager:
                 logger.exception(f"Failed to refresh {module}.")
 
         return wrapper_refresh
+
+    @property
+    def classes(self) -> dict[str, any]:
+        return self._loaded_classes
 
 
 # Why not put this into Env?
