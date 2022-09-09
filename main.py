@@ -1,9 +1,16 @@
 import os.path
 
 import urllib3
+import uvicorn
+from dotenv import load_dotenv
 from fastapi import FastAPI
+from fastapi.exception_handlers import http_exception_handler
+from fastapi.exceptions import RequestValidationError
 from loguru import logger
+from starlette.exceptions import HTTPException as StarletteHTTPException
 from starlette.middleware.cors import CORSMiddleware
+from starlette.middleware.gzip import GZipMiddleware
+from starlette.responses import JSONResponse
 from urllib3.exceptions import InsecureRequestWarning
 
 import config
@@ -14,13 +21,18 @@ from internal.intensity2color import IntensityToColor
 from internal.modules_init import module_manager
 from internal.pswave import PSWave
 from model.config import RunEnvironment
-from routers import global_earthquake_router, earthquake_router, shake_level_router
+from model.router import GenericResponseModel
+from routers import global_earthquake_router, earthquake_router, shake_level_router, tsunami_router
 
 # --- Constants
 VERSION = "0.0.1 Indev"
 RUN_ENV = RunEnvironment(os.getenv("ENV")) \
     if os.getenv("ENV") \
     else RunEnvironment.development
+load_dotenv(f".{RUN_ENV.value}.env")
+
+# --- Config initialization
+config.init_config(RUN_ENV)
 
 # --- Runtime initialization
 urllib3.disable_warnings(InsecureRequestWarning)

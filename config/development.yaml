@@ -11,19 +11,30 @@ proxy:
   http: ""
   https: ""
 
+server:
+  host: "0.0.0.0"
+  port: "9090"
+
 modules: #TODO
-  eew: false
+  eew: true
   tsunami: true
-  p2p_earthquake: false
+  p2p_earthquake: true
   shake_level: false
   global_earthquake: false
 
 utilities:
   update_centroid: true
   cors: true
+  doc: true
+  redoc: true
 
 eew:
-  target: "svir" # svir or iedred.
+  target: "iedred" # svir or iedred.
+
+dmdata:
+  enabled: false
+  client_id: ""
+  client_token: ""
 
 tsunami:
   color:
@@ -38,14 +49,14 @@ debug:
   global_earthquake:
     enabled: false
   tsunami_watch:
-    enabled: false
-    file: ""
+    enabled: true
+    file: "../../test/assets/demo_watch.xml"
   p2p_info:
-    enabled: false
-    file: ""
+    enabled: true
+    file: "../../test/assets/p2p_tsunami.json"
   tsunami:
-    enabled: false
-    file: ""
+    enabled: true
+    file: "../../test/assets/demo_tsunami.xml"
   iedred_eew:
     enabled: false
     file: "../../test/assets/iedred_eew.json"
@@ -54,7 +65,7 @@ debug:
     ignore_outdated: true
     file: "../../test/assets/svir_eew.json"
   kmoni_eew:
-    enabled: false
+    enabled: true
     start_time: "20210213230800"
     image_override:
       enabled: false
