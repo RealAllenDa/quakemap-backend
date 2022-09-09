@@ -26,8 +26,14 @@ RUN_ENV = RunEnvironment(os.getenv("ENV")) \
 urllib3.disable_warnings(InsecureRequestWarning)
 app = FastAPI()
 
-# --- Config initialization
-config.init_config(RUN_ENV)
+@app.exception_handler(StarletteHTTPException)
+async def custom_http_exception_handler(request, exc):
+    if exc.status_code == 404:
+        return JSONResponse(status_code=404,
+                            content=GenericResponseModel.NotFound.value)
+    else:
+        return await http_exception_handler(request, exc)
+
 
 # --- Router initialization
 app.include_router(global_earthquake_router)
@@ -44,6 +50,8 @@ if Env.config.utilities.cors:
         allow_headers=["*"],
     )
     logger.success("Added CORS middleware.")
+app.add_middleware(GZipMiddleware)
+logger.success("Added gzip middleware.")
 
 # --- Internals initialization
 Env.geojson_instance = GeoJson()
@@ -51,3 +59,10 @@ Env.centroid_instance = Centroid()
 Env.intensity2color_instance = IntensityToColor()
 Env.pswave_instance = PSWave()
 module_manager.init()
+
+if __name__ == "__main__":
+    uvicorn.run(
+        app,
+        host=Env.config.server.host,
+        port=int(Env.config.server.port)
+    )
