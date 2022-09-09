@@ -137,7 +137,7 @@ class EEWInfo(BaseModule):
             event_id=content.head.event_id,
             event_type=IedredEventType(
                 code=event_type_code.value,
-                string=event_type_status
+                string=event_type_status.value
             ),
             serial=content.head.serial,
             hypocenter=IedredHypocenter(
@@ -212,7 +212,7 @@ class EEWInfo(BaseModule):
                     self.info.svir = None
                     return
 
-        if content.event_type.string != SvirEventType.normal:
+        if content.event_type.string != "発表" or content.event_type.string != "通常":
             self.info.svir = EEWCancelledModel()
             return
 
