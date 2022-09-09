@@ -2,13 +2,13 @@
  HomeNetwork Python SDK
  Licensed under GPL.
  2022 Allen Da.
- Current Version - 1.0
+ Current Version - 1.1
 """
 __all__ = ["yaml_to_model", "json_to_model", "obj_to_model",
            "read_csv", "read_json", "open_file",
            "web_request",
 
-           "todo", "relpath", "func_timer", "parse_jsonp",
+           "todo", "relpath", "func_timer", "parse_jsonp", "generate_list",
 
            "verify_none", "verify_not_used", "verify_type"]
 
@@ -25,7 +25,7 @@ import xmltodict
 import yaml
 from loguru import logger
 from pydantic import BaseModel
-from requests import ReadTimeout
+from requests import ReadTimeout, Response
 
 from model.config import ProxyConfigModel
 from model.sdk import ResponseTypeModel, ResponseModel, ResponseTypes
@@ -270,8 +270,25 @@ def read_csv(filename: str,
         file.close()
 
 
+def generate_list(name: T) -> list[T]:
+    """
+    Make sure parameter is a list.
+
+    :param name: A dict or a list
+    :return: Guaranteed to be a list
+    :rtype: list
+    """
+    if not name:
+        return []
+    elif isinstance(name, list):
+        return name
+    else:
+        return [name]
+
+
 def web_request(url: str,
                 response_type: ResponseTypeModel,
+                max_retries: int = 3,
                 timeout: Union[int, float] = 3.5,
                 proxy: Optional[ProxyConfigModel] = None,
                 cacheless: bool = False,
@@ -283,6 +300,7 @@ def web_request(url: str,
 
     :param url: The URL
     :param response_type: What should this function return
+    :param max_retries: The maximum times to retry
     :param timeout: The timeout
     :param proxy: The proxy to use
     :param cacheless: Whether to ignore cache by adding seed
@@ -290,33 +308,54 @@ def web_request(url: str,
     :param headers: The request header to append
     :return: ResponseModel
     """
+    retries = 0
+    response: Optional[Response] = None
     if headers is None:
         headers = {}
     logger.debug(f"Web request with url {url} -> {response_type}, "
                  f"timeout {timeout} and cache-less {cacheless}")
     if cacheless:
         url += f"&time={int(time.time())}"
-    try:
-        response = requests.get(url=url,
-                                proxies=proxy.dict(),
-                                timeout=timeout,
-                                verify=verify,
-                                headers=headers)
-    except ReadTimeout:
-        logger.warning(f"Connection timed out: url {url} with timeout {timeout}")
-        return ResponseModel()
-    except Exception:
-        logger.exception("Failed to fetch.")
+    while retries < max_retries:
+        try:
+            response = requests.get(url=url,
+                                    proxies=proxy.dict(),
+                                    timeout=timeout,
+                                    verify=verify,
+                                    headers=headers)
+        except ReadTimeout:
+            logger.warning(
+                f"Connection timed out: url {url} with timeout {timeout}. Retrying for the {retries} time(s)."
+            )
+            retries += 1
+            time.sleep(retries * retries)
+            continue
+        except Exception:
+            logger.exception(f"Failed to fetch. Retrying for the {retries} time(s).")
+            retries += 1
+            time.sleep(retries * retries)
+            continue
+
+        # --- Response verification
+        if response.status_code != 200:
+            logger.warning(f"Failed response verification: code: {response.status_code} != 200. "
+                           f"Retrying for the {retries} time(s).")
+            retries += 1
+            time.sleep(retries * retries)
+            continue
+        elif response.text == "":
+            logger.warning(f"Failed response verification: text: is none. Retrying for the {retries} time(s).")
+            retries += 1
+            time.sleep(retries * retries)
+            continue
+        else:
+            # Successful
+            break
+
+    if response is None:
+        logger.error("Maximum retries exceeded without succeeding.")
         return ResponseModel()
     response.encoding = "utf-8"
-
-    # --- Response verification
-    if response.status_code != 200:
-        logger.warning(f"Failed response verification: code: {response.status_code} != 200")
-        return ResponseModel()
-    elif response.text == "":
-        logger.warning(f"Failed response verification: text: is none")
-        return ResponseModel()
 
     # --- Response conversion
     verify_type(response_type, ResponseTypeModel)
