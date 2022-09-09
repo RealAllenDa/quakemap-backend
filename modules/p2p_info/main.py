@@ -1,3 +1,5 @@
+import json
+
 from loguru import logger
 
 from env import Env
@@ -9,7 +11,7 @@ from model.p2p_info import P2PQuakeModel, P2PTsunamiModel, EarthquakeIntensityEn
 from model.p2p_info import TsunamiAreaModel
 from model.sdk import ResponseTypeModel, ResponseTypes
 from modules.base_module import BaseModule
-from sdk import func_timer, web_request, verify_none, todo
+from sdk import func_timer, web_request, verify_none, relpath
 
 
 class P2PInfo(BaseModule):
@@ -36,7 +38,10 @@ class P2PInfo(BaseModule):
             verify_none(response.status)
             self.parse_info(response.content)
         else:
-            todo()
+            with open(relpath(Env.config.debug.p2p_info.file), encoding="utf-8") as f:
+                content = json.loads(f.read())
+                self.parse_info(content)
+                f.close()
 
     def parse_info(self, content: list) -> None:
         if not self._last_response_list:
