@@ -1,6 +1,7 @@
 from pydantic import BaseModel
 
-__all__ = ["CEICApiModel", "EpicenterModel", "GlobalEarthquakeReturnModel"]
+__all__ = ["CEICApiModel", "EpicenterModel", "GlobalEarthquakeReturnModel",
+           "GlobalEarthquakeApiModel"]
 
 
 class CEICApiModel(BaseModel):
@@ -74,3 +75,8 @@ class GlobalEarthquakeReturnModel(BaseModel):
     mmi: int
     occur_time: str
     receive_time: str
+
+
+class GlobalEarthquakeApiModel(BaseModel):
+    status: int
+    data: list[GlobalEarthquakeReturnModel]

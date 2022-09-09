@@ -2,7 +2,8 @@ from fastapi import APIRouter
 from starlette.responses import JSONResponse
 
 from internal.modules_init import module_manager
-from model.router import GlobalEarthquakeApiModel, GENERIC_STATUS, GenericResponseModel
+from model.global_earthquake import GlobalEarthquakeApiModel
+from model.router import GENERIC_STATUS, GenericResponseModel
 
 __all__ = ["global_earthquake_router"]
 
