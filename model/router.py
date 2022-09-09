@@ -1,11 +1,9 @@
-__all__ = ["GlobalEarthquakeApiModel", "StatusCodeModel",
+__all__ = ["StatusCodeModel",
            "GENERIC_STATUS", "GenericResponseModel"]
 
 from enum import Enum
 
 from pydantic import BaseModel
-
-from model.global_earthquake import GlobalEarthquakeReturnModel
 
 
 class GenericResponseModel(dict, Enum):
@@ -13,11 +11,14 @@ class GenericResponseModel(dict, Enum):
         "status": -1,
         "data": "API not yet ready"
     }
-
-
-class GlobalEarthquakeApiModel(BaseModel):
-    status: int
-    data: list[GlobalEarthquakeReturnModel]
+    ServerError = {
+        "status": -2,
+        "data": "Internal server error"
+    }
+    NotFound = {
+        "status": -4,
+        "data": "Not found"
+    }
 
 
 class StatusCodeModel(BaseModel):
@@ -28,5 +29,8 @@ class StatusCodeModel(BaseModel):
 GENERIC_STATUS = {
     404: {
         "model": StatusCodeModel
-    }
+    },
+    500: {
+        "model": StatusCodeModel
+    },
 }
