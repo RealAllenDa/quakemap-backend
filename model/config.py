@@ -22,6 +22,8 @@ class ModulesEnableModel(BaseModel):
 class UtilitiesEnableModel(BaseModel):
     update_centroid: bool
     cors: bool
+    doc: bool
+    redoc: bool
 
 
 class EEWTargetEnum(str, Enum):
@@ -100,6 +102,17 @@ class GlobalEarthquakeConfigModel(BaseModel):
     list_count: int
 
 
+class ServerModel(BaseModel):
+    host: str
+    port: str
+
+
+class DMDataConfigModel(BaseModel):
+    enabled: bool
+    client_id: str
+    client_token: str
+
+
 class ConfigModel(BaseModel):
     logger: LoggerConfigModel
     proxy: ProxyConfigModel
@@ -107,6 +120,8 @@ class ConfigModel(BaseModel):
     utilities: UtilitiesEnableModel
     eew: EEWConfigModel
     tsunami: TsunamiConfigModel
+    server: ServerModel
+    dmdata: DMDataConfigModel
     debug: DebugConfigModel
     global_earthquake: GlobalEarthquakeConfigModel
 
