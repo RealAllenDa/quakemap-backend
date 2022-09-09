@@ -36,7 +36,17 @@ config.init_config(RUN_ENV)
 
 # --- Runtime initialization
 urllib3.disable_warnings(InsecureRequestWarning)
-app = FastAPI()
+app = FastAPI(
+    docs_url="/docs" if Env.config.utilities.doc else None,
+    redoc_url="/redoc" if Env.config.utilities.redoc else None
+)
+
+
+@app.exception_handler(RequestValidationError)
+async def validation_exception_handler(_, __):
+    return JSONResponse(status_code=500,
+                        content=GenericResponseModel.ServerError.value)
+
 
 @app.exception_handler(StarletteHTTPException)
 async def custom_http_exception_handler(request, exc):
