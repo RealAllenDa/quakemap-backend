@@ -40,4 +40,5 @@ def init_config(run_type: RunEnvironment) -> None:
         diagnose=Env.config.logger.diagnose,
         level=Env.config.logger.level.value
     )
+    sys.stdout.reconfigure(encoding="utf-8")
     logger.success("Logger initialized.")
