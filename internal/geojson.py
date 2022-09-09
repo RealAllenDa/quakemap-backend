@@ -1,7 +1,7 @@
 from loguru import logger
 
 from model.geojson import GeoJsonModel, TsunamiGeoJsonModel
-from model.p2p_info import TsunamiAreaModel
+from model.p2p_info import TsunamiAreaModel, TsunamiAreaGradeEnum
 from sdk import func_timer, json_to_model, relpath
 
 
@@ -37,12 +37,12 @@ class GeoJson:
             if i.properties.name in area_names:
                 # Included in the tsunami area
                 try:
-                    i.properties.grade = area_grades[i.properties.name].grade
+                    i.properties.grade = area_grades[i.properties.name].grade.value
                 except Exception:
                     logger.exception(f"Failed to parse tsunami GeoJson for {i.properties.name}.")
-                    i.properties.grade = "Unknown"
-                if i.properties.grade != "Unknown":
-                    i.properties.intensity_color = Env.config.tsunami.color.dict().get(i.properties.grade)
+                    i.properties.grade = TsunamiAreaGradeEnum.Unknown.value
+                if i.properties.grade != TsunamiAreaGradeEnum.Unknown:
+                    i.properties.intensity_color = Env.config.tsunami.color.dict().get(i.properties.grade, "")
                 else:
                     logger.warning(f"{i.properties.name}: grade is unknown. Skipping parsing.")
                 return_model.features.append(i)
