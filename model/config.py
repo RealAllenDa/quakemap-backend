@@ -72,9 +72,17 @@ class LogLevelEnum(str, Enum):
 
 
 class _TsunamiColorModel(BaseModel):
-    major_warning: str
-    warning: str
-    watch: str
+    MajorWarning: str
+    Warning: str
+    Watch: str
+
+    class Config:
+        allow_population_by_field_name = True
+        fields = {
+            "MajorWarning": "major_warning",
+            "Warning": "warning",
+            "Watch": "watch"
+        }
 
 
 class TsunamiConfigModel(BaseModel):

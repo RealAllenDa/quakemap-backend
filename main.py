@@ -33,6 +33,7 @@ config.init_config(RUN_ENV)
 app.include_router(global_earthquake_router)
 app.include_router(earthquake_router)
 app.include_router(shake_level_router)
+app.include_router(tsunami_router)
 
 # --- Middleware initialization
 if Env.config.utilities.cors:
