@@ -1,0 +1,364 @@
+[
+  {
+    "code": 551,
+    "created_at": "2022/01/11 12:26:18.183",
+    "earthquake": {
+      "domesticTsunami": "Checking",
+      "foreignTsunami": "Unknown",
+      "hypocenter": {
+        "depth": -1,
+        "latitude": -200,
+        "longitude": -200,
+        "magnitude": -1,
+        "name": ""
+      },
+      "maxScale": 30,
+      "time": "2022/01/11 12:23:00"
+    },
+    "id": "61dcf8da02add671afd96023",
+    "issue": {
+      "correct": "None",
+      "source": "気象庁",
+      "time": "2022/01/11 12:25:33",
+      "type": "ScalePrompt"
+    },
+    "points": [
+      {
+        "addr": "大分県中部",
+        "isArea": true,
+        "pref": "大分県",
+        "scale": 30
+      },
+      {
+        "addr": "大分県南部",
+        "isArea": true,
+        "pref": "大分県",
+        "scale": 30
+      }
+    ],
+    "time": "2022/01/11 12:25:38.682",
+    "user-agent": "quake_checker/analyzer 20180128",
+    "ver": "20180128"
+  },
+  {
+    "code": 551,
+    "created_at": "2022/01/07 07:27:41.336",
+    "earthquake": {
+      "domesticTsunami": "Checking",
+      "foreignTsunami": "Unknown",
+      "hypocenter": {
+        "depth": -1,
+        "latitude": -200,
+        "longitude": -200,
+        "magnitude": -1,
+        "name": ""
+      },
+      "maxScale": 30,
+      "time": "2022/01/07 07:24:00"
+    },
+    "id": "61d76cdd02add671aad962e5",
+    "issue": {
+      "correct": "None",
+      "source": "気象庁",
+      "time": "2022/01/07 07:26:33",
+      "type": "ScalePrompt"
+    },
+    "points": [
+      {
+        "addr": "鹿児島県奄美南部",
+        "isArea": true,
+        "pref": "鹿児島県",
+        "scale": 30
+      }
+    ],
+    "time": "2022/01/07 07:26:39.421",
+    "user-agent": "quake_checker/analyzer 20180128",
+    "ver": "20180128"
+  },
+  {
+    "code": 551,
+    "created_at": "2022/01/05 21:38:06.349",
+    "earthquake": {
+      "domesticTsunami": "Checking",
+      "foreignTsunami": "Unknown",
+      "hypocenter": {
+        "depth": -1,
+        "latitude": -200,
+        "longitude": -200,
+        "magnitude": -1,
+        "name": ""
+      },
+      "maxScale": 30,
+      "time": "2022/01/05 21:34:00"
+    },
+    "id": "61d5912e02add671aad96165",
+    "issue": {
+      "correct": "None",
+      "source": "気象庁",
+      "time": "2022/01/05 21:36:57",
+      "type": "ScalePrompt"
+    },
+    "points": [
+      {
+        "addr": "茨城県北部",
+        "isArea": true,
+        "pref": "茨城県",
+        "scale": 30
+      },
+      {
+        "addr": "茨城県南部",
+        "isArea": true,
+        "pref": "茨城県",
+        "scale": 30
+      }
+    ],
+    "time": "2022/01/05 21:37:05.033",
+    "user-agent": "quake_checker/analyzer 20180128",
+    "ver": "20180128"
+  },
+  {
+    "code": 551,
+    "created_at": "2022/01/05 21:36:39.179",
+    "earthquake": {
+      "domesticTsunami": "Checking",
+      "foreignTsunami": "Unknown",
+      "hypocenter": {
+        "depth": -1,
+        "latitude": -200,
+        "longitude": -200,
+        "magnitude": -1,
+        "name": ""
+      },
+      "maxScale": 30,
+      "time": "2022/01/05 21:34:00"
+    },
+    "id": "61d590d702add671a7d963bb",
+    "issue": {
+      "correct": "None",
+      "source": "気象庁",
+      "time": "2022/01/05 21:36:04",
+      "type": "ScalePrompt"
+    },
+    "points": [
+      {
+        "addr": "茨城県北部",
+        "isArea": true,
+        "pref": "茨城県",
+        "scale": 30
+      }
+    ],
+    "time": "2022/01/05 21:36:13.104",
+    "user-agent": "quake_checker/analyzer 20180128",
+    "ver": "20180128"
+  },
+  {
+    "code": 551,
+    "created_at": "2022/01/04 06:11:42.366",
+    "earthquake": {
+      "domesticTsunami": "Checking",
+      "foreignTsunami": "Unknown",
+      "hypocenter": {
+        "depth": -1,
+        "latitude": -200,
+        "longitude": -200,
+        "magnitude": -1,
+        "name": ""
+      },
+      "maxScale": 50,
+      "time": "2022/01/04 06:09:00"
+    },
+    "id": "61d3668e02add671aad95f4c",
+    "issue": {
+      "correct": "None",
+      "source": "気象庁",
+      "time": "2022/01/04 06:10:36",
+      "type": "ScalePrompt"
+    },
+    "points": [
+      {
+        "addr": "小笠原",
+        "isArea": true,
+        "pref": "東京都",
+        "scale": 50
+      }
+    ],
+    "time": "2022/01/04 06:10:42.403",
+    "user-agent": "quake_checker/analyzer 20180128",
+    "ver": "20180128"
+  },
+  {
+    "code": 551,
+    "created_at": "2022/01/02 23:19:52.655",
+    "earthquake": {
+      "domesticTsunami": "Checking",
+      "foreignTsunami": "Unknown",
+      "hypocenter": {
+        "depth": -1,
+        "latitude": -200,
+        "longitude": -200,
+        "magnitude": -1,
+        "name": ""
+      },
+      "maxScale": 30,
+      "time": "2022/01/02 23:17:00"
+    },
+    "id": "61d1b48802add671aad95e25",
+    "issue": {
+      "correct": "None",
+      "source": "気象庁",
+      "time": "2022/01/02 23:19:00",
+      "type": "ScalePrompt"
+    },
+    "points": [
+      {
+        "addr": "和歌山県北部",
+        "isArea": true,
+        "pref": "和歌山県",
+        "scale": 30
+      }
+    ],
+    "time": "2022/01/02 23:19:06.918",
+    "user-agent": "quake_checker/analyzer 20180128",
+    "ver": "20180128"
+  },
+  {
+    "code": 551,
+    "created_at": "2021/12/31 14:55:29.262",
+    "earthquake": {
+      "domesticTsunami": "Checking",
+      "foreignTsunami": "Unknown",
+      "hypocenter": {
+        "depth": -1,
+        "latitude": -200,
+        "longitude": -200,
+        "magnitude": -1,
+        "name": ""
+      },
+      "maxScale": 30,
+      "time": "2021/12/31 14:52:00"
+    },
+    "id": "61ce9b5102add671add9591a",
+    "issue": {
+      "correct": "None",
+      "source": "気象庁",
+      "time": "2021/12/31 14:54:26",
+      "type": "ScalePrompt"
+    },
+    "points": [
+      {
+        "addr": "石川県能登",
+        "isArea": true,
+        "pref": "石川県",
+        "scale": 30
+      }
+    ],
+    "time": "2021/12/31 14:54:32.008",
+    "user-agent": "quake_checker/analyzer 20180128",
+    "ver": "20180128"
+  },
+  {
+    "code": 551,
+    "created_at": "2021/12/29 11:35:18.784",
+    "earthquake": {
+      "domesticTsunami": "Checking",
+      "foreignTsunami": "Unknown",
+      "hypocenter": {
+        "depth": -1,
+        "latitude": -200,
+        "longitude": -200,
+        "magnitude": -1,
+        "name": ""
+      },
+      "maxScale": 30,
+      "time": "2021/12/29 11:33:00"
+    },
+    "id": "61cbc96602add671afd95423",
+    "issue": {
+      "correct": "None",
+      "source": "気象庁",
+      "time": "2021/12/29 11:34:45",
+      "type": "ScalePrompt"
+    },
+    "points": [
+      {
+        "addr": "東京都２３区",
+        "isArea": true,
+        "pref": "東京都",
+        "scale": 30
+      }
+    ],
+    "time": "2021/12/29 11:34:52.272",
+    "user-agent": "quake_checker/analyzer 20180128",
+    "ver": "20180128"
+  },
+  {
+    "code": 551,
+    "created_at": "2021/12/26 17:29:43.241",
+    "earthquake": {
+      "domesticTsunami": "Checking",
+      "foreignTsunami": "Unknown",
+      "hypocenter": {
+        "depth": -1,
+        "latitude": -200,
+        "longitude": -200,
+        "magnitude": -1,
+        "name": ""
+      },
+      "maxScale": 40,
+      "time": "2021/12/26 17:26:00"
+    },
+    "id": "61c827f702add671afd9517e",
+    "issue": {
+      "correct": "None",
+      "source": "気象庁",
+      "time": "2021/12/26 17:28:35",
+      "type": "ScalePrompt"
+    },
+    "points": [
+      {
+        "addr": "沖縄県宮古島",
+        "isArea": true,
+        "pref": "沖縄県",
+        "scale": 40
+      }
+    ],
+    "time": "2021/12/26 17:28:43.598",
+    "user-agent": "quake_checker/analyzer 20180128",
+    "ver": "20180128"
+  },
+  {
+    "code": 551,
+    "created_at": "2021/12/25 09:33:19.943",
+    "earthquake": {
+      "domesticTsunami": "Checking",
+      "foreignTsunami": "Unknown",
+      "hypocenter": {
+        "depth": -1,
+        "latitude": -200,
+        "longitude": -200,
+        "magnitude": -1,
+        "name": ""
+      },
+      "maxScale": 30,
+      "time": "2021/12/25 09:31:00"
+    },
+    "id": "61c666cf02add671afd9507f",
+    "issue": {
+      "correct": "None",
+      "source": "気象庁",
+      "time": "2021/12/25 09:32:37",
+      "type": "ScalePrompt"
+    },
+    "points": [
+      {
+        "addr": "福島県会津",
+        "isArea": true,
+        "pref": "福島県",
+        "scale": 30
+      }
+    ],
+    "time": "2021/12/25 09:32:42.696",
+    "user-agent": "quake_checker/analyzer 20180128",
+    "ver": "20180128"
+  }
+]
