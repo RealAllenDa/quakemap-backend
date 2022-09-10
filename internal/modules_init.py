@@ -104,13 +104,6 @@ class ModuleManager:
             scheduler.add_job(func=self._module_refresher(self._loaded_classes["p2p_info"]), trigger="interval",
                               seconds=2,
                               id="p2p")
-            scheduler.add_job(func=self._module_refresher(
-                self._loaded_classes["p2p_info"],
-                "refresh_stations"
-            ),
-                trigger="interval",
-                days=1,
-                id="station_update")
         if Env.config.modules.shake_level:
             scheduler.add_job(func=self._module_refresher(self._loaded_classes["shake_level"]),
                               trigger="interval",
