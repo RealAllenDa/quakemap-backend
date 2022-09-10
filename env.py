@@ -1,4 +1,5 @@
 from internal.centroid import Centroid
+from internal.dmdata import DMDataFetcher
 from internal.geojson import GeoJson
 from internal.intensity2color import IntensityToColor
 from internal.pswave import PSWave
@@ -21,6 +22,7 @@ class _Env:
         self._centroid_instance = None
         self._intensity_to_color_instance = None
         self._pswave_instance = None
+        self._dmdata_instance = None
         self._module_manager = None
 
     @property
@@ -85,6 +87,16 @@ class _Env:
     def pswave_instance(self, instance: PSWave) -> None:
         verify_type(instance, PSWave)
         self._pswave_instance = instance
+
+    @property
+    def dmdata_instance(self) -> DMDataFetcher:
+        verify_none(self._dmdata_instance)
+        return self._dmdata_instance
+
+    @dmdata_instance.setter
+    def dmdata_instance(self, instance: DMDataFetcher) -> None:
+        verify_type(instance, DMDataFetcher)
+        self._dmdata_instance = instance
 
     @property
     def eew_debugging_enabled(self) -> bool:

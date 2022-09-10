@@ -32,9 +32,11 @@ eew:
   target: "iedred" # svir or iedred.
 
 dmdata:
-  enabled: false
-  client_id: ""
-  client_token: ""
+  enabled: true
+  jquake:
+    use_plan: true
+    client_id: "CId.pB6FnDGAvAMHgSsFqOHl9qujFK_WQovheSG4j8BbR1dT"
+    client_token: "CSt.DPOwMxjZREbrylr5GDWx1B-Xh6BHI7_OKfan82ls5zIG"
 
 tsunami:
   color:

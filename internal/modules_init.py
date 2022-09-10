@@ -46,6 +46,18 @@ class ModuleManager:
         self._init_classes()
         self._init_timer()
 
+    def stop_program(self):
+        """
+        Stops the program.
+        """
+        logger.info("Stopping the program.")
+        try:
+            if Env.config.dmdata.enabled:
+                Env.dmdata_instance.cleanup()
+        except Exception as e:
+            logger.critical("Failed to gracefully cleanup.")
+            raise e
+
     @func_timer
     def _init_list(self) -> None:
         """
@@ -123,6 +135,16 @@ class ModuleManager:
                               trigger="interval",
                               seconds=5,
                               id="global_eq")
+        if Env.config.dmdata.enabled and Env.config.dmdata.jquake.use_plan:
+            scheduler.add_job(func=self._module_refresher(Env.dmdata_instance, "get_current_token"),
+                              trigger="interval",
+                              hours=5,
+                              id="dmdata_refresh")
+            scheduler.add_job(func=self._module_refresher(Env.dmdata_instance, "start_connection"),
+                              trigger="interval",
+                              seconds=5,
+                              next_run_time=datetime.now(),
+                              id="dmdata_connect")
         scheduler.start()
 
     @func_timer

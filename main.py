@@ -16,6 +16,7 @@ from urllib3.exceptions import InsecureRequestWarning
 import config
 from env import Env
 from internal.centroid import Centroid
+from internal.dmdata import DMDataFetcher
 from internal.geojson import GeoJson
 from internal.intensity2color import IntensityToColor
 from internal.modules_init import module_manager
@@ -86,6 +87,8 @@ Env.geojson_instance = GeoJson()
 Env.centroid_instance = Centroid()
 Env.intensity2color_instance = IntensityToColor()
 Env.pswave_instance = PSWave()
+if Env.config.dmdata.enabled:
+    Env.dmdata_instance = DMDataFetcher()
 module_manager.init()
 
 if __name__ == "__main__":

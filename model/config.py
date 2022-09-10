@@ -107,10 +107,15 @@ class ServerModel(BaseModel):
     port: str
 
 
-class DMDataConfigModel(BaseModel):
-    enabled: bool
+class DMDataJquakeConfigModel(BaseModel):
+    use_plan: bool
     client_id: str
     client_token: str
+
+
+class DMDataConfigModel(BaseModel):
+    enabled: bool
+    jquake: DMDataJquakeConfigModel
 
 
 class ConfigModel(BaseModel):
