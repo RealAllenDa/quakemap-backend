@@ -16,9 +16,9 @@ server:
   port: "9090"
 
 modules: #TODO
-  eew: true
-  tsunami: true
-  p2p_earthquake: true
+  eew: false
+  tsunami: false
+  p2p_earthquake: false
   shake_level: false
   global_earthquake: false
 
