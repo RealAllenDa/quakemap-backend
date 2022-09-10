@@ -17,6 +17,10 @@ class EEWInfoMiddleWare:
         :return: Combined area_intensity Info
         """
         combined_areas = svir_info.area_coloring.areas
+        if (svir_info.report_id != kmoni_info.report_id) or \
+                (int(svir_info.report_num) != int(kmoni_info.report_num)):
+            logger.debug("Different EEW between kmoni and svir. Returning only svir.")
+            return combined_areas
         try:
             for i in kmoni_info.area_coloring.areas.keys():
                 if i not in combined_areas:
