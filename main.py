@@ -75,6 +75,12 @@ if Env.config.utilities.cors:
 app.add_middleware(GZipMiddleware)
 logger.success("Added gzip middleware.")
 
+
+@app.on_event("shutdown")
+async def shutdown_wrapper():
+    module_manager.stop_program()
+
+
 # --- Internals initialization
 Env.geojson_instance = GeoJson()
 Env.centroid_instance = Centroid()
