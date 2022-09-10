@@ -28,7 +28,7 @@ from pydantic import BaseModel
 from requests import ReadTimeout, Response
 
 from model.config import ProxyConfigModel
-from model.sdk import ResponseTypeModel, ResponseModel, ResponseTypes
+from model.sdk import ResponseTypeModel, ResponseModel, ResponseTypes, RequestTypes
 
 OnlyModel = TypeVar("OnlyModel", bound=Type[BaseModel])
 T = TypeVar("T")
@@ -293,7 +293,10 @@ def web_request(url: str,
                 proxy: Optional[ProxyConfigModel] = None,
                 cacheless: bool = False,
                 verify: bool = True,
-                headers=None) \
+                headers: dict = None,
+                request_type: RequestTypes = RequestTypes.get,
+                form_data: dict | str = None,
+                bearer_token: str = None) \
         -> ResponseModel:
     """
     Makes web request.
@@ -306,6 +309,9 @@ def web_request(url: str,
     :param cacheless: Whether to ignore cache by adding seed
     :param verify: Whether to verify https certificate
     :param headers: The request header to append
+    :param request_type: The request type (POSt, GET, etc.)
+    :param form_data: The form data to append
+    :param bearer_token: The bearer token for OAuth2 API endpoints
     :return: ResponseModel
     """
     retries = 0
@@ -316,13 +322,17 @@ def web_request(url: str,
                  f"timeout {timeout} and cache-less {cacheless}")
     if cacheless:
         url += f"&time={int(time.time())}"
+    if bearer_token:
+        headers["Authorization"] = f"Bearer {bearer_token}"
     while retries < max_retries:
         try:
-            response = requests.get(url=url,
-                                    proxies=proxy.dict(),
-                                    timeout=timeout,
-                                    verify=verify,
-                                    headers=headers)
+            response = requests.request(method=str(request_type.value),
+                                        url=url,
+                                        proxies=proxy.dict(),
+                                        timeout=timeout,
+                                        verify=verify,
+                                        headers=headers,
+                                        data=form_data)
         except ReadTimeout:
             logger.warning(
                 f"Connection timed out: url {url} with timeout {timeout}. Retrying for the {retries} time(s)."
@@ -374,6 +384,21 @@ def web_request(url: str,
             )
         else:
             return ResponseModel()
+    elif response_type.type == ResponseTypes.json_to_multiple_model:
+        try:
+            obj = response.json()
+        except Exception:
+            logger.exception(f"Failed to convert response to object")
+            return ResponseModel()
+        verify_type(response_type.model, list)
+        for i in response_type.model:
+            model = obj_to_model(obj, i)
+            if model is not None:
+                return ResponseModel(
+                    status=True,
+                    content=model
+                )
+        return ResponseModel()
     elif response_type.type == ResponseTypes.json:
         try:
             return ResponseModel(
