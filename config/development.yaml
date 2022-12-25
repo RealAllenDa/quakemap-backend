@@ -16,10 +16,10 @@ server:
   port: "9090"
 
 modules: #TODO
-  eew: false
-  tsunami: false
-  p2p_earthquake: false
-  shake_level: false
+  eew: true
+  tsunami: true
+  p2p_earthquake: true
+  shake_level: true
   global_earthquake: false
 
 utilities:
@@ -51,13 +51,13 @@ debug:
   global_earthquake:
     enabled: false
   tsunami_watch:
-    enabled: true
+    enabled: false
     file: "../../test/assets/demo_watch.xml"
   p2p_info:
-    enabled: true
+    enabled: false
     file: "../../test/assets/p2p_tsunami.json"
   tsunami:
-    enabled: true
+    enabled: false
     file: "../../test/assets/demo_tsunami.xml"
   iedred_eew:
     enabled: false
@@ -67,7 +67,7 @@ debug:
     ignore_outdated: true
     file: "../../test/assets/svir_eew.json"
   kmoni_eew:
-    enabled: true
+    enabled: false
     start_time: "20210213230800"
     image_override:
       enabled: false
