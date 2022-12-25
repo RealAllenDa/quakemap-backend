@@ -20,13 +20,12 @@ class ShakeLevel(BaseModule):
         Gets shake level and green/yellow/red points info from kmoni.
         """
         if not Env.config.debug.shake_level.enabled:
-            response = web_request(url="http://kwatch-24h.net/EQLevel.json",
+            response = web_request(url="https://kwatch-24h.net/EQLevel.json",
                                    response_type=ResponseTypeModel(
                                        type=ResponseTypes.json_to_model,
                                        model=ShakeLevelReturnModel
                                    ),
-                                   proxy=Env.config.proxy,
-                                   cacheless=True)
+                                   proxy=Env.config.proxy)
             verify_none(response.status)
             self.parse_info(response.content)
         else:
