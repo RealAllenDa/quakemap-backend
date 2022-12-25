@@ -5,11 +5,10 @@
 #  Dissemination of this information or reproduction of this material is strictly forbidden unless
 #  prior written permission is obtained from HomeNetwork.
 from datetime import datetime
+from pydantic import Field, BaseModel
 from typing import Optional
 
-from pydantic import Field, BaseModel
-
-from model.dmdata.generic import DmdataGenericResponse
+from model.dmdata.generic import DmdataGenericResponse, DmdataMessageTypes
 
 
 class DmdataSocketStartBody(BaseModel):
@@ -104,7 +103,7 @@ class DmdataSocketDataPassing(BaseModel):
 
 
 class DmdataSocketDataHead(BaseModel):
-    type: str
+    type: DmdataMessageTypes
     author: str
     time: datetime
     designation: Optional[str]
