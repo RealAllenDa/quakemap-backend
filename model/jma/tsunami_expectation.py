@@ -1,15 +1,7 @@
-__all__ = ["JMAMessageTypeEnum", "JMANameCodeModel",
-           "JMAHeadModel", "JMAControlModel",
-           "JMAEarthquakeModel", "JMACommentModel",
-           "JMATsunamiForecastModel", "JMAInfoType",
-           "JMATsunamiForecastItem", "JMATsunamiFirstHeightCondition",
-           "JMAControlStatus", "JMATsunamiExpectationApiModel"]
-
 from datetime import datetime
 from enum import Enum
-from typing import Optional
-
 from pydantic import BaseModel
+from typing import Optional
 
 
 class JMAMessageTypeEnum(str, Enum):
@@ -63,7 +55,7 @@ class JMAInfoType(str, Enum):
 
 
 class JMAHeadHeadlineModel(BaseModel):
-    text: str
+    text: Optional[str]
 
     # Information omitted
 
