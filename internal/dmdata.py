@@ -4,21 +4,32 @@
 #  NOTICE: All information contained herein is, and remains the property of HomeNetwork.
 #  Dissemination of this information or reproduction of this material is strictly forbidden unless
 #  prior written permission is obtained from HomeNetwork.
+import base64
 import functools
+import gzip
+import io
 import json
 import os
+import re
 import sys
+import time
 from typing import Callable, Optional
 
 import websocket
+import xmltodict
 from loguru import logger
 
 from model.dmdata.auth import DmdataRefreshTokenResponseModel, DmdataRequestTokenBodyModel, DmdataRefreshTokenErrorModel
-from model.dmdata.generic import DmdataGenericErrorResponse
+from model.dmdata.generic import DmdataGenericErrorResponse, DmdataMessageTypes
 from model.dmdata.socket import DmdataSocketStartResponse, DmdataSocketStartBody, DmdataSocketError, DmdataPing, \
     DmdataSocketStart, DmdataPong, DmdataSocketData
+from model.eew import IedredEEWModel, IedredParseStatus, IedredEventType, SvirEventType, IedredEventTypeEnum, \
+    IedredCodeStringDetail, IedredTime, IedredHypocenter, IedredLocation, IedredEpicenterDepth, IedredMagnitude, \
+    IedredMaxIntensity, EEWIntensityEnum, IedredForecastAreasArrival, IedredForecastAreas, IedredForecastAreasIntensity
+from model.jma.eew import JMAEEWApiModel
+from model.jma.tsunami_expectation import JMAInfoType, JMAControlStatus
 from model.sdk import ResponseTypeModel, ResponseTypes, RequestTypes
-from sdk import web_request, func_timer, obj_to_model, relpath
+from sdk import web_request, func_timer, obj_to_model, relpath, generate_list
 
 
 class DMDataFetcher:
@@ -240,10 +251,186 @@ class DMDataFetcher:
         if not message:
             logger.error("Failed to parse data message: message is None")
             return
-        print(message)
+
+        logger.trace(f"Parsed message: {message}")
         with open(relpath(f"../data/{message.id}.json"), "w+", encoding="utf-8") as f:
             f.write(message.json())
             f.close()
+
+        if message.format != "xml":
+            logger.error("Failed to parse data message: format is not XML")
+            return
+        if message.compression != "gzip" or message.encoding != "base64":
+            logger.error("Failed to parse data message: Data compression is not gzip/Encoding is not base64")
+            return
+
+        try:
+            raw_io = io.BytesIO(base64.b64decode(message.body))
+            raw_message = gzip.decompress(raw_io.read())
+            raw_message = raw_message.decode("utf-8")
+            xml_message = xmltodict.parse(raw_message, encoding="utf-8")
+            raw_io.close()
+        except Exception:
+            logger.exception("Failed to parse data message.")
+            return
+
+        from internal.modules_init import module_manager
+        if message.head.type == DmdataMessageTypes.eew_warning \
+                or message.head.type == DmdataMessageTypes.eew_forecast:
+            # EEW
+            eew = self.parse_eew(xml_message)
+            if eew is None:
+                logger.error("Failed to parse Dmdata EEW: is None")
+                return
+            try:
+                module_manager.classes["eew_info"].parse_iedred_eew(eew)
+            except Exception:
+                logger.exception("Failed to parse Dmdata EEW.")
+        # tsunami, earthquake todo
+
+    def parse_eew(self, content: dict) -> Optional[IedredEEWModel]:
+        """
+        Parses EEW, converts into iedred format.
+        """
+        model: Optional[JMAEEWApiModel] = obj_to_model(content, JMAEEWApiModel)
+        if not model:
+            logger.error("Failed to parse EEW: model is None")
+            return None
+        report = model.report
+
+        if report.control.status != JMAControlStatus.normal:
+            logger.warning("EEW Training: Add training sign")
+            event_status = SvirEventType.train
+        else:
+            event_status = SvirEventType.normal
+
+        if report.head.info_status != JMAInfoType.issued:
+            logger.warning("EEW Cancellation: returning cancelled model")
+            return IedredEEWModel(
+                parse_status=IedredParseStatus.success,
+                event_type=IedredEventType(
+                    string=SvirEventType.cancel
+                )
+            )
+        else:
+            event_type_status = SvirEventType.normal
+
+        announced_time = report.head.report_date.timetuple()
+        origin_time = report.body.earthquake.origin_time.timetuple()
+
+        if report.body.comments:
+            if report.body.comments.next_advisory:
+                # Final
+                event_type_code = IedredEventTypeEnum.final
+            else:
+                event_type_code = IedredEventTypeEnum.not_final
+        else:
+            event_type_code = IedredEventTypeEnum.not_final
+
+        if report.body.earthquake.magnitude.magnitude == "NaN" or \
+                report.body.earthquake.magnitude.magnitude == "1.0":
+            # Estimated/Unknown magnitude
+            magnitude = "Unknown"
+        else:
+            magnitude = float(report.body.earthquake.magnitude.magnitude)
+
+        is_assumption = report.body.earthquake.condition is not None
+        is_warn = report.head.title == "緊急地震速報（警報）"
+
+        hypocenter_latitude = -200
+        hypocenter_longitude = -200
+        hypocenter_depth = -1
+        try:
+            if report.body.earthquake.hypocenter.area.coordinate.description != "震源要素不明":
+                match_hypocenter = r"([+-][0-9.]+)([+-][0-9.]+)([+-][0-9.]+)?"
+                hypocenter_parsed = re.match(match_hypocenter,
+                                             report.body.earthquake.hypocenter.area.coordinate.coordinate)
+                if len(hypocenter_parsed.groups()) == 2:
+                    hypocenter_latitude = hypocenter_parsed.group(1)
+                    hypocenter_longitude = hypocenter_parsed.group(2)
+                elif len(hypocenter_parsed.groups()) == 3:
+                    hypocenter_latitude = hypocenter_parsed.group(1)
+                    hypocenter_longitude = hypocenter_parsed.group(2)
+                    hypocenter_depth = hypocenter_depth / 1000 * -1
+            else:
+                logger.warning("EEW info: Unknown hypocenter")
+        except Exception:
+            logger.exception("EEW hypocenter: error occurred while parsing")
+
+        return_model = IedredEEWModel(
+            parse_status=IedredParseStatus.success,
+            status=IedredCodeStringDetail(
+                string=str(event_status.value)
+            ),
+            announced_time=IedredTime(
+                time_string=time.strftime("%Y/%m/%d %H:%M:%S", announced_time),
+                unix_time=int(time.mktime(announced_time))
+            ),
+            origin_time=IedredTime(
+                time_string=time.strftime("%Y/%m/%d %H:%M:%S", origin_time),
+                unix_time=int(time.mktime(origin_time))
+            ),
+            event_id=report.head.event_id,
+            event_type=IedredEventType(
+                code=event_type_code.value,
+                string=event_type_status.value
+            ),
+            serial=report.head.serial,
+            hypocenter=IedredHypocenter(
+                code=report.body.earthquake.hypocenter.area.code.code,
+                name=report.body.earthquake.hypocenter.area.name,
+                is_assumption=is_assumption,
+                location=IedredLocation(
+                    latitude=float(hypocenter_latitude),
+                    longitude=float(hypocenter_longitude),
+                    depth=IedredEpicenterDepth(
+                        depth_int=int(hypocenter_depth),
+                        depth_string=(str(hypocenter_depth) + "km")
+                    )
+                ),
+                magnitude=IedredMagnitude(
+                    magnitude_float=magnitude
+                )
+            ),
+            max_intensity=IedredMaxIntensity(
+                lowest=EEWIntensityEnum[report.body.intensity.forecast.forecast_intensity.lowest.name]
+            ),
+            is_warn=is_warn
+        )
+
+        if return_model.is_warn and (report.body.intensity.forecast.areas is not None):
+            forecast_areas = generate_list(report.body.intensity.forecast.areas)
+            return_model.forecast_areas = []
+            for i in forecast_areas:
+                if i.area.forecast_kind.kind.code[1] == "9":
+                    arrival_time = IedredForecastAreasArrival(
+                        flag=False,
+                        condition="PLUM",
+                        time="Unknown"
+                    )
+                else:
+                    if i.area.arrival_time is not None:
+                        parsed_arrival_time = time.strftime("%Y/%m/%d %H:%M:%S", i.area.arrival_time.timetuple())
+                    else:
+                        parsed_arrival_time = "00:00:00"
+                    arrival_time = IedredForecastAreasArrival(
+                        flag=False,
+                        condition=(i.area.condition if i.area.condition is not None else "未到達と推測"),
+                        time=parsed_arrival_time
+                    )
+                return_model.forecast_areas.append(IedredForecastAreas(
+                    intensity=IedredForecastAreasIntensity(
+                        code=i.area.code,
+                        name=i.area.name,
+                        lowest=EEWIntensityEnum[i.area.forecast_intensity.lowest.name],
+                        highest=EEWIntensityEnum[i.area.forecast_intensity.highest.name],
+                        description=str(i.area.forecast_intensity.lowest.name)
+                    ),
+                    is_warn=(i.area.forecast_kind.kind.name == "緊急地震速報（警報）"),
+                    has_arrived=arrival_time
+                ))
+
+        return return_model
 
     def _ws_func_wrapper(self, func: Callable[..., None]):
         """
@@ -282,7 +469,7 @@ class DMDataFetcher:
         """
         Websocket onmessage
         """
-        logger.debug(f"Message: {message}")
+        logger.trace(f"Message: {message}")
 
         try:
             message = json.loads(message)

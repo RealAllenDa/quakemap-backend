@@ -48,6 +48,9 @@ class EEWInfo(BaseModule):
         """
         Decides which EEW to get for svir-area.
         """
+        if Env.config.dmdata.enabled:
+            logger.debug("Dmdata enabled. No need to fetch svir.")
+            return
         if Env.config.eew.target == EEWTargetEnum.svir:
             self._real_get_svir_eew()
         elif Env.config.eew.target == EEWTargetEnum.iedred:
@@ -71,7 +74,7 @@ class EEWInfo(BaseModule):
             iedred_eew = iedred_eew.content
         else:
             iedred_eew = json_to_model(relpath(Env.config.debug.iedred_eew.file), IedredEEWModel)
-        self._parse_iedred_eew(iedred_eew)
+        self.parse_iedred_eew(iedred_eew)
 
     def _real_get_svir_eew(self) -> None:
         """
@@ -88,7 +91,7 @@ class EEWInfo(BaseModule):
             svir_eew = svir_eew.content
         else:
             svir_eew = json_to_model(relpath(Env.config.debug.svir_eew.file), SvirEEWModel)
-        self._parse_iedred_eew(
+        self.parse_iedred_eew(
             self._format_svir_to_iedred(svir_eew)
         )
 
@@ -124,7 +127,7 @@ class EEWInfo(BaseModule):
         return_model = IedredEEWModel(
             parse_status=IedredParseStatus.success,
             status=IedredCodeStringDetail(
-                string=content.head.status.value
+                string=str(content.head.status.value)
             ),
             announced_time=IedredTime(
                 time_string=time.strftime("%Y/%m/%d %H:%M:%S", announced_time),
@@ -192,7 +195,7 @@ class EEWInfo(BaseModule):
 
         return return_model
 
-    def _parse_iedred_eew(self, content: IedredEEWModel) -> None:
+    def parse_iedred_eew(self, content: IedredEEWModel) -> None:
         """
         Parses iedred EEW.
         """
