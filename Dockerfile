@@ -3,6 +3,7 @@ FROM v7odpsx0.mirror.aliyuncs.com/library/python:3.10
 WORKDIR /code
 
 ARG environment=development
+ARG refresh_token
 
 RUN echo "Building in environment ${environment}"
 
@@ -16,6 +17,7 @@ COPY . /code/
 COPY ./config/$environment.yaml /code/config/$environment.yaml
 
 ENV ENV=$environment
+ENV REFRESH_TOKEN=$refresh_token
 RUN apt-get update && \
     apt-get install -yq tzdata && \
     ln -fs /usr/share/zoneinfo/Asia/Shanghai /etc/localtime && \

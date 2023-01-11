@@ -5,6 +5,9 @@ name: build
 steps:
   - name: docker
     image: plugins/docker
+    environment:
+      refresh_token:
+        from_secret: refresh_token
     settings:
       username:
         from_secret: docker_user
@@ -14,6 +17,8 @@ steps:
       registry: registry.mightyhub.net
       build_args:
         - environment=staging
+      build_args_from_env:
+        - refresh_token
 
 ---
 kind: pipeline
