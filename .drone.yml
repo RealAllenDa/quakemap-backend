@@ -1,0 +1,43 @@
+kind: pipeline
+type: docker
+name: build
+
+steps:
+  - name: docker
+    image: plugins/docker
+    settings:
+      username:
+        from_secret: docker_user
+      password:
+        from_secret: docker_password
+      repo: registry.mightyhub.net/hnapi/quake_map
+      registry: registry.mightyhub.net
+      build_args:
+        - environment=staging
+
+---
+kind: pipeline
+type: exec
+name: deploy
+
+platform:
+  os: linux
+  arch: amd64
+
+clone:
+  disable: true
+
+steps:
+  - name: deploy
+    environment:
+      docker_user:
+        from_secret: docker_user
+      docker_pass:
+        from_secret: docker_password
+    commands:
+      - docker stop quakemap || true && docker rm quakemap || true
+      - docker login --username $${docker_user} --password $${docker_pass} registry.mightyhub.net
+      - docker run -d --pull=always --name quakemap --network host registry.mightyhub.net/hnapi/quake_map:latest
+
+depends_on:
+  - build
