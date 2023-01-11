@@ -1,0 +1,76 @@
+logger:
+  level: "TRACE"
+  # Backtrace: Traces back to the first frame.
+  # Only enable that in very rare circumstances.
+  backtrace: false
+  # Diagnose: Displays variable in traceback. Disable in production.
+  diagnose: true
+  retention: "10 days"
+
+proxy:
+  http: ""
+  https: ""
+
+server:
+  host: "0.0.0.0"
+  port: "5555"
+
+modules: #TODO
+  eew: true
+  tsunami: true
+  p2p_earthquake: true
+  shake_level: true
+  global_earthquake: false
+
+utilities:
+  update_centroid: true
+  cors: true
+  doc: true
+  redoc: true
+
+eew:
+  target: "iedred" # svir or iedred.
+
+dmdata:
+  enabled: true
+  jquake:
+    use_plan: true
+    client_id: "CId.pB6FnDGAvAMHgSsFqOHl9qujFK_WQovheSG4j8BbR1dT"
+    client_token: "CSt.DPOwMxjZREbrylr5GDWx1B-Xh6BHI7_OKfan82ls5zIG"
+
+tsunami:
+  color:
+    major_warning: "#B65BD2"
+    warning: "#DE3329"
+    watch: "#E5A72C"
+
+global_earthquake:
+  list_count: 5
+
+debug:
+  global_earthquake:
+    enabled: false
+  tsunami_watch:
+    enabled: false
+    file: "../../test/assets/demo_watch.xml"
+  p2p_info:
+    enabled: false
+    file: "../../test/assets/p2p_tsunami.json"
+  tsunami:
+    enabled: false
+    file: "../../test/assets/demo_tsunami.xml"
+  iedred_eew:
+    enabled: false
+    file: "../../test/assets/iedred_eew.json"
+  svir_eew:
+    enabled: false
+    ignore_outdated: true
+    file: "../../test/assets/svir_eew.json"
+  kmoni_eew:
+    enabled: false
+    start_time: "20210213230800"
+    image_override:
+      enabled: false
+      file: ""
+  shake_level:
+    enabled: false
