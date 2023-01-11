@@ -30,7 +30,7 @@ from model.eew import IedredEEWModel, IedredParseStatus, IedredEventType, SvirEv
 from model.jma.eew import JMAEEWApiModel
 from model.jma.tsunami_expectation import JMAInfoType, JMAControlStatus
 from model.sdk import ResponseTypeModel, ResponseTypes, RequestTypes
-from sdk import web_request, func_timer, obj_to_model, relpath, generate_list
+from sdk import web_request, func_timer, obj_to_model, generate_list
 
 
 class DMDataFetcher:
@@ -255,9 +255,9 @@ class DMDataFetcher:
             return
 
         logger.trace(f"Parsed message: {message}")
-        with open(relpath(f"../data/{message.id}.json"), "w+", encoding="utf-8") as f:
-            f.write(message.json())
-            f.close()
+        # with open(relpath(f"../data/{message.id}.json"), "w+", encoding="utf-8") as f:
+        #     f.write(message.json())
+        #     f.close()
 
         if message.format != "xml":
             logger.error("Failed to parse data message: format is not XML")
