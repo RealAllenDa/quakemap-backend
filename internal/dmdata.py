@@ -158,7 +158,8 @@ class DMDataFetcher:
             request_type=RequestTypes.post,
             proxy=Env.config.proxy,
             bearer_token=self.access_token,
-            form_data=form_data
+            form_data=form_data,
+            max_retries=1
         )
         if not response.status:
             logger.error("Failed to get DMData socket endpoint.")
@@ -194,7 +195,7 @@ class DMDataFetcher:
             request_type=RequestTypes.delete,
             proxy=Env.config.proxy,
             bearer_token=self.access_token,
-            max_retries=1
+            max_retries=3
         )
 
         self.socket_url = None
