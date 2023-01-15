@@ -49,7 +49,7 @@ class EEWInfo(BaseModule):
         Decides which EEW to get for svir-area.
         """
         if Env.config.dmdata.enabled:
-            logger.debug("Dmdata enabled. No need to fetch svir.")
+            logger.trace("Dmdata enabled. No need to fetch svir.")
             return
         if Env.config.eew.target == EEWTargetEnum.svir:
             self._real_get_svir_eew()

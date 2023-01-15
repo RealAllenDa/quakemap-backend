@@ -59,29 +59,29 @@ class EEWInfoMiddleWare:
             logger.trace(f"Return blank dict because kmoni and svir info is not available.")
             return {}
         elif (not svir_on) and kmoni_on:
-            logger.trace(f"Use kmoni info because svir info is not available.")
+            logger.debug(f"Use kmoni info because svir info is not available.")
             return kmoni_info
         elif svir_on and (not kmoni_on):
-            logger.trace(f"Use svir info because kmoni info is not available.")
+            logger.debug(f"Use svir info because kmoni info is not available.")
             return svir_info
         elif svir_on and kmoni_on:
             try:
                 if svir_info.is_plum:
-                    logger.trace(f"Use svir info because EEW is plum.")
+                    logger.debug(f"Use svir info because EEW is plum.")
                     return svir_info
                 elif int(svir_info.hypocenter.depth[:-2]) >= 150:
-                    logger.trace(f"Use svir info because EEW is a deep earthquake.")
+                    logger.debug(f"Use svir info because EEW is a deep earthquake.")
                     return svir_info
                 else:
                     if svir_info.report_flag == EEWAlertTypeEnum.warning:
                         svir_info.area_coloring.areas = cls.combine_intensity_areas(
                             svir_info, kmoni_info
                         )
-                        logger.trace(f"Use svir info because EEW is warning.")
+                        logger.debug(f"Use svir info because EEW is warning.")
                         return svir_info
                     else:
-                        logger.trace(f"Use kmoni info because no other conditions have been met.")
+                        logger.debug(f"Use kmoni info because no other conditions have been met.")
                         return kmoni_info
             except Exception as e:
-                logger.trace(f"Use kmoni info because exception occurred: {e}")
+                logger.exception(f"Use kmoni info because exception occurred: {e}")
                 return kmoni_info

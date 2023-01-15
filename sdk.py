@@ -183,7 +183,7 @@ def func_timer(func: Callable[..., T]) -> T:
         value = func(*args, **kwargs)
         end_time = time.perf_counter()
         # noinspection PyUnresolvedReferences
-        logger.debug(f"{func.__module__}:{func.__name__} => {(end_time - start_time):.3f} secs.")
+        logger.trace(f"{func.__module__}:{func.__name__} => {(end_time - start_time):.3f} secs.")
         return value
 
     return wrapper
@@ -318,7 +318,7 @@ def web_request(url: str,
     response: Optional[Response] = None
     if headers is None:
         headers = {}
-    logger.debug(f"Web request with url {url} -> {response_type}, "
+    logger.trace(f"Web request with url {url} -> {response_type}, "
                  f"timeout {timeout} and cache-less {cacheless}")
     if cacheless:
         url += f"&time={int(time.time())}"
