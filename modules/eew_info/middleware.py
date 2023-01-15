@@ -45,6 +45,16 @@ class EEWInfoMiddleWare:
 
         svir_on = svir_info is not None
         kmoni_on = kmoni_info is not None
+
+        from env import Env
+        if Env.config.eew.only_dmdata:
+            if svir_on:
+                logger.trace("Use svir info because specified only_dmdata in config.")
+                return svir_info
+            else:
+                logger.trace("Svir info is not avail.")
+                return {}
+
         if (not svir_on) and (not kmoni_on):
             logger.trace(f"Return blank dict because kmoni and svir info is not available.")
             return {}

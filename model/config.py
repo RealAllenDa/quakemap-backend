@@ -33,6 +33,7 @@ class EEWTargetEnum(str, Enum):
 
 class EEWConfigModel(BaseModel):
     target: EEWTargetEnum
+    only_dmdata: bool
 
 
 class _GenericDebugModel(BaseModel):
