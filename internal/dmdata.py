@@ -86,6 +86,26 @@ class DMDataFetcher:
         self.get_socket()
         self.connect_socket()
 
+    def keep_alive(self):
+        """
+        Check whether the socket was alive.
+
+        Runs every 1 minute.
+        """
+        if not self.websocket:
+            logger.warning("No active websocket available! Starting a new one.")
+        else:
+            logger.debug("Socket is alive!")
+            return
+        tries = 0
+        while (not self.websocket) and (tries < 2):
+            self.start_connection()
+            time.sleep(10)
+            tries += 1
+        if not self.active_socket_id:
+            # Still not websocket.
+            logger.error("Still no active websocket available! Check logs.")
+
     @func_timer
     def get_current_token(self) -> None:
         """

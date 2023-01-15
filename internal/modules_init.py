@@ -141,9 +141,9 @@ class ModuleManager:
                               trigger="interval",
                               hours=5,
                               id="dmdata_refresh")
-            scheduler.add_job(func=self._module_refresher(Env.dmdata_instance, "start_connection"),
+            scheduler.add_job(func=self._module_refresher(Env.dmdata_instance, "keep_alive"),
                               trigger="interval",
-                              seconds=5,
+                              minutes=1,
                               next_run_time=datetime.now(),
                               id="dmdata_connect")
         scheduler.start()
