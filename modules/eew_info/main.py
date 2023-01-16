@@ -215,7 +215,8 @@ class EEWInfo(BaseModule):
                     self.info.svir = None
                     return
 
-        if content.event_type.string != "発表" or content.event_type.string != "通常":
+        if content.event_type.string not in ["発表", "通常"]:
+            logger.debug(f"EEW Cancelled: {content}")
             self.info.svir = EEWCancelledModel()
             return
 
