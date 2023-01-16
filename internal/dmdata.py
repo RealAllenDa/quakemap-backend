@@ -50,6 +50,8 @@ class DMDataFetcher:
 
         self.access_token = None
 
+        self.pong = None
+
         self.refresh_token = os.getenv("REFRESH_TOKEN")
         if self.refresh_token is None or self.refresh_token == "":
             logger.critical("Failed to initialize DMData: No REFRESH_TOKEN defined in environ.")
@@ -80,11 +82,32 @@ class DMDataFetcher:
         """
         Starts Dmdata connection.
         """
+        logger.debug("Trying to start a connection...")
         if self.websocket:
             # Active websocket
             return
         self.get_socket()
         self.connect_socket()
+
+    def keep_alive(self):
+        """
+        Check whether the socket was alive.
+
+        Runs every 1 minute.
+        """
+        if not self.websocket:
+            logger.warning("No active websocket available! Starting a new one.")
+        else:
+            logger.debug("Socket is alive!")
+            return
+        tries = 0
+        while (not self.websocket) and (tries < 2):
+            self.start_connection()
+            time.sleep(10)
+            tries += 1
+        if not self.active_socket_id:
+            # Still not websocket.
+            logger.error("Still no active websocket available! Check logs.")
 
     @func_timer
     def get_current_token(self) -> None:
@@ -227,6 +250,14 @@ class DMDataFetcher:
             return
         logger.warning(f"DMData socket error: "
                        f"code => {message.code}, error => {message.error}, closed => {message.close}")
+        if message.code == 4640:
+            # PingId verification failed - not receiving pong?
+            if self.pong is None:
+                logger.error("Receiving ping error, however pong is not created. "
+                             "Perhaps error with message transmission? ")
+            else:
+                logger.debug("Sending pong again...")
+                self.websocket.send(self.pong)
 
     def parse_ping_message(self, message: Optional[DmdataPing]):
         """
@@ -237,11 +268,11 @@ class DMDataFetcher:
         if not message:
             logger.error("Failed to parse ping message: message is None")
             return
-        pong = DmdataPong(
+        self.pong = DmdataPong(
             ping_id=message.ping_id
         ).json(by_alias=True)
-        logger.debug(f"Sending pong: {pong}")
-        self.websocket.send(pong)
+        logger.debug(f"Sending pong: {self.pong}")
+        self.websocket.send(self.pong)
 
     @func_timer
     def parse_data_message(self, message: Optional[DmdataSocketData]):
@@ -471,7 +502,7 @@ class DMDataFetcher:
         """
         Websocket onmessage
         """
-        logger.trace(f"Message: {message}")
+        logger.debug(f"Message: {message}")
 
         try:
             message = json.loads(message)
@@ -511,6 +542,7 @@ class DMDataFetcher:
         logger.debug(f"Connecting to {self.socket_url}")
         if self.websocket:
             logger.warning("self.websocket is not None. Probably another socket opened.")
+            return
 
         self.websocket = websocket.WebSocketApp(
             self.socket_url,

@@ -30,6 +30,7 @@ utilities:
 
 eew:
   target: "iedred" # svir or iedred.
+  only_dmdata: true
 
 dmdata:
   enabled: true
