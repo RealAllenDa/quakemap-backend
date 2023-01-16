@@ -274,7 +274,7 @@ class DMDataFetcher:
         logger.debug(f"Sending pong: {self.pong}")
         self.websocket.send(self.pong)
 
-    @func_timer
+    @func_timer(log_func=logger.success)
     def parse_data_message(self, message: Optional[DmdataSocketData]):
         """
         Parses Dmdata data message.
@@ -321,6 +321,7 @@ class DMDataFetcher:
                 logger.exception("Failed to parse Dmdata EEW.")
         # tsunami, earthquake todo
 
+    @func_timer(log_func=logger.debug)
     def parse_eew(self, content: dict) -> Optional[IedredEEWModel]:
         """
         Parses EEW, converts into iedred format.

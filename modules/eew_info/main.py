@@ -195,6 +195,7 @@ class EEWInfo(BaseModule):
 
         return return_model
 
+    @func_timer(log_func=logger.debug)
     def parse_iedred_eew(self, content: IedredEEWModel) -> None:
         """
         Parses iedred EEW.
