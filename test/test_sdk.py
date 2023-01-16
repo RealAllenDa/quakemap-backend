@@ -132,8 +132,15 @@ class TestSDKMisc(unittest.TestCase):
         def dummy():
             self.assertTrue(True)
 
+        @func_timer(log_func=print)
+        def dummy2():
+            self.assertTrue(True)
+
         self.assertTrue(hasattr(dummy, "__wrapped__"))
         dummy()
+
+        self.assertTrue(hasattr(dummy2, "__wrapped__"))
+        dummy2()
 
     def test_parse_jsonp(self):
         parsed_json_str = parse_jsonp(JSONP_TEST_STRING)

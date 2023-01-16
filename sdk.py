@@ -2,7 +2,11 @@
  HomeNetwork Python SDK
  Licensed under GPL.
  2022-2023 Allen Da.
- Current Version - 1.1
+ Current Version - 1.2
+
+ Changelog:
+    - 1.2:
+        Customizable log_func in func_timer()
 """
 __all__ = [
     # Formation conversion
@@ -174,21 +178,30 @@ def parse_jsonp(jsonp_str: str) -> str:
         verify_not_used("JSONP", "Invalid JSONP")
 
 
-def func_timer(func: Callable[..., T]) -> T:
+def func_timer(func: Optional[Callable[..., T]] = None, log_func: Optional[Callable] = None) -> T:
     """
     Profiles a function's time usage.
 
     :param func: The called function
+    :param log_func: The optional logging function
     :return: A function
     """
+
+    if func is None:
+        # Called with arguments log_func
+        return functools.partial(func_timer, log_func=log_func)
 
     @functools.wraps(func)
     def wrapper(*args, **kwargs):
         start_time = time.perf_counter()
         value = func(*args, **kwargs)
         end_time = time.perf_counter()
-        # noinspection PyUnresolvedReferences
-        logger.trace(f"{func.__module__}:{func.__name__} => {(end_time - start_time):.3f} secs.")
+        if log_func is None:
+            # noinspection PyUnresolvedReferences
+            logger.trace(f"{func.__module__}:{func.__name__} => {(end_time - start_time):.3f} secs.")
+        else:
+            # noinspection PyUnresolvedReferences
+            log_func(f"{func.__module__}:{func.__name__} => {(end_time - start_time):.3f} secs.")
         return value
 
     return wrapper
