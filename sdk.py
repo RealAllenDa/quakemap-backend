@@ -1,16 +1,21 @@
 """
  HomeNetwork Python SDK
  Licensed under GPL.
- 2022 Allen Da.
+ 2022-2023 Allen Da.
  Current Version - 1.1
 """
-__all__ = ["yaml_to_model", "json_to_model", "obj_to_model",
-           "read_csv", "read_json", "open_file",
-           "web_request",
-
-           "todo", "relpath", "func_timer", "parse_jsonp", "generate_list",
-
-           "verify_none", "verify_not_used", "verify_type"]
+__all__ = [
+    # Formation conversion
+    "yaml_to_model", "json_to_model", "obj_to_model",
+    # File operation
+    "read_csv", "read_json", "open_file",
+    # API operation
+    "web_request",
+    # Misc operation
+    "relpath", "func_timer", "parse_jsonp", "generate_list",
+    # Assert operation
+    "todo", "verify_none", "verify_not_used", "verify_type"
+]
 
 import csv
 import functools
