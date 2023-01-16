@@ -23,8 +23,8 @@ class JMAEEWEarthquakeHypocenterArea(BaseModel):
     name: str
     code: JMAEarthquakeHypocenterCodeModel
     coordinate: JMAEarthquakeHypocenterCoordinateModel
-    reduced_name: str
-    reduced_code: JMAEarthquakeHypocenterCodeModel
+    reduced_name: Optional[str]
+    reduced_code: Optional[JMAEarthquakeHypocenterCodeModel]
     land_or_sea: Optional[JMAEEWLandSea]
 
     class Config:
