@@ -1,4 +1,4 @@
-__all__ = ["SvirEEWModel", "SvirEventType"]
+__all__ = ["SvirEEWModel", "SvirEventType", "SvirForecastLgInt", "SvirForecastInt"]
 
 from enum import Enum
 from typing import Optional
@@ -97,9 +97,40 @@ class SvirToIntensityEnum(str, Enum):
     above = "over"
 
 
+class SvirLgIntensityEnum(str, Enum):
+    no = "不明"
+    less_than_one = "0"
+    one = "1"
+    two = "2"
+    three = "3"
+    four = "4"
+
+
+class SvirLgToIntensityEnum(str, Enum):
+    no = "不明"
+    less_than_one = "0"
+    one = "1"
+    two = "2"
+    three = "3"
+    four = "4"
+    above = "over"
+
+
 class SvirForecastInt(BaseModel):
     lowest: SvirIntensityEnum
     highest: SvirToIntensityEnum
+
+    class Config:
+        allow_population_by_field_name = True
+        fields = {
+            "lowest": "From",
+            "highest": "To"
+        }
+
+
+class SvirForecastLgInt(BaseModel):
+    lowest: SvirLgIntensityEnum
+    highest: SvirLgToIntensityEnum
 
     class Config:
         allow_population_by_field_name = True

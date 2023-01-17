@@ -4,7 +4,7 @@ from typing import Optional
 
 from pydantic import BaseModel
 
-from model.eew.eew_svir import SvirForecastInt
+from model.eew.eew_svir import SvirForecastInt, SvirForecastLgInt
 from model.jma.tsunami_expectation import JMAEarthquakeHypocenterCoordinateModel, JMAEarthquakeHypocenterCodeModel, \
     JMAEarthquakeHypocenterMagnitudeModel, JMAControlModel, JMAHeadModel, JMAWarningCommentModel, JMANameCodeModel
 
@@ -86,8 +86,7 @@ class JMAEEWAreaDetail(BaseModel):
     forecast_intensity: SvirForecastInt
     arrival_time: Optional[datetime]
     condition: Optional[str]
-
-    # TODO ForecastLgInt
+    forecast_long_period_intensity: Optional[SvirForecastLgInt]
 
     class Config:
         allow_population_by_field_name = True
@@ -96,6 +95,7 @@ class JMAEEWAreaDetail(BaseModel):
             "code": "Code",
             "forecast_kind": "Category",
             "forecast_intensity": "ForecastInt",
+            "forecast_long_period_intensity": "ForecastLgInt",
             "arrival_time": "ArrivalTime",
             "condition": "Condition"
         }
@@ -119,13 +119,14 @@ class JMAEEWIntensityForecast(BaseModel):
     # CodeDefine omitted
     forecast_intensity: SvirForecastInt
     # Appendix omitted
-    # TODO ForecastLgInt implement
+    forecast_long_period_intensity: Optional[SvirForecastLgInt]
     areas: Optional[list[JMAEEWAreaIntensity] | JMAEEWAreaIntensity]
 
     class Config:
         allow_population_by_field_name = True
         fields = {
             "forecast_intensity": "ForecastInt",
+            "forecast_long_period_intensity": "ForecastLgInt",
             "areas": "Pref"
         }
 
