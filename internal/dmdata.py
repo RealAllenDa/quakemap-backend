@@ -352,12 +352,9 @@ class DMDataFetcher:
         announced_time = report.head.report_date.timetuple()
         origin_time = report.body.earthquake.origin_time.timetuple()
 
-        if report.body.comments:
-            if report.body.comments.next_advisory:
-                # Final
-                event_type_code = IedredEventTypeEnum.final
-            else:
-                event_type_code = IedredEventTypeEnum.not_final
+        if report.body.next_advisory:
+            # Final
+            event_type_code = IedredEventTypeEnum.final
         else:
             event_type_code = IedredEventTypeEnum.not_final
 

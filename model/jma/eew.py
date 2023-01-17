@@ -143,13 +143,11 @@ class JMAEEWIntensity(BaseModel):
 
 class JMAEEWComments(BaseModel):
     warning_comment: Optional[JMAWarningCommentModel]
-    next_advisory: Optional[str]
 
     class Config:
         allow_population_by_field_name = True
         fields = {
-            "warning_comment": "WarningComment",
-            "next_advisory": "NextAdvisory"
+            "warning_comment": "WarningComment"
         }
 
 
@@ -158,6 +156,7 @@ class JMAEEWBody(BaseModel):
     intensity: Optional[JMAEEWIntensity]
     text: Optional[str]
     comments: Optional[JMAEEWComments]
+    next_advisory: Optional[str]
 
     class Config:
         allow_population_by_field_name = True
@@ -165,7 +164,8 @@ class JMAEEWBody(BaseModel):
             "earthquake": "Earthquake",
             "intensity": "Intensity",
             "text": "Text",
-            "comments": "Comments"
+            "comments": "Comments",
+            "next_advisory": "NextAdvisory"
         }
 
 
