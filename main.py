@@ -1,5 +1,6 @@
 import os.path
 
+import requests
 import urllib3
 import uvicorn
 from dotenv import load_dotenv
@@ -37,6 +38,9 @@ config.init_config(RUN_ENV)
 
 # --- Runtime initialization
 urllib3.disable_warnings(InsecureRequestWarning)
+# Force IPV4: currently no ipv6 allowed
+requests.packages.urllib3.util.connection.HAS_IPV6 = False
+
 app = FastAPI(
     docs_url="/docs" if Env.config.utilities.doc else None,
     redoc_url="/redoc" if Env.config.utilities.redoc else None
