@@ -34,6 +34,7 @@ class P2PInfo(BaseModule):
                                    response_type=ResponseTypeModel(
                                        type=ResponseTypes.json  # Because the model is too complicated.
                                    ),
+                                   max_retries=1,
                                    proxy=Env.config.proxy)
             verify_none(response.status)
             self.parse_info(response.content)
