@@ -38,7 +38,7 @@ class Centroid:
         """
         content = read_csv(
             relpath("../assets/centroid/jma_area_centroid.csv"),
-            fieldnames=("name", "latitude", "longitude")
+            fieldnames=("id", "name", "latitude", "longitude")
         )
         verify_none(content)
         for row in content:
