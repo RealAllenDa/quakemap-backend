@@ -43,7 +43,11 @@ class DMDataFetcher:
         To use this method, you must extract all the keys on your OWN.
     """
 
-    def __init__(self):
+    def __init__(self, testing=False):
+        self.testing = testing
+        if testing:
+            print("Unit testing - skipped initialization")
+            return
         self.socket_url = None
         self.active_socket_id = None
         self.websocket: Optional[websocket.WebSocketApp] = None
@@ -312,6 +316,9 @@ class DMDataFetcher:
                 or message.head.type == DmdataMessageTypes.eew_forecast:
             # EEW
             eew = self.parse_eew(xml_message)
+            if self.testing:
+                print(xml_message)
+                print(eew)
             if eew is None:
                 logger.error("Failed to parse Dmdata EEW: is None")
                 return
