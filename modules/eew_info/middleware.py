@@ -1,3 +1,5 @@
+import time
+
 from loguru import logger
 
 from model.eew import EEWParseReturnModel, EEWReturnModel, EEWAlertTypeEnum
@@ -30,7 +32,8 @@ class EEWInfoMiddleWare:
             return combined_areas
 
     @classmethod
-    def use_svir_or_kmoni(cls, eew_info: EEWReturnModel) -> EEWParseReturnModel | dict:
+    def use_svir_or_kmoni(cls,
+                          eew_info: EEWReturnModel) -> EEWParseReturnModel | dict:
         """
         Determines whether to use kmoni EEW or svir EEW.
         :param eew_info: EEW model containing svir + kmoni info
@@ -43,10 +46,35 @@ class EEWInfoMiddleWare:
         svir_info = eew_info.svir
         kmoni_info = eew_info.kmoni
 
-        svir_on = svir_info is not None
+        from env import Env
+        svir_ignore_outdated = (not Env.config.debug.svir_eew.ignore_outdated) and Env.config.debug.svir_eew.enabled
+        svir_on = False
+        if svir_info is not None:
+            if not svir_info.is_cancel:
+                if svir_ignore_outdated:
+                    logger.trace("svir_avail: ignore svir outdated.")
+                    svir_on = True
+                # Normal
+                svir_info: EEWParseReturnModel
+                timespan = int(time.time()) + 3600 - svir_info.report_timestamp  # China time
+                logger.debug(f"Svir EEW: Timespan => {timespan}")
+                # Outdated report
+                if not (-12 < timespan < 180):
+                    # >= 3 minutes
+                    logger.trace("svir_avail: svir info is outdated.")
+                    svir_on = False
+                else:
+                    logger.debug("svir_avail: svir info is not outdated.")
+                    svir_on = True
+            else:
+                logger.debug("svir_avail: svir info is cancelled message.")
+                svir_on = True
+        else:
+            logger.trace("svir_avail: svir info not avail.")
+            svir_on = False
+
         kmoni_on = kmoni_info is not None
 
-        from env import Env
         if Env.config.eew.only_dmdata:
             if svir_on:
                 logger.trace("Use svir info because specified only_dmdata in config.")

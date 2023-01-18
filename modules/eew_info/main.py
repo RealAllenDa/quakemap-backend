@@ -248,6 +248,7 @@ class EEWInfo(BaseModule):
             is_test=(content.status.string != "通常"),
             max_intensity=EEWConvertedIntensityEnum[content.max_intensity.lowest.name],
             report_time=content.announced_time.time_string,
+            report_timestamp=content.announced_time.unix_time,
             report_num=int(content.serial),
             report_flag=(EEWAlertTypeEnum.warning if content.is_warn else EEWAlertTypeEnum.forecast),
             report_id=content.event_id,
