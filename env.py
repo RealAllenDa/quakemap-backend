@@ -16,7 +16,7 @@ class _Env:
     """
 
     def __init__(self) -> None:
-        self.version = "1.5.0"
+        self.version = "1.5.1"
         self._init_time = None
         self._config = None
         self._geojson_instance = None
