@@ -398,6 +398,11 @@ class DMDataFetcher:
         except Exception:
             logger.exception("EEW hypocenter: error occurred while parsing")
 
+        if report.body.intensity:
+            lowest_intensity = EEWIntensityEnum[report.body.intensity.forecast.forecast_intensity.lowest.name]
+        else:
+            lowest_intensity = EEWIntensityEnum.no
+
         return_model = IedredEEWModel(
             parse_status=IedredParseStatus.success,
             status=IedredCodeStringDetail(
@@ -434,7 +439,7 @@ class DMDataFetcher:
                 )
             ),
             max_intensity=IedredMaxIntensity(
-                lowest=EEWIntensityEnum[report.body.intensity.forecast.forecast_intensity.lowest.name]
+                lowest=lowest_intensity
             ),
             is_warn=is_warn
         )
