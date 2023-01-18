@@ -8,6 +8,8 @@ steps:
     environment:
       refresh_token:
         from_secret: refresh_token
+      sentry_url:
+        from_secret: sentry_url
     settings:
       username:
         from_secret: docker_user
@@ -19,6 +21,7 @@ steps:
         - environment=staging
       build_args_from_env:
         - refresh_token
+        - sentry_url
 
 ---
 kind: pipeline

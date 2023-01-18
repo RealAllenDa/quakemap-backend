@@ -16,6 +16,7 @@ class _Env:
     """
 
     def __init__(self) -> None:
+        self.version = "1.5.0"
         self._init_time = None
         self._config = None
         self._geojson_instance = None
@@ -101,8 +102,8 @@ class _Env:
     @property
     def eew_debugging_enabled(self) -> bool:
         return Env.config.debug.kmoni_eew.enabled or \
-               Env.config.debug.svir_eew.enabled or \
-               Env.config.debug.iedred_eew.enabled
+            Env.config.debug.svir_eew.enabled or \
+            Env.config.debug.iedred_eew.enabled
 
 
 Env = _Env()

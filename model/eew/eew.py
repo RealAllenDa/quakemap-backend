@@ -142,6 +142,7 @@ class EEWParseReturnModel(BaseModel):
     is_test: bool
     max_intensity: EEWConvertedIntensityEnum
     report_time: str
+    report_timestamp: int
     report_num: int
     report_flag: EEWAlertTypeEnum
     report_id: str

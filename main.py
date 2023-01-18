@@ -1,6 +1,9 @@
+import logging
 import os.path
+import sys
 
 import requests
+import sentry_sdk
 import urllib3
 import uvicorn
 from dotenv import load_dotenv
@@ -8,6 +11,7 @@ from fastapi import FastAPI
 from fastapi.exception_handlers import http_exception_handler
 from fastapi.exceptions import RequestValidationError
 from loguru import logger
+from sentry_sdk.integrations.logging import BreadcrumbHandler, EventHandler, LoggingIntegration
 from starlette.exceptions import HTTPException as StarletteHTTPException
 from starlette.middleware.cors import CORSMiddleware
 from starlette.middleware.gzip import GZipMiddleware
@@ -36,9 +40,43 @@ load_dotenv(f".{RUN_ENV.value}.env")
 # --- Config initialization
 config.init_config(RUN_ENV)
 
+# --- Error tracking initialization
+if Env.config.sentry.enabled:
+    if os.getenv("SENTRY_URL"):
+        logger.debug(f"SENTRY_URL={os.getenv('SENTRY_URL')}. sample_rate={Env.config.sentry.sample_rate}. "
+                     f"release={Env.version}")
+        _ = logger.add(
+            BreadcrumbHandler(level=logging.DEBUG),
+            diagnose=Env.config.logger.diagnose,
+            level=logging.DEBUG,
+        )
+        _ = logger.add(
+            EventHandler(level=logging.ERROR),
+            diagnose=Env.config.logger.diagnose,
+            level=logging.ERROR,
+        )
+        integrations = [
+            LoggingIntegration(level=None, event_level=None),
+        ]
+
+        sentry_sdk.init(
+            dsn=os.getenv("SENTRY_URL"),
+            traces_sample_rate=Env.config.sentry.sample_rate.traces,
+            sample_rate=Env.config.sentry.sample_rate.errors,
+            integrations=integrations,
+            environment=RUN_ENV.value,
+            release=f"quakemap-back@{Env.version}"
+        )
+        logger.success("Initialized sentry.")
+    else:
+        logger.critical("Failed to initialize sentry: "
+                        "No SENTRY_URL defined in environment.")
+        sys.exit(1)
+
 # --- Runtime initialization
 urllib3.disable_warnings(InsecureRequestWarning)
 # Force IPV4: currently no ipv6 allowed
+# noinspection PyUnresolvedReferences
 requests.packages.urllib3.util.connection.HAS_IPV6 = False
 
 app = FastAPI(
@@ -96,6 +134,7 @@ if Env.config.dmdata.enabled:
 module_manager.init()
 
 if __name__ == "__main__":
+    # noinspection PyTypeChecker
     uvicorn.run(
         app,
         host=Env.config.server.host,

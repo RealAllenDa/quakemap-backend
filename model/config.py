@@ -119,6 +119,16 @@ class DMDataConfigModel(BaseModel):
     jquake: DMDataJquakeConfigModel
 
 
+class SentrySampleRateModel(BaseModel):
+    traces: float
+    errors: float
+
+
+class SentryConfigModel(BaseModel):
+    enabled: bool
+    sample_rate: SentrySampleRateModel
+
+
 class ConfigModel(BaseModel):
     logger: LoggerConfigModel
     proxy: ProxyConfigModel
@@ -130,6 +140,7 @@ class ConfigModel(BaseModel):
     dmdata: DMDataConfigModel
     debug: DebugConfigModel
     global_earthquake: GlobalEarthquakeConfigModel
+    sentry: SentryConfigModel
 
 
 class RunEnvironment(Enum):

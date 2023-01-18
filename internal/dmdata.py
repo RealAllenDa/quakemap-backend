@@ -16,6 +16,7 @@ import sys
 import time
 from typing import Callable, Optional
 
+import sentry_sdk
 import websocket
 import xmltodict
 from loguru import logger
@@ -90,8 +91,9 @@ class DMDataFetcher:
         if self.websocket:
             # Active websocket
             return
-        self.get_socket()
-        self.connect_socket()
+        with sentry_sdk.start_transaction(op="start_dmdata", name="start_connection"):
+            self.get_socket()
+            self.connect_socket()
 
     def keep_alive(self):
         """
@@ -212,24 +214,24 @@ class DMDataFetcher:
         if self.active_socket_id is None:
             logger.warning("No active socket.")
             return
+        with sentry_sdk.start_transaction(op="start_dmdata", name="close_socket"):
+            from env import Env
+            web_request(
+                url=f"https://api.dmdata.jp/v2/socket/{self.active_socket_id}",
+                response_type=ResponseTypeModel(
+                    type=ResponseTypes.raw_response
+                ),
+                request_type=RequestTypes.delete,
+                proxy=Env.config.proxy,
+                bearer_token=self.access_token,
+                max_retries=3
+            )
 
-        from env import Env
-        web_request(
-            url=f"https://api.dmdata.jp/v2/socket/{self.active_socket_id}",
-            response_type=ResponseTypeModel(
-                type=ResponseTypes.raw_response
-            ),
-            request_type=RequestTypes.delete,
-            proxy=Env.config.proxy,
-            bearer_token=self.access_token,
-            max_retries=3
-        )
+            self.socket_url = None
+            self.websocket = None
+            self.active_socket_id = None
 
-        self.socket_url = None
-        self.websocket = None
-        self.active_socket_id = None
-
-        logger.success("Successfully closed socket.")
+            logger.success("Successfully closed socket.")
 
     def parse_start_message(self, message: Optional[DmdataSocketStart]):
         """
@@ -315,9 +317,10 @@ class DMDataFetcher:
         if message.head.type == DmdataMessageTypes.eew_warning \
                 or message.head.type == DmdataMessageTypes.eew_forecast:
             # EEW
-            eew = self.parse_eew(xml_message)
             if self.testing:
                 print(xml_message)
+            eew = self.parse_eew(xml_message)
+            if self.testing:
                 print(eew)
             if eew is None:
                 logger.error("Failed to parse Dmdata EEW: is None")
@@ -518,16 +521,20 @@ class DMDataFetcher:
         message_type = message["type"]
         if message_type == "start":
             message = obj_to_model(message, DmdataSocketStart)
-            self.parse_start_message(message)
+            with sentry_sdk.start_transaction(op="parse_dmdata", name="start"):
+                self.parse_start_message(message)
         elif message_type == "ping":
             message = obj_to_model(message, DmdataPing)
-            self.parse_ping_message(message)
+            with sentry_sdk.start_transaction(op="parse_dmdata", name="ping"):
+                self.parse_ping_message(message)
         elif message_type == "data":
             message = obj_to_model(message, DmdataSocketData)
-            self.parse_data_message(message)
+            with sentry_sdk.start_transaction(op="parse_dmdata", name="data"):
+                self.parse_data_message(message)
         elif message_type == "error":
             message = obj_to_model(message, DmdataSocketError)
-            self.parse_error_message(message)
+            with sentry_sdk.start_transaction(op="parse_dmdata", name="error"):
+                self.parse_error_message(message)
         else:
             logger.error(f"Exhaustive handling of message_type: {message_type}. Message => {message}")
 

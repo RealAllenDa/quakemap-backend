@@ -4,6 +4,7 @@ WORKDIR /code
 
 ARG environment=development
 ARG refresh_token
+ARG sentry_url
 
 RUN echo "Building in environment ${environment}"
 
@@ -17,6 +18,7 @@ COPY . /code/
 COPY ./config/$environment.yaml /code/config/$environment.yaml
 
 ENV ENV=$environment
+ENV SENTRY_URL=$sentry_url
 ENV REFRESH_TOKEN=$refresh_token
 RUN apt-get update && \
     apt-get install -yq tzdata && \

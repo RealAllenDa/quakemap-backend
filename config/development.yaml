@@ -48,6 +48,13 @@ tsunami:
 global_earthquake:
   list_count: 5
 
+sentry:
+  # set SENTRY_URL in .env files
+  enabled: true
+  sample_rate:
+    errors: 1.0
+    traces: 1.0
+
 debug:
   global_earthquake:
     enabled: false

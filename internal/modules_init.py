@@ -4,6 +4,7 @@ import sys
 from datetime import datetime
 from typing import Callable, Any
 
+import sentry_sdk
 from apscheduler.executors.pool import ThreadPoolExecutor
 from apscheduler.jobstores.memory import MemoryJobStore
 from apscheduler.schedulers.background import BackgroundScheduler
@@ -226,7 +227,11 @@ class ModuleManager:
             if not hasattr(module, func_name):
                 verify_not_used(f"module {module}, func {func_name}")
             try:
-                getattr(module, func_name)()
+                if not Env.config.sentry.enabled:
+                    getattr(module, func_name)()
+                else:
+                    with sentry_sdk.start_transaction(op="refresh", name=f"{type(module).__name__}.{func_name}"):
+                        getattr(module, func_name)()
             except Exception:
                 logger.exception(f"Failed to refresh {module}.")
 
