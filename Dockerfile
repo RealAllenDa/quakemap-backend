@@ -20,6 +20,7 @@ COPY ./config/$environment.yaml /code/config/$environment.yaml
 ENV ENV=$environment
 ENV SENTRY_URL=$sentry_url
 ENV REFRESH_TOKEN=$refresh_token
+RUN sed -i 's#http://deb.debian.org#http://mirrors.163.com#g' /etc/apt/sources.list
 RUN apt-get update && \
     apt-get install -yq tzdata && \
     ln -fs /usr/share/zoneinfo/Asia/Shanghai /etc/localtime && \
