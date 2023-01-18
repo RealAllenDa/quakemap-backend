@@ -1,5 +1,7 @@
 __all__ = ["ShakeLevelReturnModel", "ShakeLevelApiModel"]
 
+from typing import Optional
+
 from pydantic import BaseModel
 
 
@@ -9,7 +11,7 @@ class ShakeLevelReturnModel(BaseModel):
     yellow: int
     red: int
     sync_time: str
-    status: int
+    status: Optional[int]
 
     class Config:
         allow_population_by_field_name = True
