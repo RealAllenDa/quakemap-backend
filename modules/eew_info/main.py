@@ -314,6 +314,8 @@ class EEWInfo(BaseModule):
         if not pswave_time:
             logger.warning("No PSWave time available.")
             pswave_time = PSWaveTimeModel()
+        report_time = time.strptime(content.report_time, "%Y/%m/%d %H:%M:%S")
+        report_timestamp = int(time.mktime(report_time))
         self.info.kmoni = EEWParseReturnModel(
             status=0,
             type="kmoni",
@@ -322,6 +324,7 @@ class EEWInfo(BaseModule):
             is_test=content.is_training,
             max_intensity=parsed_intensity,
             report_time=content.report_time,
+            report_timestamp=report_timestamp,
             report_num=content.report_number,
             report_flag=report_flag,
             report_id=content.report_id,
