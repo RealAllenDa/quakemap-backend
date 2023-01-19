@@ -16,7 +16,7 @@ class EEWInfoMiddleWare:
         Combines the intensity areas with both info.
         :param svir_info: A EEW Info (SVIR)
         :param kmoni_info: A EEW Info (Kmoni)
-        :return: Combined area_intensity Info
+        :return: Combined area_coloring Info
         """
         combined_areas = svir_info.area_coloring.areas
         if (svir_info.report_id != kmoni_info.report_id) or \
@@ -48,11 +48,13 @@ class EEWInfoMiddleWare:
 
         from env import Env
         svir_ignore_outdated = (not Env.config.debug.svir_eew.ignore_outdated) and Env.config.debug.svir_eew.enabled
+        # noinspection PyUnusedLocal
         svir_on = False
         if svir_info is not None:
             if not svir_info.is_cancel:
                 if svir_ignore_outdated:
                     logger.trace("svir_avail: ignore svir outdated.")
+                    # noinspection PyUnusedLocal
                     svir_on = True
                 # Normal
                 svir_info: EEWParseReturnModel
