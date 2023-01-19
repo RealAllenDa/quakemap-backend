@@ -80,7 +80,12 @@ class EEWInfoMiddleWare:
         if Env.config.eew.only_dmdata:
             if svir_on:
                 logger.trace("Use svir info because specified only_dmdata in config.")
-                return svir_info
+
+                if kmoni_on:
+                    logger.trace("Combining intensities together.")
+
+                    svir_info.area_intensity = kmoni_info.area_intensity
+                    return svir_info
             else:
                 logger.trace("Svir info is not avail.")
                 return {}
