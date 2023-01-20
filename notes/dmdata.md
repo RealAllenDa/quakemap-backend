@@ -7,11 +7,11 @@ HomeNetwork **UNPUBLISHED CONFIDENTIAL**. Copyright (c) 2023.
 JQuake plan only charges for 550 yen/month, which is cheaper than regular plans.
 However, its disadvantages include:
 
-- Require manual one-time* (in an 183 day time period) _refresh token_ extraction
-- Use undocumented _client_id_ and _client_secret_ which can easily change over versions
+- Require manual one-time* (in an 183 day time period, auto-renewed by running program) _refresh_token_ extraction
+- Use undocumented _client_id_, _client_secret_ and socket initializer which can easily change over versions
 - Unknown request handling from DMData (probable 403)
 
-Leveraging its price and its disadvantages, it's more preferred to use JQuake plan.
+Albeit these disadvantages, leveraging its price, it's more preferred to use JQuake plan.
 
 ## 2. Not Using JQuake
 
