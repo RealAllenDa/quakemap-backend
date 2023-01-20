@@ -11,6 +11,7 @@ from apscheduler.schedulers.background import BackgroundScheduler
 from loguru import logger
 
 from env import Env
+from model.config import RunEnvironment
 from model.modules import ModulesEnum, ModulesClassEnum
 from modules.base_module import BaseModule
 from sdk import func_timer, verify_none, verify_not_used
@@ -42,11 +43,14 @@ class ModuleManager:
         """
         The real init function, since real init
          should be called after config had been initialized.
+
+        Under testing mode, timer would be disabled.
         """
         self._init_list()
         self._init_modules()
         self._init_classes()
-        self._init_timer()
+        if Env.run_env != RunEnvironment.testing:
+            self._init_timer()
 
     def stop_program(self):
         """

@@ -3,7 +3,7 @@ from internal.dmdata import DMDataFetcher
 from internal.geojson import GeoJson
 from internal.intensity2color import IntensityToColor
 from internal.pswave import PSWave
-from model.config import ConfigModel
+from model.config import ConfigModel, RunEnvironment
 
 __all__ = ["Env"]
 
@@ -17,6 +17,7 @@ class _Env:
 
     def __init__(self) -> None:
         self.version = "1.5.2"
+        self._run_env = None
         self._init_time = None
         self._config = None
         self._geojson_instance = None
@@ -25,6 +26,18 @@ class _Env:
         self._pswave_instance = None
         self._dmdata_instance = None
         self._module_manager = None
+
+    @property
+    def run_env(self) -> RunEnvironment:
+        verify_none(self._run_env)
+        return self._run_env
+
+    @run_env.setter
+    def run_env(self, env: RunEnvironment):
+        if self._run_env is not None:
+            verify_not_used("run_env", "repetitively set")
+        verify_type(env, RunEnvironment)
+        self._run_env = env
 
     @property
     def init_time(self) -> int:
