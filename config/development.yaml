@@ -50,7 +50,7 @@ global_earthquake:
 
 sentry:
   # set SENTRY_URL in .env files
-  enabled: true
+  enabled: false
   sample_rate:
     errors: 1.0
     traces: 1.0
