@@ -28,6 +28,7 @@ from model.dmdata.socket import DmdataSocketStartResponse, DmdataSocketStartBody
 from model.eew import IedredEEWModel, IedredParseStatus, IedredEventType, SvirEventType, IedredEventTypeEnum, \
     IedredCodeStringDetail, IedredTime, IedredHypocenter, IedredLocation, IedredEpicenterDepth, IedredMagnitude, \
     IedredMaxIntensity, EEWIntensityEnum, IedredForecastAreasArrival, IedredForecastAreas, IedredForecastAreasIntensity
+from model.eew.eew_svir import SvirToIntensityEnum
 from model.jma.eew import JMAEEWApiModel
 from model.jma.tsunami_expectation import JMAInfoType, JMAControlStatus
 from model.sdk import ResponseTypeModel, ResponseTypes, RequestTypes
@@ -448,37 +449,40 @@ class DMDataFetcher:
             is_warn=is_warn
         )
 
-        if return_model.is_warn and (report.body.intensity.forecast.areas is not None):
-            forecast_areas = generate_list(report.body.intensity.forecast.areas)
-            return_model.forecast_areas = []
-            for i in forecast_areas:
-                if i.area.forecast_kind.kind.code[1] == "9":
-                    arrival_time = IedredForecastAreasArrival(
-                        flag=False,
-                        condition="PLUM",
-                        time="Unknown"
-                    )
-                else:
-                    if i.area.arrival_time is not None:
-                        parsed_arrival_time = time.strftime("%Y/%m/%d %H:%M:%S", i.area.arrival_time.timetuple())
+        if report.body.intensity is not None:
+            if return_model.is_warn or (report.body.intensity.forecast.areas is not None):
+                forecast_areas = generate_list(report.body.intensity.forecast.areas)
+                return_model.forecast_areas = []
+                for i in forecast_areas:
+                    if i.area.forecast_kind.kind.code[1] == "9":
+                        arrival_time = IedredForecastAreasArrival(
+                            flag=False,
+                            condition="PLUM",
+                            time="Unknown"
+                        )
                     else:
-                        parsed_arrival_time = "00:00:00"
-                    arrival_time = IedredForecastAreasArrival(
-                        flag=False,
-                        condition=(i.area.condition if i.area.condition is not None else "未到達と推測"),
-                        time=parsed_arrival_time
-                    )
-                return_model.forecast_areas.append(IedredForecastAreas(
-                    intensity=IedredForecastAreasIntensity(
-                        code=i.area.code,
-                        name=i.area.name,
-                        lowest=EEWIntensityEnum[i.area.forecast_intensity.lowest.name],
-                        highest=EEWIntensityEnum[i.area.forecast_intensity.highest.name],
-                        description=str(i.area.forecast_intensity.lowest.name)
-                    ),
-                    is_warn=(i.area.forecast_kind.kind.name == "緊急地震速報（警報）"),
-                    has_arrived=arrival_time
-                ))
+                        if i.area.arrival_time is not None:
+                            parsed_arrival_time = time.strftime("%Y/%m/%d %H:%M:%S", i.area.arrival_time.timetuple())
+                        else:
+                            parsed_arrival_time = "00:00:00"
+                        arrival_time = IedredForecastAreasArrival(
+                            flag=False,
+                            condition=(i.area.condition if i.area.condition is not None else "未到達と推測"),
+                            time=parsed_arrival_time
+                        )
+                    if i.area.forecast_intensity.highest == SvirToIntensityEnum.above:
+                        i.area.forecast_intensity.highest = i.area.forecast_intensity.lowest
+                    return_model.forecast_areas.append(IedredForecastAreas(
+                        intensity=IedredForecastAreasIntensity(
+                            code=i.area.code,
+                            name=i.area.name,
+                            lowest=EEWIntensityEnum[i.area.forecast_intensity.lowest.name],
+                            highest=EEWIntensityEnum[i.area.forecast_intensity.highest.name],
+                            description=str(i.area.forecast_intensity.lowest.name)
+                        ),
+                        is_warn=(i.area.forecast_kind.kind.name == "緊急地震速報（警報）"),
+                        has_arrived=arrival_time
+                    ))
 
         return return_model
 

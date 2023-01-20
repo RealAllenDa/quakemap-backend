@@ -1,4 +1,4 @@
-__all__ = ["SvirEEWModel", "SvirEventType", "SvirForecastLgInt", "SvirForecastInt"]
+__all__ = ["SvirEEWModel", "SvirEventType", "SvirForecastLgInt", "SvirForecastInt", "SvirToIntensityEnum"]
 
 from enum import Enum
 from typing import Optional
