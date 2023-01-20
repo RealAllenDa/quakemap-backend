@@ -204,6 +204,11 @@ class EEWInfo(BaseModule):
             logger.warning("Failed to parse svir EEW info: parse_status is error.")
             return
 
+        if content.event_type.string not in ["発表", "通常"]:
+            logger.debug(f"EEW Cancelled: {content}")
+            self.info.svir = EEWCancelledModel()
+            return
+
         is_final = content.event_type.code != "0"
         if is_final:
             timespan = int(time.time()) + 3600 - content.announced_time.unix_time  # China time
@@ -216,12 +221,7 @@ class EEWInfo(BaseModule):
                     self.info.svir = None
                     return
 
-        if content.event_type.string not in ["発表", "通常"]:
-            logger.debug(f"EEW Cancelled: {content}")
-            self.info.svir = EEWCancelledModel()
-            return
-
-        if content.is_warn:
+        if content.is_warn or content.forecast_areas:
             area_intensity: dict[str, AreaIntensityModel] = {}
             for i in content.forecast_areas:
                 area_intensity[i.intensity.name] = AreaIntensityModel(
