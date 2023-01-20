@@ -29,7 +29,7 @@ class _TestYamlModel2(BaseModel):
     test2: str
 
 
-class TestYamlModel(BaseModel):
+class ForTestYamlModel(BaseModel):
     test: _TestYamlModel2
 
 
@@ -168,8 +168,8 @@ class TestSDKMisc(unittest.TestCase):
 
 class TestSDKConversion(unittest.TestCase):
     def test_yaml_to_model(self):
-        content = yaml_to_model("./assets/test.yaml", TestYamlModel)
-        self.assertEqual(content, TestYamlModel(test=_TestYamlModel2(test2='123')))
+        content = yaml_to_model("./assets/test.yaml", ForTestYamlModel)
+        self.assertEqual(content, ForTestYamlModel(test=_TestYamlModel2(test2='123')))
 
 
 if __name__ == '__main__':

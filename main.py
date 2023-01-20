@@ -39,6 +39,7 @@ load_dotenv(f".{RUN_ENV.value}.env")
 
 # --- Config initialization
 config.init_config(RUN_ENV)
+Env.run_env = RUN_ENV
 
 # --- Error tracking initialization
 if Env.config.sentry.enabled:

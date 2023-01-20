@@ -147,3 +147,4 @@ class RunEnvironment(Enum):
     development = "development"
     production = "production"
     staging = "staging"
+    testing = "testing"
