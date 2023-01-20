@@ -54,7 +54,7 @@ class JMAEEWEarthquakeHypocenter(BaseModel):
 class JMAEEWEarthquake(BaseModel):
     origin_time: Optional[datetime]
     condition: Optional[str]
-    arrival_time: Optional[datetime]
+    arrival_time: datetime
     hypocenter: JMAEEWEarthquakeHypocenter
     magnitude: JMAEarthquakeHypocenterMagnitudeModel
 

@@ -360,7 +360,11 @@ class DMDataFetcher:
             event_type_status = SvirEventType.normal
 
         announced_time = report.head.report_date.timetuple()
-        origin_time = report.body.earthquake.origin_time.timetuple()
+        if report.body.earthquake.origin_time is not None:
+            origin_time = report.body.earthquake.origin_time.timetuple()
+        else:
+            logger.warning("EEW origin time unknown: defaulting to arrival_time")
+            origin_time = report.body.earthquake.arrival_time.timetuple()
 
         if report.body.next_advisory:
             # Final
