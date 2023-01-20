@@ -25,7 +25,6 @@ class _Env:
         self._intensity_to_color_instance = None
         self._pswave_instance = None
         self._dmdata_instance = None
-        self._module_manager = None
 
     @property
     def run_env(self) -> RunEnvironment:

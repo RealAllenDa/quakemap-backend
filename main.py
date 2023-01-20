@@ -31,7 +31,6 @@ from model.router import GenericResponseModel
 from routers import global_earthquake_router, earthquake_router, shake_level_router, tsunami_router
 
 # --- Constants
-VERSION = "0.0.1 Indev"
 RUN_ENV = RunEnvironment(os.getenv("ENV")) \
     if os.getenv("ENV") \
     else RunEnvironment.development
