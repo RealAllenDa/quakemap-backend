@@ -95,8 +95,7 @@ The _routers_ folder **SHALL** store files that is:
 
 The programs contained here **SHALL** always return something in the end.
 
-The programs contained here **SHALL NOT** do anything with the obtained data.
-Any modifications **SHOULD** be done using middleware.
+The programs contained here **MAY** modify/process the data, either by middleware or by themselves.
 
 ## 7. Tools
 
