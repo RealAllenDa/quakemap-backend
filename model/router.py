@@ -7,6 +7,10 @@ from pydantic import BaseModel
 
 
 class GenericResponseModel(dict, Enum):
+    OK = {
+        "status": 0,
+        "data": "OK"
+    }
     NotReady = {
         "status": -1,
         "data": "API not yet ready"
@@ -18,6 +22,10 @@ class GenericResponseModel(dict, Enum):
     NotFound = {
         "status": -4,
         "data": "Not found"
+    }
+    BadRequest = {
+        "status": -5,
+        "data": "Bad request"
     }
 
 
