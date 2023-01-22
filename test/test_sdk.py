@@ -18,7 +18,7 @@ from sdk import *
 # noinspection PyProtectedMember
 from sdk import VerifyFailedException
 
-JSONP_TEST_STRING = f"callback_{random.randbytes(16)}" + '({"test": "works"})'
+JSONP_TEST_STRING = f"callback_{random.getrandbits(16)}" + '({"test": "works"})'
 
 
 class ComplexType(BaseModel):
