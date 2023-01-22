@@ -19,7 +19,7 @@ from model.dmdata.socket import DmdataSocketData, DmdataSocketDataHead
 from internal.dmdata import DMDataFetcher
 
 client = TestClient(app)
-dmdata = DMDataFetcher(testing=True)
+dmdata = DMDataFetcher()
 
 mocked_dmdata_socket = DmdataSocketData(
     version="1.0",

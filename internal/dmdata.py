@@ -21,6 +21,7 @@ import websocket
 import xmltodict
 from loguru import logger
 
+from model.config import RunEnvironment
 from model.dmdata.auth import DmdataRefreshTokenResponseModel, DmdataRequestTokenBodyModel, DmdataRefreshTokenErrorModel
 from model.dmdata.generic import DmdataGenericErrorResponse, DmdataMessageTypes
 from model.dmdata.socket import DmdataSocketStartResponse, DmdataSocketStartBody, DmdataSocketError, DmdataPing, \
@@ -45,11 +46,14 @@ class DMDataFetcher:
         To use this method, you must extract all the keys on your OWN.
     """
 
-    def __init__(self, testing=False):
-        self.testing = testing
-        if testing:
+    def __init__(self):
+        from env import Env
+        if Env.run_env == RunEnvironment.testing:
             print("Unit testing - skipped initialization")
+            self.testing = True
             return
+        else:
+            self.testing = False
         self.socket_url = None
         self.active_socket_id = None
         self.websocket: Optional[websocket.WebSocketApp] = None
@@ -63,7 +67,6 @@ class DMDataFetcher:
             logger.critical("Failed to initialize DMData: No REFRESH_TOKEN defined in environ.")
             sys.exit(1)
 
-        from env import Env
         if Env.config.dmdata.jquake.use_plan:
             self._init_jquake_config()
         else:
