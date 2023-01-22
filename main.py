@@ -86,6 +86,8 @@ app = FastAPI(
     redoc_url="/redoc" if Env.config.utilities.redoc else None
 )
 
+app.mount("/static", StaticFiles(directory=relpath("static")), name="static")
+
 
 @app.exception_handler(RequestValidationError)
 async def validation_exception_handler(_, __):
