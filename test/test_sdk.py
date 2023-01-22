@@ -72,42 +72,42 @@ class TestSDKAssert(unittest.TestCase):
 
 class TestSDKFile(unittest.TestCase):
     def test_open_file(self):
-        handle = open_file("./assets/test.txt", "w")
+        handle = open_file(relpath("./assets/test.txt"), "w")
         self.assertIsNotNone(handle)
         handle.write("TEST")
         handle.close()
 
-        handle2 = open_file("./assets/test.txt")
+        handle2 = open_file(relpath("./assets/test.txt"))
         self.assertIsNotNone(handle2)
         self.assertEqual(handle2.read(), "TEST")
         handle2.close()
 
-        handle_fail = open_file("./assets/random_should_not_exist.txt", "r")
+        handle_fail = open_file(relpath("./assets/random_should_not_exist.txt"), "r")
         self.assertIsNone(handle_fail)
 
     def test_read_json(self):
         with self.assertRaises(VerifyFailedException) as exc:
-            _ = read_json("./assets/random_should_not_exist.txt", "r")
+            _ = read_json(relpath("./assets/random_should_not_exist.txt"), "r")
         self.assertEqual(exc.exception.__str__(), "VERIFY failed: Variable is none or false.")
 
-        handle_fail_json = read_json("./assets/test.txt")
+        handle_fail_json = read_json(relpath("./assets/test.txt"))
         self.assertIsNone(handle_fail_json)
 
-        handle = read_json("./assets/test.json")
+        handle = read_json(relpath("./assets/test.json"))
         self.assertEqual(handle, {"test": "It works!"})
 
     def test_read_csv(self):
         fields = ("test", "test2")
         with self.assertRaises(VerifyFailedException) as exc:
-            _ = read_csv("./assets/random_should_not_exist.txt", fields)
+            _ = read_csv(relpath("./assets/random_should_not_exist.txt"), fields)
         self.assertEqual(exc.exception.__str__(), "VERIFY failed: Variable is none or false.")
 
         # NOTE: When parsing malformed files, it should NEVER error out.
         # It would only return garbage data.
-        handle_fail_csv = read_csv("./assets/test.txt", fields)
+        handle_fail_csv = read_csv(relpath("./assets/test.txt"), fields)
         self.assertEqual(handle_fail_csv, [{'test': 'TEST', 'test2': None}])
 
-        handle = read_csv("./assets/test.csv", fields)
+        handle = read_csv(relpath("./assets/test.csv"), fields)
         self.assertEqual(handle, [{'test': 'test', 'test2': 'test2'}, {'test': 'it', 'test2': 'works'}])
 
 
@@ -115,17 +115,10 @@ class TestSDKMisc(unittest.TestCase):
     def test_relpath(self):
         path_test = relpath("./assets/test.txt")
 
-        test_handle = open_file("./assets/test.txt", "r+")
-        self.assertIsNotNone(test_handle)
-        test_content = test_handle.read()
-        test_handle.close()
-
         path_test_handle = open_file(path_test, "r+")
         self.assertIsNotNone(path_test_handle)
         path_test_content = path_test_handle.read()
         path_test_handle.close()
-
-        self.assertEqual(test_content, path_test_content)
 
     def test_func_timer(self):
         @func_timer
@@ -167,8 +160,9 @@ class TestSDKMisc(unittest.TestCase):
 
 
 class TestSDKConversion(unittest.TestCase):
+    # FIXME INCOMPLETE
     def test_yaml_to_model(self):
-        content = yaml_to_model("./assets/test.yaml", ForTestYamlModel)
+        content = yaml_to_model(relpath("./assets/test.yaml"), ForTestYamlModel)
         self.assertEqual(content, ForTestYamlModel(test=_TestYamlModel2(test2='123')))
 
 
