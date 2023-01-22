@@ -1,5 +1,5 @@
 logger:
-  level: "ERROR"
+  level: "TRACE"
   # Backtrace: Traces back to the first frame.
   # Only enable that in very rare circumstances.
   backtrace: false
@@ -33,7 +33,7 @@ eew:
   only_dmdata: true
 
 dmdata:
-  enabled: false
+  enabled: true
   jquake:
     use_plan: true
     client_id: "CId.pB6FnDGAvAMHgSsFqOHl9qujFK_WQovheSG4j8BbR1dT"
@@ -71,9 +71,11 @@ debug:
     enabled: false
     file: "../../test/assets/iedred_eew.json"
   svir_eew:
-    enabled: false
+    enabled: true
     ignore_outdated: true
-    file: "../../test/assets/svir_eew.json"
+    file_override:
+      enabled: false
+      file: "../../test/assets/svir_eew.json"
   kmoni_eew:
     enabled: false
     start_time: "20210213230800"

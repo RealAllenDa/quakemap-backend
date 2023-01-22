@@ -80,7 +80,7 @@ class EEWInfo(BaseModule):
         """
         Formats svir EEW, then parse it using iedred parser.
         """
-        if not Env.config.debug.svir_eew.enabled:
+        if not (Env.config.debug.svir_eew.file_override.enabled and Env.config.debug.svir_eew.enabled):
             svir_eew = web_request(url="https://svir.jp/eew/data.json",
                                    proxy=Env.config.proxy,
                                    response_type=ResponseTypeModel(
@@ -90,7 +90,7 @@ class EEWInfo(BaseModule):
             verify_none(svir_eew.status)
             svir_eew = svir_eew.content
         else:
-            svir_eew = json_to_model(relpath(Env.config.debug.svir_eew.file), SvirEEWModel)
+            svir_eew = json_to_model(relpath(Env.config.debug.svir_eew.file_override.file), SvirEEWModel)
         self.parse_iedred_eew(
             self._format_svir_to_iedred(svir_eew)
         )

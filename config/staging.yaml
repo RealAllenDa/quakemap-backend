@@ -73,7 +73,9 @@ debug:
   svir_eew:
     enabled: false
     ignore_outdated: true
-    file: "../../test/assets/svir_eew.json"
+    file_override:
+      enabled: false
+      file: "../../test/assets/svir_eew.json"
   kmoni_eew:
     enabled: false
     start_time: "20210213230800"

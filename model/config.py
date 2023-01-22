@@ -44,8 +44,9 @@ class _FileDebugModel(_GenericDebugModel):
     file: str
 
 
-class _SVIRDebugModel(_FileDebugModel):
+class _SVIRDebugModel(_GenericDebugModel):
     ignore_outdated: bool
+    file_override: _FileDebugModel
 
 
 class _KmoniDebugModel(_GenericDebugModel):
