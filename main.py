@@ -16,6 +16,7 @@ from starlette.exceptions import HTTPException as StarletteHTTPException
 from starlette.middleware.cors import CORSMiddleware
 from starlette.middleware.gzip import GZipMiddleware
 from starlette.responses import JSONResponse
+from starlette.staticfiles import StaticFiles
 from urllib3.exceptions import InsecureRequestWarning
 
 import config
@@ -28,7 +29,8 @@ from internal.modules_init import module_manager
 from internal.pswave import PSWave
 from model.config import RunEnvironment
 from model.router import GenericResponseModel
-from routers import global_earthquake_router, earthquake_router, shake_level_router, tsunami_router
+from routers import global_earthquake_router, earthquake_router, shake_level_router, tsunami_router, debug_router
+from sdk import relpath
 
 # --- Constants
 RUN_ENV = RunEnvironment(os.getenv("ENV")) \
@@ -105,6 +107,8 @@ app.include_router(global_earthquake_router)
 app.include_router(earthquake_router)
 app.include_router(shake_level_router)
 app.include_router(tsunami_router)
+if Env.run_env == RunEnvironment.testing:
+    app.include_router(debug_router)
 
 # --- Middleware initialization
 if Env.config.utilities.cors:

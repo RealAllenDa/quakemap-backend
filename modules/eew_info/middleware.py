@@ -47,7 +47,7 @@ class EEWInfoMiddleWare:
         kmoni_info = eew_info.kmoni
 
         from env import Env
-        svir_ignore_outdated = (not Env.config.debug.svir_eew.ignore_outdated) and Env.config.debug.svir_eew.enabled
+        svir_ignore_outdated = Env.config.debug.svir_eew.ignore_outdated and Env.config.debug.svir_eew.enabled
         # noinspection PyUnusedLocal
         svir_on = False
         if svir_info is not None:
@@ -56,18 +56,19 @@ class EEWInfoMiddleWare:
                     logger.trace("svir_avail: ignore svir outdated.")
                     # noinspection PyUnusedLocal
                     svir_on = True
-                # Normal
-                svir_info: EEWParseReturnModel
-                timespan = int(time.time()) + 3600 - svir_info.report_timestamp  # China time
-                logger.debug(f"Svir EEW: Timespan => {timespan}")
-                # Outdated report
-                if not (-12 < timespan < 180):
-                    # >= 3 minutes
-                    logger.trace("svir_avail: svir info is outdated.")
-                    svir_on = False
                 else:
-                    logger.debug("svir_avail: svir info is not outdated.")
-                    svir_on = True
+                    # Normal
+                    svir_info: EEWParseReturnModel
+                    timespan = int(time.time()) + 3600 - svir_info.report_timestamp  # China time
+                    logger.debug(f"Svir EEW: Timespan => {timespan}")
+                    # Outdated report
+                    if not (-12 < timespan < 180):
+                        # >= 3 minutes
+                        logger.trace("svir_avail: svir info is outdated.")
+                        svir_on = False
+                    else:
+                        logger.debug("svir_avail: svir info is not outdated.")
+                        svir_on = True
             else:
                 logger.debug("svir_avail: svir info is cancelled message.")
                 svir_on = True
