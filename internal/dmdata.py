@@ -268,6 +268,8 @@ class DMDataFetcher:
             else:
                 logger.debug("Sending pong again...")
                 self.websocket.send(self.pong)
+                # Only send pong twice
+                self.pong = None
 
     def parse_ping_message(self, message: Optional[DmdataPing]):
         """
