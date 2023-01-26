@@ -252,6 +252,8 @@ class EEWInfo(BaseModule):
             report_num=int(content.serial),
             report_flag=(EEWAlertTypeEnum.warning if content.is_warn else EEWAlertTypeEnum.forecast),
             report_id=content.event_id,
+            occur_timestamp=(
+                content.origin_time.unix_time if not Env.eew_debugging_enabled else int(time.time() + 3600)),
             is_final=is_final,
             magnitude=content.hypocenter.magnitude.magnitude_float,
             hypocenter=KmoniReturnHypocenterModel(
@@ -325,6 +327,7 @@ class EEWInfo(BaseModule):
             max_intensity=parsed_intensity,
             report_time=content.report_time,
             report_timestamp=report_timestamp,
+            occur_timestamp=origin_timestamp,
             report_num=content.report_number,
             report_flag=report_flag,
             report_id=content.report_id,

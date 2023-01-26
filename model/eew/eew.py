@@ -146,6 +146,7 @@ class EEWParseReturnModel(BaseModel):
     report_num: int
     report_flag: EEWAlertTypeEnum
     report_id: str
+    occur_timestamp: int
     is_final: bool
     magnitude: str
     hypocenter: KmoniReturnHypocenterModel
