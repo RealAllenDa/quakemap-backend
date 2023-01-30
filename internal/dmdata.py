@@ -61,6 +61,7 @@ class DMDataFetcher:
         self.access_token = None
 
         self.pong = None
+        self.last_pong_time = 0
 
         self.refresh_token = os.getenv("REFRESH_TOKEN")
         if self.refresh_token is None or self.refresh_token == "":
@@ -105,8 +106,12 @@ class DMDataFetcher:
 
         Runs every 1 minute.
         """
-        if not self.websocket:
+        if (not self.websocket) or \
+                self.websocket.has_errored or \
+                (not self.active_socket_id):
             logger.warning("No active websocket available! Starting a new one.")
+        elif int(time.time()) - self.last_pong_time > 1800:
+            logger.error(f"Last pong too long! (span={int(time.time()) - self.last_pong_time})")
         else:
             logger.debug("Socket is alive!")
             return
@@ -265,11 +270,16 @@ class DMDataFetcher:
             if self.pong is None:
                 logger.error("Receiving ping error, however pong is not created. "
                              "Perhaps error with message transmission? ")
+                self.close_socket()
+                self.start_connection()
             else:
                 logger.debug("Sending pong again...")
                 self.websocket.send(self.pong)
                 # Only send pong twice
                 self.pong = None
+        if message.close:
+            self.close_socket()
+            self.start_connection()
 
     def parse_ping_message(self, message: Optional[DmdataPing]):
         """
@@ -285,6 +295,7 @@ class DMDataFetcher:
         ).json(by_alias=True)
         logger.debug(f"Sending pong: {self.pong}")
         self.websocket.send(self.pong)
+        self.last_pong_time = int(time.time())
 
     @func_timer(log_func=logger.success)
     def parse_data_message(self, message: Optional[DmdataSocketData]):
