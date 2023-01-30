@@ -59,13 +59,13 @@ debug:
   global_earthquake:
     enabled: false
   tsunami_watch:
-    enabled: false
+    enabled: true
     file: "../../test/assets/demo_watch.xml"
   p2p_info:
     enabled: false
-    file: "../../test/assets/p2p_tsunami.json"
+    file: "../../test/assets/p2p_tsunami_2.json"
   tsunami:
-    enabled: false
+    enabled: true
     file: "../../test/assets/demo_tsunami.xml"
   iedred_eew:
     enabled: false
