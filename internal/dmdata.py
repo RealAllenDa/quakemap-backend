@@ -88,6 +88,24 @@ class DMDataFetcher:
             sys.exit(1)
         self.get_current_token()
 
+    @property
+    def status(self) -> DmdataStatusModel:
+        """Dmdata status.
+        """
+        pong_time_delta = int(time.time()) - self.last_pong_time
+        if self.websocket:
+            websocket_errored = self.websocket.has_errored
+        else:
+            websocket_errored = True
+        status = (self.active_socket_id is not None and not self.websocket.has_errored and pong_time_delta < 1800)
+        return DmdataStatusModel(
+            status="OK" if status else "FAIL",
+            active_socket_id=self.active_socket_id,
+            websocket_errored=websocket_errored,
+            last_pong_time=self.last_pong_time,
+            pong_time_delta=pong_time_delta
+        )
+
     def start_connection(self):
         """
         Starts Dmdata connection.

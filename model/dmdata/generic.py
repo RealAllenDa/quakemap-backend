@@ -6,6 +6,7 @@
 #  prior written permission is obtained from HomeNetwork.
 
 from enum import Enum
+from typing import Optional
 
 from pydantic import BaseModel, Field
 
@@ -50,3 +51,11 @@ class DmdataErrorModel(BaseModel):
 class DmdataGenericErrorResponse(DmdataGenericResponse):
     status: str = Field("error")
     error: DmdataErrorModel
+
+
+class DmdataStatusModel(BaseModel):
+    status: str
+    active_socket_id: Optional[str]
+    websocket_errored: bool
+    last_pong_time: int
+    pong_time_delta: int
