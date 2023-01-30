@@ -23,7 +23,7 @@ from loguru import logger
 
 from model.config import RunEnvironment
 from model.dmdata.auth import DmdataRefreshTokenResponseModel, DmdataRequestTokenBodyModel, DmdataRefreshTokenErrorModel
-from model.dmdata.generic import DmdataGenericErrorResponse, DmdataMessageTypes
+from model.dmdata.generic import DmdataGenericErrorResponse, DmdataMessageTypes, DmdataStatusModel
 from model.dmdata.socket import DmdataSocketStartResponse, DmdataSocketStartBody, DmdataSocketError, DmdataPing, \
     DmdataSocketStart, DmdataPong, DmdataSocketData
 from model.eew import IedredEEWModel, IedredParseStatus, IedredEventType, SvirEventType, IedredEventTypeEnum, \
@@ -61,7 +61,7 @@ class DMDataFetcher:
         self.access_token = None
 
         self.pong = None
-        self.last_pong_time = 0
+        self.last_pong_time = int(time.time())
 
         self.refresh_token = os.getenv("REFRESH_TOKEN")
         if self.refresh_token is None or self.refresh_token == "":
@@ -97,8 +97,10 @@ class DMDataFetcher:
             # Active websocket
             return
         with sentry_sdk.start_transaction(op="start_dmdata", name="start_connection"):
-            self.get_socket()
-            self.connect_socket()
+            with sentry_sdk.start_transaction(op="get_socket", name="start_connection"):
+                self.get_socket()
+            with sentry_sdk.start_transaction(op="connect_socket", name="start_connection"):
+                self.connect_socket()
 
     def keep_alive(self):
         """
@@ -580,6 +582,9 @@ class DMDataFetcher:
         """
         Connects to the socket.
         """
+        if self.socket_url is None:
+            logger.warning("self.socket_url is None. Check get_socket() status.")
+            return
         logger.debug(f"Connecting to {self.socket_url}")
         if self.websocket:
             logger.warning("self.websocket is not None. Probably another socket opened.")
