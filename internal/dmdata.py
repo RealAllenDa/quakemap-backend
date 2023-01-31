@@ -115,9 +115,9 @@ class DMDataFetcher:
             # Active websocket
             return
         with sentry_sdk.start_transaction(op="start_dmdata", name="start_connection"):
-            with sentry_sdk.start_transaction(op="get_socket", name="start_connection"):
+            with sentry_sdk.start_span(op="get_socket"):
                 self.get_socket()
-            with sentry_sdk.start_transaction(op="connect_socket", name="start_connection"):
+            with sentry_sdk.start_span(op="connect_socket"):
                 self.connect_socket()
 
     def keep_alive(self):
