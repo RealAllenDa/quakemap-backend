@@ -161,6 +161,7 @@ class DMDataFetcher:
                 type=ResponseTypes.json_to_multiple_model,
                 model=[DmdataRefreshTokenResponseModel, DmdataRefreshTokenErrorModel]
             ),
+            max_retries=1,
             request_type=RequestTypes.post,
             form_data=form_data,
             proxy=Env.config.proxy
