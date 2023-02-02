@@ -356,14 +356,16 @@ class DMDataFetcher:
             # EEW
             if self.testing:
                 print(xml_message)
-            eew = self.parse_eew(xml_message)
+            with sentry_sdk.start_span(op="transform_eew"):
+                eew = self.parse_eew(xml_message)
             if self.testing:
                 print(eew)
             if eew is None:
                 logger.error("Failed to parse Dmdata EEW: is None")
                 return
             try:
-                module_manager.classes["eew_info"].parse_iedred_eew(eew)
+                with sentry_sdk.start_span(op="parse_eew"):
+                    module_manager.classes["eew_info"].parse_iedred_eew(eew)
             except Exception:
                 logger.exception("Failed to parse Dmdata EEW.")
         # tsunami, earthquake todo
