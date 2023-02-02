@@ -2,11 +2,13 @@
  HomeNetwork Python SDK
  Licensed under GPL.
  2022-2023 Allen Da.
- Current Version - 1.2
+ Current Version - 1.2.1
 
  Changelog:
     - 1.2:
         Customizable log_func in func_timer()
+    - 1.2.1:
+        Do not log model conversion errors when using web_request()->json_to_multiple_models
 """
 __all__ = [
     # Formation conversion
@@ -228,18 +230,20 @@ def read_json(filename: str, mode: str = "r+") -> Optional[dict]:
     return content
 
 
-def obj_to_model(obj: object, model: OnlyModel) -> Optional[OnlyModel]:
+def obj_to_model(obj: object, model: OnlyModel, log_error=True) -> Optional[OnlyModel]:
     """
     Converts an object into a model.
 
     :param obj: The object
     :param model: The target model
+    :param log_error: Log errors in logger or not
     :return: Model with data
     """
     try:
         parsed_model = model.parse_obj(obj)
     except Exception:
-        logger.exception(f"Failed to parse object {obj} -> {model}.")
+        if log_error:
+            logger.exception(f"Failed to parse object {obj} -> {model}.")
         return None
     return parsed_model
 
@@ -410,7 +414,8 @@ def web_request(url: str,
             return ResponseModel()
         verify_type(response_type.model, list)
         for i in response_type.model:
-            model = obj_to_model(obj, i)
+            # Do not log errors since there could be parsing failures
+            model = obj_to_model(obj, i, log_error=False)
             if model is not None:
                 return ResponseModel(
                     status=True,
