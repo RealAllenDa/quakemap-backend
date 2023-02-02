@@ -284,20 +284,8 @@ class DMDataFetcher:
         if not message:
             logger.error("Failed to parse error message: message is None")
             return
-        logger.warning(f"DMData socket error: "
-                       f"code => {message.code}, error => {message.error}, closed => {message.close}")
-        if message.code == 4640:
-            # PingId verification failed - not receiving pong?
-            if self.pong is None:
-                logger.error("Receiving ping error, however pong is not created. "
-                             "Perhaps error with message transmission? ")
-                self.close_socket()
-                self.start_connection()
-            else:
-                logger.debug("Sending pong again...")
-                self.websocket.send(self.pong)
-                # Only send pong twice
-                self.pong = None
+        logger.error(f"DMData socket error: "
+                     f"code => {message.code}, error => {message.error}, closed => {message.close}")
         if message.close:
             self.close_socket()
             self.start_connection()
