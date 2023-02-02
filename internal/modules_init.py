@@ -51,7 +51,7 @@ class ModuleManager:
         self._init_classes()
         if Env.run_env != RunEnvironment.testing:
             self._init_timer()
-        
+
         if Env.run_env == RunEnvironment.testing:
             self._loaded_classes["tsunami"].get_info()
             self._loaded_classes["p2p_info"].get_info()
@@ -148,7 +148,7 @@ class ModuleManager:
         if Env.config.dmdata.enabled and Env.config.dmdata.jquake.use_plan:
             scheduler.add_job(func=self._module_refresher(Env.dmdata_instance, "get_current_token"),
                               trigger="interval",
-                              hours=5,
+                              hours=1,
                               id="dmdata_refresh")
             scheduler.add_job(func=self._module_refresher(Env.dmdata_instance, "keep_alive"),
                               trigger="interval",
