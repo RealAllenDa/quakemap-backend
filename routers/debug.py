@@ -77,11 +77,25 @@ async def init_data(id: str, parse_type: str):
             content=error
         )
     if parse_type == "forecast":
+        if id not in forecast_files:
+            error = GenericResponseModel.BadRequest.value
+            error["data"] = "ID not found"
+            return JSONResponse(
+                status_code=400,
+                content=error
+            )
         mocked_dmdata_socket.head.type = DmdataMessageTypes.eew_forecast
         with open(join(base_path, "eew_forecast", id), encoding="utf-8") as f:
             content = f.read()
             f.close()
     else:
+        if id not in warning_files:
+            error = GenericResponseModel.BadRequest.value
+            error["data"] = "ID not found"
+            return JSONResponse(
+                status_code=400,
+                content=error
+            )
         mocked_dmdata_socket.head.type = DmdataMessageTypes.eew_warning
         with open(join(base_path, "eew_warning", id), encoding="utf-8") as f:
             content = f.read()
@@ -91,7 +105,10 @@ async def init_data(id: str, parse_type: str):
     Env.dmdata_instance.parse_data_message(mocked_dmdata_socket)
     return JSONResponse(
         status_code=200,
-        content=GenericResponseModel.OK.value
+        content={
+            "status": 0,
+            "current_file": id
+        }
     )
 
 
@@ -107,6 +124,14 @@ async def cycle_forecast():
     if forecast_index + 1 > len(forecast_files):
         forecast_index = 0
 
+    return JSONResponse(
+        status_code=200,
+        content={
+            "status": 0,
+            "current_forecast": forecast_files[forecast_index]
+        }
+    )
+
 
 @debug_router.get("/dmdata/warning/cycle")
 async def cycle_warning():
@@ -119,6 +144,14 @@ async def cycle_warning():
     warning_index += 1
     if warning_index + 1 > len(warning_files):
         warning_index = 0
+
+    return JSONResponse(
+        status_code=200,
+        content={
+            "status": 0,
+            "current_forecast": warning_files[warning_index]
+        }
+    )
 
 
 @debug_router.get("/eew/clear")
