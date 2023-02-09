@@ -1,0 +1,52 @@
+{
+  "type": "data",
+  "version": "2.0",
+  "id": "eac1aaab783cabe682eec9cb09604f550105d3521e19b7c580e0355b27dfee3cade9c7da4d80481187fb80d265c12e92",
+  "classification": "eew.forecast",
+  "passing": [
+    {
+      "name": "socket-01",
+      "time": "2023-02-07T09:42:08.473Z"
+    },
+    {
+      "name": "ires-14",
+      "time": "2023-02-07T09:42:08.478Z"
+    },
+    {
+      "name": "websocket-03",
+      "time": "2023-02-07T09:42:08.481Z"
+    }
+  ],
+  "head": {
+    "type": "VXSE44",
+    "author": "RJTD",
+    "time": "2023-02-07T09:42:00.000Z",
+    "designation": null,
+    "test": false,
+    "xml": true
+  },
+  "xmlReport": {
+    "control": {
+      "title": "緊急地震速報（予報）",
+      "dateTime": "2023-02-07T09:42:08Z",
+      "status": "通常",
+      "editorialOffice": "気象庁本庁",
+      "publishingOffice": "気象庁"
+    },
+    "head": {
+      "title": "緊急地震速報（予報）",
+      "reportDateTime": "2023-02-07T18:42:08+09:00",
+      "targetDateTime": "2023-02-07T18:42:08+09:00",
+      "eventId": "20230207184121",
+      "serial": "4",
+      "infoType": "発表",
+      "infoKind": "緊急地震速報",
+      "infoKindVersion": "1.0_0",
+      "headline": null
+    }
+  },
+  "format": "xml",
+  "compression": "gzip",
+  "encoding": "base64",
+  "body": "H4sIAAAAAAAAAJVVTW/bRhC9+1cIvBrWkrTryMKKgeM4iNHGDmK1h16CNbmW1uZXlytDuokKkqatEyR1WsOBCjdoU/iQuDGKwIar9M+wlKyT/kKHpERJjtC6OpCzM2+W+97MjvD1qmVmdij3mGMXJCUrSxlq647B7FJB+rx4ayYnXdem8D3qOlxkAGx7BakshJtHCFbZbeaVnUq25GS3XLRlEfApSEqA+S2regWwNpXJ4CXHFtwxNVxkwqRa5/Tbdv112HzXbX7drR+GP5/0Wo//Pn8cG99glKDwTSJokVlUU2V1dkZWZ+RrRXkhP6fm5dyXGKVhvC6IqHhat/4yPDvDqL/EywYTDmfEXNvcZDrV2u/2L05ehed+u/kGnhhdBuC7lQ0TWIA8l1Mw+iiG0YBWRPE2JcZVFWT2psMtIqAqN4jHvEim/ydNUrFJAim5RKBpUEqWMbqExEXCS/RKmZeQeHmH2mLlZpwiq/I1JTenqAqo2PfjFaBVrLlA4uD84tURRqkDr9NIZm0OipNYMfhTZhsTGCeJcTCFfZE0sQY9fF8eAgbuWH6T2RFBWhUIijP0xGZcpBuOUbtqkTYAizzKPMsxnVJtrO/v043/3oCa1AJlhhVehZMtGjvMc3hNC/y9wD9uP3gIhIPG90GjEfi/BP5vQd2f1AMv2816530jAvtHgb8f+H8F/kFQb2A0ti1eJlyUv6qQbSC+xlmJ2ZPqrOTlTwZ1HkHhRc7ZDjEnp6jKIGUUhm/XXEcHopRH+ZQAUQL+i92j8PBpp7kb7u53H0A3xF4YBQbNCGiKggT0wl+PgWf47ImkzUYbR1ENJwrnlxyHw6iCBswY1NM5c0U8x2DDzunvvdZer/Vjr/UUnuE56FZv/3TSeb/baz3vtV70Ws/i0F4/dAq6/RCHnkehD9/1PjyRMgYMCqsgtfdfw0hon72Bs3T++FPSpmfns/PTypycnZ1RFBl+CKOPThVdQ6Oi03G60ZVLvX3ECOnO4dvO2XHnxdE4+wU5Jw8yExE+I7axxtdBz/DRw+4BzLWhJ6pA9FrU9QonelR2lyU1yHBibxekeSk21IK0IGmrZBWu6QABg5W6opwCk3Ds0/AdUrKZqBh0iZh6xYxnVB+p9pGTIFDzirVB+drmxChQ+9c48EmZoNF+6mueJvVFvLMljbdEr/U27oeoGaCVsvNpudJU2Hn0bqzAB2yPCfjiLYdTnXhiaEEQFtyxNBWj+I2LTmTDExyjqEXXpbbBqpF0VfAslYldohHjsfVY9B4lXqLKBC9okW6JhkdDIwdG0RyD/+3+cNem/gEhBQ/l6QcAAA=="
+}

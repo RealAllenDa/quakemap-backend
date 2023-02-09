@@ -1,0 +1,37 @@
+[
+  {
+    "code": 551,
+    "created_at": "2022/04/04 10:28:18.531",
+    "earthquake": {
+      "domesticTsunami": "Checking",
+      "foreignTsunami": "Unknown",
+      "hypocenter": {
+        "depth": -1,
+        "latitude": -200,
+        "longitude": -200,
+        "magnitude": -1,
+        "name": ""
+      },
+      "maxScale": 40,
+      "time": "2022/04/04 10:26:00"
+    },
+    "id": "624a49b202add66701617b74",
+    "issue": {
+      "correct": "None",
+      "source": "気象庁",
+      "time": "2022/04/04 10:28:02",
+      "type": "ScalePrompt"
+    },
+    "points": [
+      {
+        "addr": "石川県能登",
+        "isArea": true,
+        "pref": "石川県",
+        "scale": 40
+      }
+    ],
+    "time": "2022/04/04 10:28:09.376",
+    "user-agent": "quake_checker/analyzer 20180128",
+    "ver": "20180128"
+  }
+]

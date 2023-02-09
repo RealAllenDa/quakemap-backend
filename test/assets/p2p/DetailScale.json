@@ -1,0 +1,73 @@
+[
+  {
+    "code": 551,
+    "created_at": "2022/04/04 10:35:51.147",
+    "earthquake": {
+      "domesticTsunami": "None",
+      "foreignTsunami": "Unknown",
+      "hypocenter": {
+        "depth": 10,
+        "latitude": 37.5,
+        "longitude": 137.2,
+        "magnitude": 4.1,
+        "name": "石川県能登地方"
+      },
+      "maxScale": 30,
+      "time": "2022/04/04 10:28:00"
+    },
+    "id": "624a4b7702add666fe617b4e",
+    "issue": {
+      "correct": "None",
+      "source": "気象庁",
+      "time": "2022/04/04 10:34:47",
+      "type": "DetailScale"
+    },
+    "points": [
+      {
+        "addr": "珠洲市正院町",
+        "isArea": false,
+        "pref": "石川県",
+        "scale": 30
+      },
+      {
+        "addr": "珠洲市三崎町",
+        "isArea": false,
+        "pref": "石川県",
+        "scale": 20
+      },
+      {
+        "addr": "珠洲市大谷町",
+        "isArea": false,
+        "pref": "石川県",
+        "scale": 10
+      },
+      {
+        "addr": "能登町松波",
+        "isArea": false,
+        "pref": "石川県",
+        "scale": 20
+      },
+      {
+        "addr": "能登町宇出津",
+        "isArea": false,
+        "pref": "石川県",
+        "scale": 10
+      },
+      {
+        "addr": "輪島市鳳至町",
+        "isArea": false,
+        "pref": "石川県",
+        "scale": 10
+      },
+      {
+        "addr": "輪島市河井町",
+        "isArea": false,
+        "pref": "石川県",
+        "scale": 10
+      }
+    ],
+    "time": "2022/04/04 10:34:52.437",
+    "user-agent": "quake_checker/analyzer 20180128",
+    "ver": "20180128"
+  }
+]

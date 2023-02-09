@@ -11,6 +11,7 @@ from env import Env
 from model.dmdata.generic import DmdataMessageTypes
 from model.dmdata.socket import DmdataSocketData, DmdataSocketDataHead
 from model.eew import EEWReturnModel
+from model.p2p_info import EarthquakeIssueTypeEnum
 from model.router import GenericResponseModel
 from sdk import relpath
 
@@ -162,6 +163,22 @@ async def clear_eew():
     from internal.modules_init import module_manager
     module_manager.classes["eew_info"].info = EEWReturnModel()
 
+    return JSONResponse(
+        status_code=200,
+        content=GenericResponseModel.OK.value
+    )
+
+
+@debug_router.get("/p2p/{info_type}")
+async def set_p2p_message(info_type: EarthquakeIssueTypeEnum):
+    """
+    Sets P2P message type.
+    :param info_type: P2P Message Type
+    """
+    from internal.modules_init import module_manager
+    Env.config.debug.p2p_info.enabled = True
+    Env.config.debug.p2p_info.file = relpath(f"../test/assets/p2p/{info_type.value}.json")
+    module_manager.classes["p2p_info"].get_info()
     return JSONResponse(
         status_code=200,
         content=GenericResponseModel.OK.value
