@@ -30,7 +30,7 @@ from internal.pswave import PSWave
 from model.config import RunEnvironment
 from model.router import GenericResponseModel
 from routers import global_earthquake_router, earthquake_router, shake_level_router, tsunami_router, debug_router, \
-    heartbeat_router
+    heartbeat_router, index_router
 from sdk import relpath
 
 # --- Constants
@@ -113,6 +113,7 @@ app.include_router(tsunami_router)
 if Env.run_env == RunEnvironment.testing:
     app.include_router(debug_router)
 app.include_router(heartbeat_router)
+app.include_router(index_router)
 
 # --- Middleware initialization
 if Env.config.utilities.cors:
