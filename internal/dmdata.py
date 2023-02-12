@@ -29,7 +29,7 @@ from model.dmdata.socket import DmdataSocketStartResponse, DmdataSocketStartBody
 from model.eew import IedredEEWModel, IedredParseStatus, IedredEventType, SvirEventType, IedredEventTypeEnum, \
     IedredCodeStringDetail, IedredTime, IedredHypocenter, IedredLocation, IedredEpicenterDepth, IedredMagnitude, \
     IedredMaxIntensity, EEWIntensityEnum, IedredForecastAreasArrival, IedredForecastAreas, IedredForecastAreasIntensity
-from model.eew.eew_svir import SvirToIntensityEnum
+from model.eew.eew_svir import SvirToIntensityEnum, SvirLgToIntensityEnum
 from model.jma.eew import JMAEEWApiModel
 from model.jma.tsunami_expectation import JMAInfoType, JMAControlStatus
 from model.sdk import ResponseTypeModel, ResponseTypes, RequestTypes
@@ -499,14 +499,21 @@ class DMDataFetcher:
                         )
                     if i.area.forecast_intensity.highest == SvirToIntensityEnum.above:
                         i.area.forecast_intensity.highest = i.area.forecast_intensity.lowest
+                    forecast_intensity = IedredForecastAreasIntensity(
+                        code=i.area.code,
+                        name=i.area.name,
+                        lowest=EEWIntensityEnum[i.area.forecast_intensity.lowest.name],
+                        highest=EEWIntensityEnum[i.area.forecast_intensity.highest.name],
+                        description=str(i.area.forecast_intensity.lowest.name)
+                    )
+                    if i.area.forecast_long_period_intensity is not None:
+                        if i.area.forecast_long_period_intensity.highest == SvirLgToIntensityEnum.above:
+                            i.area.forecast_long_period_intensity.highest = i.area.forecast_long_period_intensity.lowest
+
+                        forecast_intensity.lg_intensity_lowest = i.area.forecast_long_period_intensity.lowest
+                        forecast_intensity.lg_intensity_highest = i.area.forecast_long_period_intensity.highest
                     return_model.forecast_areas.append(IedredForecastAreas(
-                        intensity=IedredForecastAreasIntensity(
-                            code=i.area.code,
-                            name=i.area.name,
-                            lowest=EEWIntensityEnum[i.area.forecast_intensity.lowest.name],
-                            highest=EEWIntensityEnum[i.area.forecast_intensity.highest.name],
-                            description=str(i.area.forecast_intensity.lowest.name)
-                        ),
+                        intensity=forecast_intensity,
                         is_warn=(i.area.forecast_kind.kind.name == "緊急地震速報（警報）"),
                         has_arrived=arrival_time
                     ))

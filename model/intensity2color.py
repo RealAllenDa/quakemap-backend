@@ -3,6 +3,7 @@ __all__ = ["IntensityToColorReturnModel",
            "IntensityToColorIntEnum"]
 
 from enum import Enum
+from typing import Optional, Any
 
 from pydantic import BaseModel
 
@@ -21,6 +22,7 @@ class StationIntensityModel(BaseModel):
 class AreaIntensityModel(BaseModel):
     name: str
     intensity: str
+    lg_intensity: Optional[Any]
     is_area: bool
     latitude: str
     longitude: str

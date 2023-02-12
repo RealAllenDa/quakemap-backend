@@ -9,6 +9,7 @@ from typing import Optional
 from pydantic import BaseModel
 
 from model.eew import EEWIntensityEnum
+from model.eew.eew_svir import SvirLgIntensityEnum
 
 Unknown = str
 
@@ -258,6 +259,8 @@ class IedredForecastAreasIntensity(BaseModel):
     name: str
     lowest: EEWIntensityEnum
     highest: EEWIntensityEnum
+    lg_intensity_lowest: Optional[SvirLgIntensityEnum]
+    lg_intensity_highest: Optional[SvirLgIntensityEnum]
     description: str
 
     class Config:

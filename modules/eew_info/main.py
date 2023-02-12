@@ -226,11 +226,13 @@ class EEWInfo(BaseModule):
             for i in content.forecast_areas:
                 area_intensity[i.intensity.name] = AreaIntensityModel(
                     name=i.intensity.name,
-                    intensity=EEWConvertedIntensityEnum[i.intensity.lowest.name],
+                    intensity=EEWConvertedIntensityEnum[i.intensity.highest.name],
                     is_area=True,
                     latitude=Env.centroid_instance.area_centroid.content.get(i.intensity.name).latitude,
                     longitude=Env.centroid_instance.area_centroid.content.get(i.intensity.name).longitude
                 )
+                if i.intensity.lg_intensity_highest is not None:
+                    area_intensity[i.intensity.name].lg_intensity = i.intensity.lg_intensity_highest.value
         else:
             area_intensity = {}
 
