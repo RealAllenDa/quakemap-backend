@@ -24,9 +24,10 @@ class EEWInfoMiddleWare:
             logger.debug("Different EEW between kmoni and svir. Returning only svir.")
             return combined_areas
         try:
-            for i in kmoni_info.area_coloring.areas.keys():
-                if i not in combined_areas:
-                    combined_areas[i] = kmoni_info.area_coloring.areas[i]
+            if kmoni_info.area_coloring.areas is not None:
+                for i in kmoni_info.area_coloring.areas.keys():
+                    if i not in combined_areas:
+                        combined_areas[i] = kmoni_info.area_coloring.areas[i]
             return combined_areas
         except Exception:
             return combined_areas
@@ -84,9 +85,18 @@ class EEWInfoMiddleWare:
 
                 if kmoni_on:
                     logger.trace("Combining intensities together.")
+                    if svir_info.is_cancel:
+                        logger.info("Cancelled model: returning directly")
+                        return svir_info
 
                     svir_info.area_intensity = kmoni_info.area_intensity
-                    return svir_info
+
+                    if svir_info.report_flag != EEWAlertTypeEnum.warning:
+                        # Do not combine intensity areas in warning
+                        svir_info.area_coloring.areas = cls.combine_intensity_areas(
+                            svir_info, kmoni_info
+                        )
+                return svir_info
             else:
                 logger.trace("Svir info is not avail.")
                 return {}
