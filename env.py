@@ -16,7 +16,7 @@ class _Env:
     """
 
     def __init__(self) -> None:
-        self.version = "1.8.1"
+        self.version = "1.9.0"
         self._run_env = None
         self._init_time = None
         self._config = None
