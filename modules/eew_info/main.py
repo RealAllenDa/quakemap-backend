@@ -258,8 +258,8 @@ class EEWInfo(BaseModule):
             magnitude=content.hypocenter.magnitude.magnitude_float,
             hypocenter=KmoniReturnHypocenterModel(
                 name=content.hypocenter.name,
-                longitude=str(content.hypocenter.location.longitude),
-                latitude=str(content.hypocenter.location.latitude),
+                longitude=content.hypocenter.location.longitude,
+                latitude=content.hypocenter.location.latitude,
                 depth=content.hypocenter.location.depth.depth_string
             ),
             area_intensity=None,
@@ -335,8 +335,8 @@ class EEWInfo(BaseModule):
             magnitude=content.magnitude,
             hypocenter=KmoniReturnHypocenterModel(
                 name=content.region_name,
-                longitude=content.longitude,
-                latitude=content.latitude,
+                longitude=float(content.longitude),
+                latitude=float(content.latitude),
                 depth=content.depth
             ),
             area_intensity=intensity_model.station_intensities,

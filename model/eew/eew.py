@@ -119,8 +119,8 @@ class KmoniEEWModel(BaseModel):
 
 class KmoniReturnHypocenterModel(BaseModel):
     name: str
-    longitude: str
-    latitude: str
+    longitude: float
+    latitude: float
     depth: str
 
 
