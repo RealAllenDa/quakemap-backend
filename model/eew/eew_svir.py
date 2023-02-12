@@ -82,6 +82,10 @@ class SvirIntensityEnum(str, Enum):
     six_upper = "6+"
     seven = "7"
 
+    @classmethod
+    def _missing_(cls, value: object):
+        return cls.no
+
 
 class SvirToIntensityEnum(str, Enum):
     no = "不明"
@@ -96,6 +100,10 @@ class SvirToIntensityEnum(str, Enum):
     seven = "7"
     above = "over"
 
+    @classmethod
+    def _missing_(cls, value: object):
+        return cls.no
+
 
 class SvirLgIntensityEnum(str, Enum):
     no = "不明"
@@ -104,6 +112,10 @@ class SvirLgIntensityEnum(str, Enum):
     two = "2"
     three = "3"
     four = "4"
+
+    @classmethod
+    def _missing_(cls, value: object):
+        return cls.no
 
 
 class SvirLgToIntensityEnum(str, Enum):
@@ -114,6 +126,10 @@ class SvirLgToIntensityEnum(str, Enum):
     three = "3"
     four = "4"
     above = "over"
+
+    @classmethod
+    def _missing_(cls, value: object):
+        return cls.no
 
 
 class SvirForecastInt(BaseModel):
