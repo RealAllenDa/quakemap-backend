@@ -96,6 +96,9 @@ class EEWInfoMiddleWare:
                         svir_info.area_coloring.areas = cls.combine_intensity_areas(
                             svir_info, kmoni_info
                         )
+                    else:
+                        # Preferred area intensity
+                        svir_info.area_coloring.recommended_areas = False
                 return svir_info
             else:
                 logger.trace("Svir info is not avail.")
