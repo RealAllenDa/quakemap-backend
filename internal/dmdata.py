@@ -409,6 +409,9 @@ class DMDataFetcher:
 
         is_assumption = report.body.earthquake.condition is not None
         is_warn = report.head.title == "緊急地震速報（警報）"
+        if report.body.comments:
+            if report.body.comments.warning_comment:
+                is_warn = is_warn or (report.body.comments.warning_comment.code == "0201")
 
         hypocenter_latitude = -200
         hypocenter_longitude = -200
