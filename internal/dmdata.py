@@ -357,7 +357,17 @@ class DMDataFetcher:
                     module_manager.classes["eew_info"].parse_iedred_eew(eew)
             except Exception:
                 logger.exception("Failed to parse Dmdata EEW.")
-        # tsunami, earthquake todo
+        if message.head.type == DmdataMessageTypes.tsunami_info \
+                or message.head.type == DmdataMessageTypes.tsunami_warning:
+            # tsunami
+            if self.testing:
+                print(xml_message)
+            try:
+                with sentry_sdk.start_span(op="parse_tsunami"):
+                    module_manager.classes["tsunami"].parse_dmdata(xml_message, message.head.type)
+            except Exception:
+                logger.exception("Failed to parse Dmdata tsunami.")
+        # earthquake todo
 
     @func_timer(log_func=logger.debug)
     def parse_eew(self, content: dict) -> Optional[IedredEEWModel]:

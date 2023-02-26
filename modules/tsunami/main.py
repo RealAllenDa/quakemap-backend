@@ -6,6 +6,7 @@ import xmltodict
 from loguru import logger
 
 from env import Env
+from model.dmdata.generic import DmdataMessageTypes
 from model.jma import JMAList
 from model.jma.tsunami_expectation import JMAMessageTypeEnum, JMATsunamiExpectationApiModel, JMAControlStatus, \
     JMATsunamiForecastModel, JMATsunamiForecastItem, JMATsunamiFirstHeightCondition, JMAInfoType
@@ -41,6 +42,9 @@ class TsunamiInfo(BaseModule):
         """
         Gets JMA's information list XML. (eqvol.xml)
         """
+        if Env.config.dmdata.enabled:
+            logger.trace("No need to update tsunami.")
+            return
         response = web_request(url="https://www.data.jma.go.jp/developer/xml/feed/eqvol.xml",
                                proxy=Env.config.proxy,
                                response_type=ResponseTypeModel(
@@ -124,6 +128,35 @@ class TsunamiInfo(BaseModule):
                 watch_info_urls = ["TEST"]
             # Parse the latest first.
             self.get_tsunami_watch(list(reversed(watch_info_urls)))
+
+    def parse_dmdata(self, xml_message: dict, parse_type: DmdataMessageTypes):
+        """Parses dmdata messages.
+        :param xml_message: The message
+        :param parse_type: Tsunami expectation/watch information"""
+        if parse_type == DmdataMessageTypes.tsunami_warning:
+            content = JMATsunamiExpectationApiModel.parse_obj(xml_message)
+            if content.report.control.status != JMAControlStatus.normal:
+                logger.warning(f"Drill/Other tsunami message: {content.report.control.status.name}. Skipped.")
+                return
+            self.parse_tsunami_expectation(
+                content.report.body.tsunami.forecast,
+                TsunamiParseOrigin.tsunami_expectation,
+                content.report.head.report_date
+            )
+        elif parse_type == DmdataMessageTypes.tsunami_info:
+            content = JMATsunamiWatchApiModel.parse_obj(xml_message)
+            if content.report.head.title == "津波観測に関する情報":
+                if content.report.control.status == JMAControlStatus.normal and \
+                        content.report.head.info_status == JMAInfoType.issued:
+                    self.parse_tsunami_expectation(
+                        content.report.body.tsunami.forecast,
+                        TsunamiParseOrigin.tsunami_watch,
+                        content.report.head.report_date
+                    )
+                    # Parse observation information
+                    self.parse_tsunami_observation(content)
+        else:
+            logger.error("Exhaustive handling of parse_type")
 
     def get_tsunami_expectation(self, info_url: str) -> None:
         """
