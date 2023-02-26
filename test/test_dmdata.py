@@ -47,7 +47,7 @@ class TestJMAParse(unittest.TestCase):
             parsed = DmdataSocketData.parse_obj(raw)
             dmdata.parse_data_message(parsed)
 
-    def test_xml_forecasts(self):
+    def test_xml_eew_forecasts(self):
         forecast_files = [join(relpath("./assets/eew_forecast"), f)
                           for f in os.listdir(relpath("./assets/eew_forecast"))
                           if isfile(join(relpath("./assets/eew_forecast"), f))]
@@ -63,9 +63,10 @@ class TestJMAParse(unittest.TestCase):
 
             from internal.modules_init import module_manager
             eew_info = module_manager.get_module_info("eew_info")
+            self.assertIsNotNone(eew_info)
             print(eew_info)
 
-    def test_xml_warnings(self):
+    def test_xml_eew_warnings(self):
         warning_files = [join(relpath("./assets/eew_warning"), f)
                          for f in os.listdir(relpath("./assets/eew_warning"))
                          if isfile(join(relpath("./assets/eew_warning"), f))]
@@ -81,7 +82,49 @@ class TestJMAParse(unittest.TestCase):
 
             from internal.modules_init import module_manager
             eew_info = module_manager.get_module_info("eew_info")
+            self.assertIsNotNone(eew_info)
             print(eew_info)
+
+    def test_xml_tsunami_warnings(self):
+        warning_files = [join(relpath("./assets/tsunami_expectation"), f)
+                         for f in os.listdir(relpath("./assets/tsunami_expectation"))
+                         if isfile(join(relpath("./assets/tsunami_expectation"), f))]
+        for i in warning_files:
+            print(f"Parsing {i}")
+            with open(i, encoding="utf-8") as f:
+                content = f.read()
+                f.close()
+            mocked_dmdata_socket.head.type = DmdataMessageTypes.tsunami_warning
+            message = base64.b64encode(gzip.compress(content.encode(encoding="utf-8"))).decode(encoding="utf-8")
+            mocked_dmdata_socket.body = message
+            dmdata.parse_data_message(mocked_dmdata_socket)
+
+            from internal.modules_init import module_manager
+            tsunami_expectation_info = module_manager.classes.get("tsunami").tsunami_expectation_info
+            self.assertIsNotNone(tsunami_expectation_info)
+            print(tsunami_expectation_info)
+
+    def test_xml_tsunami_watches(self):
+        warning_files = [join(relpath("./assets/tsunami_watch"), f)
+                         for f in os.listdir(relpath("./assets/tsunami_watch"))
+                         if isfile(join(relpath("./assets/tsunami_watch"), f))]
+        for i in warning_files:
+            print(f"Parsing {i}")
+            with open(i, encoding="utf-8") as f:
+                content = f.read()
+                f.close()
+            mocked_dmdata_socket.head.type = DmdataMessageTypes.tsunami_info
+            message = base64.b64encode(gzip.compress(content.encode(encoding="utf-8"))).decode(encoding="utf-8")
+            mocked_dmdata_socket.body = message
+            dmdata.parse_data_message(mocked_dmdata_socket)
+
+            from internal.modules_init import module_manager
+            tsunami_expectation_info = module_manager.classes.get("tsunami").tsunami_expectation_info
+            tsunami_watch_info = module_manager.classes.get("tsunami").tsunami_obs_info
+            self.assertIsNotNone(tsunami_watch_info)
+            print(tsunami_watch_info)
+            self.assertIsNotNone(tsunami_expectation_info)
+            print(tsunami_expectation_info)
 
 
 if __name__ == '__main__':
