@@ -346,7 +346,7 @@ class DMDataFetcher:
             if self.testing:
                 print(xml_message)
             with sentry_sdk.start_span(op="transform_eew"):
-                eew = self.parse_eew(xml_message)
+                eew = self.parse_eew(xml_message, message.head.type)
             if self.testing:
                 print(eew)
             if eew is None:
@@ -370,7 +370,7 @@ class DMDataFetcher:
         # earthquake todo
 
     @func_timer(log_func=logger.debug)
-    def parse_eew(self, content: dict) -> Optional[IedredEEWModel]:
+    def parse_eew(self, content: dict, eew_type: DmdataMessageTypes) -> Optional[IedredEEWModel]:
         """
         Parses EEW, converts into iedred format.
         """
@@ -418,7 +418,7 @@ class DMDataFetcher:
             magnitude = float(report.body.earthquake.magnitude.magnitude)
 
         is_assumption = report.body.earthquake.condition is not None
-        is_warn = report.head.title == "緊急地震速報（警報）"
+        is_warn = eew_type == DmdataMessageTypes.eew_warning
         if report.body.comments:
             if report.body.comments.warning_comment:
                 is_warn = is_warn or (report.body.comments.warning_comment.code == "0201")
