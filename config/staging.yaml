@@ -5,7 +5,8 @@ logger:
   backtrace: false
   # Diagnose: Displays variable in traceback. Disable in production.
   diagnose: false
-  retention: "12:00"
+  retention: "10 days"
+  rotation: "00:00"
 
 proxy:
   http: ""

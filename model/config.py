@@ -98,6 +98,7 @@ class LoggerConfigModel(BaseModel):
     backtrace: bool
     diagnose: bool
     retention: str
+    rotation: str
 
 
 class GlobalEarthquakeConfigModel(BaseModel):

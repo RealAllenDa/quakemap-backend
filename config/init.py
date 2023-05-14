@@ -34,6 +34,7 @@ def init_config(run_type: RunEnvironment) -> None:
     logger.add(
         os.path.join("logs", "main.log"),
         retention=Env.config.logger.retention,
+        rotation=Env.config.logger.rotation,
         enqueue=True,
         encoding="utf-8",
         backtrace=Env.config.logger.backtrace,
