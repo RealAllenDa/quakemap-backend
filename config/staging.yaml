@@ -4,8 +4,8 @@ logger:
   # Only enable that in very rare circumstances.
   backtrace: false
   # Diagnose: Displays variable in traceback. Disable in production.
-  diagnose: true
-  retention: "10 days"
+  diagnose: false
+  retention: "12:00"
 
 proxy:
   http: ""
