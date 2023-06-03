@@ -54,7 +54,7 @@ sentry:
   enabled: true
   sample_rate:
     errors: 1.0
-    traces: 1.0
+    traces: 0.1
 
 debug:
   global_earthquake:

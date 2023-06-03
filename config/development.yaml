@@ -6,6 +6,7 @@ logger:
   # Diagnose: Displays variable in traceback. Disable in production.
   diagnose: true
   retention: "10 days"
+  rotation: "00:00"
 
 proxy:
   http: ""
