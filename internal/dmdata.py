@@ -114,7 +114,7 @@ class DMDataFetcher:
         if self.websocket:
             # Active websocket
             return
-        with sentry_sdk.start_transaction(op="start_dmdata", name="start_connection"):
+        with sentry_sdk.start_transaction(op="start_dmdata", name="start_connection", sampled=True):
             with sentry_sdk.start_span(op="get_socket"):
                 self.get_socket()
             with sentry_sdk.start_span(op="connect_socket"):
@@ -244,7 +244,7 @@ class DMDataFetcher:
         if self.active_socket_id is None:
             logger.warning("No active socket.")
             return
-        with sentry_sdk.start_transaction(op="start_dmdata", name="close_socket"):
+        with sentry_sdk.start_transaction(op="start_dmdata", name="close_socket", sampled=True):
             from env import Env
             web_request(
                 url=f"https://api.dmdata.jp/v2/socket/{self.active_socket_id}",
@@ -589,11 +589,11 @@ class DMDataFetcher:
                 self.parse_ping_message(message)
         elif message_type == "data":
             message = obj_to_model(message, DmdataSocketData)
-            with sentry_sdk.start_transaction(op="parse_dmdata", name="data"):
+            with sentry_sdk.start_transaction(op="parse_dmdata", name="data", sampled=True):
                 self.parse_data_message(message)
         elif message_type == "error":
             message = obj_to_model(message, DmdataSocketError)
-            with sentry_sdk.start_transaction(op="parse_dmdata", name="error"):
+            with sentry_sdk.start_transaction(op="parse_dmdata", name="error", sampled=True):
                 self.parse_error_message(message)
         else:
             logger.error(f"Exhaustive handling of message_type: {message_type}. Message => {message}")
