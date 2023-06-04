@@ -163,3 +163,4 @@ cython_debug/
 main.log
 
 .development.env
+notes
