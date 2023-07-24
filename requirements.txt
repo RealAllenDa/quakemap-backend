@@ -1,4 +1,4 @@
-pydantic~=1.9.0
+pydantic~=1.10.12
 loguru~=0.7.0
 requests~=2.31.0
 xmltodict~=0.13.0
