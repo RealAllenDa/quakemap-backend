@@ -28,6 +28,9 @@ class EEWInfo(BaseModule):
         super(EEWInfo, self).__init__()
         self.info = EEWReturnModel()
 
+    def reload(self):
+        self.info = EEWReturnModel()
+
     @func_timer
     def get_info(self) -> None:
         """

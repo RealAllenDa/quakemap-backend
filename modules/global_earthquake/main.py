@@ -14,6 +14,9 @@ class GlobalEarthquake(BaseModule):
     Global earthquake module.
     """
 
+    def reload(self):
+        self.info = None
+
     @func_timer
     def get_info(self) -> None:
         """

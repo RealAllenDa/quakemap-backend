@@ -160,19 +160,21 @@ class ModuleManager:
     @func_timer
     def reload(self, name: str) -> None:
         """
-        ========== DEPRECATED ==========
+        ========== UNUSED IN PRODUCTION ==========
         Currently using Docker for production, which could not hot-update modules easily.
-        Won't be implemented in foreseeable future.
 
-        Reloads a module. Unused for now.
+        Reloads a module. Used for testing.
         :param name: The module of the module
         """
-        _ = name
-        verify_not_used("reload", "module reload")
-        # module = self._loaded_modules.get(name)
-        # verify_none(module)
-        # importlib.reload(module)
-        # logger.success(f"Successfully reloaded module {name}.")
+        # _ = name
+        # verify_not_used("reload", "module reload")
+        module = self._loaded_modules.get(f"modules.{name}.main")
+        module_class = self._loaded_classes.get(name)
+        verify_none(module)
+        verify_none(hasattr(module_class, "reload"))
+        importlib.reload(module)
+        getattr(module_class, "reload")()
+        logger.success(f"Successfully reloaded module {name}.")
 
     def get_module_info(self, name: str) -> Any:
         """

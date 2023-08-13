@@ -24,6 +24,10 @@ class P2PInfo(BaseModule):
         self._last_response_list = []
         self.info = P2PTotalInfoModel()
 
+    def reload(self):
+        self._last_response_list = []
+        self.info = P2PTotalInfoModel()
+
     @func_timer
     def get_info(self) -> None:
         """

@@ -14,6 +14,9 @@ class ShakeLevel(BaseModule):
     Shake Level module.
     """
 
+    def reload(self):
+        self.info = None
+
     @func_timer
     def get_info(self) -> None:
         """

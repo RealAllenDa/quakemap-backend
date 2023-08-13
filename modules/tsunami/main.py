@@ -37,6 +37,15 @@ class TsunamiInfo(BaseModule):
 
         self.previous_tsunami_info: Optional[JMAList] = None
 
+    def reload(self) -> None:
+        self.tsunami_expectation_info = TsunamiExpectationReturnModel()
+        self.tsunami_obs_info = TsunamiObservationReturnModel()
+
+        self.tsunami_watch_in_effect = False
+        self.tsunami_warning_in_effect = False
+
+        self.previous_tsunami_info: Optional[JMAList] = None
+
     @func_timer
     def get_info(self) -> None:
         """

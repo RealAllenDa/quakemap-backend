@@ -16,3 +16,9 @@ class BaseModule:
         API's main entry point.
         """
         todo()
+
+    def reload(self) -> None:
+        """
+        Reloads module.
+        """
+        todo()
