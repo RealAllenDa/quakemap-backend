@@ -300,7 +300,7 @@ class DMDataFetcher:
         self.last_pong_time = int(time.time())
 
     @func_timer(log_func=logger.success)
-    def parse_data_message(self, message: Optional[DmdataSocketData]):
+    def parse_data_message(self, message: Optional[DmdataSocketData]) -> int:
         """
         Parses Dmdata data message.
 
@@ -308,7 +308,7 @@ class DMDataFetcher:
         """
         if not message:
             logger.error("Failed to parse data message: message is None")
-            return
+            return 1
 
         logger.trace(f"Parsed message: {message}")
         # with open(relpath(f"../data/{message.id}.json"), "w+", encoding="utf-8") as f:
@@ -317,10 +317,10 @@ class DMDataFetcher:
 
         if message.format != "xml":
             logger.error("Failed to parse data message: format is not XML")
-            return
+            return 1
         if message.compression != "gzip" or message.encoding != "base64":
             logger.error("Failed to parse data message: Data compression is not gzip/Encoding is not base64")
-            return
+            return 1
 
         try:
             raw_io = io.BytesIO(base64.b64decode(message.body))
@@ -330,7 +330,7 @@ class DMDataFetcher:
             raw_io.close()
         except Exception:
             logger.exception("Failed to parse data message.")
-            return
+            return 1
 
         from internal.modules_init import module_manager
         if message.head.type == DmdataMessageTypes.eew_warning \
@@ -344,12 +344,13 @@ class DMDataFetcher:
                 print(eew)
             if eew is None:
                 logger.error("Failed to parse Dmdata EEW: is None")
-                return
+                return 1
             try:
                 with sentry_sdk.start_span(op="parse_eew"):
                     module_manager.classes["eew_info"].parse_iedred_eew(eew)
             except Exception:
                 logger.exception("Failed to parse Dmdata EEW.")
+                return 1
         if message.head.type == DmdataMessageTypes.tsunami_info \
                 or message.head.type == DmdataMessageTypes.tsunami_warning:
             # tsunami
@@ -360,6 +361,8 @@ class DMDataFetcher:
                     module_manager.classes["tsunami"].parse_dmdata(xml_message, message.head.type)
             except Exception:
                 logger.exception("Failed to parse Dmdata tsunami.")
+                return 1
+        return 0
         # earthquake todo
 
     @func_timer(log_func=logger.debug)
