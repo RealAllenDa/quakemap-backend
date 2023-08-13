@@ -130,6 +130,7 @@ class DMDataFetcher:
             return
         tries = 0
         while (not self.websocket) and (tries < 2):
+            self.get_current_token()
             self.start_connection()
             time.sleep(10)
             tries += 1
