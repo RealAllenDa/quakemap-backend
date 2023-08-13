@@ -6,11 +6,12 @@ import xmltodict
 from loguru import logger
 
 from env import Env
+from model.config import RunEnvironment
 from model.dmdata.generic import DmdataMessageTypes
 from model.jma import JMAList
 from model.jma.tsunami_expectation import JMAMessageTypeEnum, JMATsunamiExpectationApiModel, JMAControlStatus, \
-    JMATsunamiForecastModel, JMATsunamiForecastItem, JMATsunamiFirstHeightCondition, JMAInfoType
-from model.jma.tsunami_watch import JMATsunamiWatchApiModel, JMAWatchMaxHeightCondition
+    JMATsunamiForecastItem, JMATsunamiFirstHeightCondition, JMAInfoType, JMATsunamiModel
+from model.jma.tsunami_watch import JMATsunamiWatchApiModel, JMAWatchMaxHeightCondition, JMATsunamiWatchContentModel
 from model.sdk import ResponseTypeModel, ResponseTypes
 from model.tsunami import TsunamiExpectationReturnModel, TsunamiParseOrigin, TsunamiExpectationModel, \
     TsunamiExpectationGrade, TsunamiExpectationSpecialTimeModel, TsunamiExpectationTimeModel, \
@@ -144,28 +145,44 @@ class TsunamiInfo(BaseModule):
         :param parse_type: Tsunami expectation/watch information"""
         if parse_type == DmdataMessageTypes.tsunami_warning:
             content = JMATsunamiExpectationApiModel.parse_obj(xml_message)
-            if content.report.control.status != JMAControlStatus.normal:
+            if not self._parse_flag(content):
                 logger.warning(f"Drill/Other tsunami message: {content.report.control.status.name}. Skipped.")
                 return
             self.parse_tsunami_expectation(
-                content.report.body.tsunami.forecast,
+                content.report.body.tsunami,
                 TsunamiParseOrigin.tsunami_expectation,
                 content.report.head.report_date
             )
         elif parse_type == DmdataMessageTypes.tsunami_info:
             content = JMATsunamiWatchApiModel.parse_obj(xml_message)
-            if content.report.head.title == "津波観測に関する情報":
-                if content.report.control.status == JMAControlStatus.normal and \
-                        content.report.head.info_status == JMAInfoType.issued:
-                    self.parse_tsunami_expectation(
-                        content.report.body.tsunami.forecast,
-                        TsunamiParseOrigin.tsunami_watch,
-                        content.report.head.report_date
-                    )
-                    # Parse observation information
-                    self.parse_tsunami_observation(content)
+            if content.report.head.title != "津波観測に関する情報":
+                logger.warning(f"Tsunami observation message: {content.report.head.title} not parsed.")
+                return
+            if not self._parse_flag(content):
+                logger.warning(f"Drill/Other tsunami message: {content.report.control.status.name}. Skipped.")
+                return
+            self.parse_tsunami_expectation(
+                content.report.body.tsunami,
+                TsunamiParseOrigin.tsunami_watch,
+                content.report.head.report_date
+            )
+            # Parse observation information
+            self.parse_tsunami_observation(content)
         else:
             logger.error("Exhaustive handling of parse_type")
+
+    @staticmethod
+    def _parse_flag(content: JMATsunamiWatchApiModel | JMATsunamiExpectationApiModel) -> bool:
+        """Determines whether to parse or not."""
+        if content.report.head.info_status == JMAInfoType.cancel:
+            # FIXME: We currently do not parse any cancellation messages
+            #        since we don't have previous message(s) to revert to.
+            #        This might be a bad idea.
+            return False
+        if Env.run_env == RunEnvironment.testing:
+            return True
+        return content.report.control.status == JMAControlStatus.normal \
+            and content.report.head.info_status == JMAInfoType.issued
 
     def get_tsunami_expectation(self, info_url: str) -> None:
         """
@@ -188,18 +205,18 @@ class TsunamiInfo(BaseModule):
                 response = xmltodict.parse(f.read(), encoding="utf-8")
                 content = JMATsunamiExpectationApiModel.parse_obj(response)
                 f.close()
-        if content.report.control.status != JMAControlStatus.normal:
+        if not self._parse_flag(content):
             logger.warning(f"Drill/Other tsunami message: {content.report.control.status.name}. Skipped.")
             return
         self.parse_tsunami_expectation(
-            content.report.body.tsunami.forecast,
+            content.report.body.tsunami,
             TsunamiParseOrigin.tsunami_expectation,
             content.report.head.report_date
         )
 
     @func_timer
     def parse_tsunami_expectation(self,
-                                  content: JMATsunamiForecastModel,
+                                  content: JMATsunamiModel | JMATsunamiWatchContentModel,
                                   origin: TsunamiParseOrigin,
                                   receive_time: datetime) -> None:
         """
@@ -209,6 +226,10 @@ class TsunamiInfo(BaseModule):
         :param origin: The tsunami forecast model
         :param content: Converted TE model
         """
+        if content is None:
+            logger.info(f"Tsunami has passed: from {origin} time {receive_time}")
+            return
+        content = content.forecast
         tsunami_items = generate_list(content.item)
         receive_time = time.strftime("%Y/%m/%d %H:%M:%S", receive_time.timetuple())
         areas, forecast_areas = self.parse_tsunami_areas(tsunami_items)
@@ -358,7 +379,7 @@ class TsunamiInfo(BaseModule):
             return
         # Parse tsunami information
         self.parse_tsunami_expectation(
-            to_parse_content.report.body.tsunami.forecast,
+            to_parse_content.report.body.tsunami,
             TsunamiParseOrigin.tsunami_watch,
             to_parse_content.report.head.report_date
         )
