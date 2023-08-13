@@ -197,9 +197,9 @@ class DMDataFetcher:
                 "VTSE41",
                 "VTSE51",
                 "VXSE43",
-                "VXSE44"
+                "VXSE45"
             ],
-            app_name="JQuake"
+            app_name="JQuake-1.8.5"
         ).json(by_alias=True)
         response = web_request(
             url=f"https://api.dmdata.jp/v2/socket",
