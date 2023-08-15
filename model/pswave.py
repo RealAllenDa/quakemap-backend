@@ -13,5 +13,5 @@ class TravelTimeTableModel(BaseModel):
 
 
 class PSWaveTimeModel(BaseModel):
-    p_time: Optional[float]
-    s_time: Optional[float]
+    p_time: Optional[float] = None
+    s_time: Optional[float] = None

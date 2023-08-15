@@ -240,7 +240,7 @@ def obj_to_model(obj: object, model: OnlyModel, log_error=True) -> Optional[Only
     :return: Model with data
     """
     try:
-        parsed_model = model.parse_obj(obj)
+        parsed_model = model.model_validate(obj)
     except Exception:
         if log_error:
             logger.exception(f"Failed to parse object {obj} -> {model}.")
@@ -350,7 +350,7 @@ def web_request(url: str,
         try:
             response = requests.request(method=str(request_type.value),
                                         url=url,
-                                        proxies=proxy.dict(),
+                                        proxies=proxy.model_dump(),
                                         timeout=timeout,
                                         verify=verify,
                                         headers=headers,

@@ -34,13 +34,13 @@ class TsunamiExpectationHeight(str, Enum):
 
 
 class TsunamiExpectationSpecialTimeModel(BaseModel):
-    type: Literal['no_time'] = Field("no_time", const=True)
+    type: Literal["no_time"] = "no_time"
     time: str
     status: int
 
 
 class TsunamiExpectationTimeModel(BaseModel):
-    type: Literal['time'] = Field("time", const=True)
+    type: Literal["time"] = "time"
     time: str
     timestamp: int
 
@@ -53,10 +53,10 @@ class TsunamiExpectationModel(BaseModel):
 
 
 class TsunamiExpectationReturnModel(BaseModel):
-    receive_time: Optional[str]
-    areas: Optional[list[TsunamiExpectationModel]]
-    forecast_areas: Optional[list[TsunamiExpectationModel]]
-    origin: Optional[str]
+    receive_time: Optional[str] = None
+    areas: Optional[list[TsunamiExpectationModel]] = None
+    forecast_areas: Optional[list[TsunamiExpectationModel]] = None
+    origin: Optional[str] = None
 
 
 class TsunamiObservationCondition(str, Enum):
@@ -81,8 +81,8 @@ class TsunamiObservationAreaModel(BaseModel):
 
 
 class TsunamiObservationReturnModel(BaseModel):
-    areas: Optional[list[TsunamiObservationAreaModel]]
-    receive_time: Optional[str]
+    areas: Optional[list[TsunamiObservationAreaModel]] = None
+    receive_time: Optional[str] = None
 
 
 class TsunamiParseOrigin(str, Enum):
@@ -93,6 +93,6 @@ class TsunamiParseOrigin(str, Enum):
 class TsunamiTotalInfoModel(BaseModel):
     status: str
     status_forecast: str
-    map: Optional[TsunamiReturnModel]
+    map: Optional[TsunamiReturnModel] = None
     info: TsunamiExpectationReturnModel
     watch: TsunamiObservationReturnModel

@@ -1,6 +1,6 @@
 from enum import Enum
 
-from pydantic import BaseModel
+from pydantic import ConfigDict, BaseModel, Field
 
 __all__ = ["ConfigModel", "RunEnvironment", "LogLevelEnum", "ProxyConfigModel",
            "EEWTargetEnum"]
@@ -76,17 +76,10 @@ class LogLevelEnum(str, Enum):
 
 
 class _TsunamiColorModel(BaseModel):
-    MajorWarning: str
-    Warning: str
-    Watch: str
-
-    class Config:
-        allow_population_by_field_name = True
-        fields = {
-            "MajorWarning": "major_warning",
-            "Warning": "warning",
-            "Watch": "watch"
-        }
+    MajorWarning: str = Field(validation_alias="major_warning")
+    Warning: str = Field(validation_alias="warning")
+    Watch: str = Field(validation_alias="watch")
+    model_config = ConfigDict(populate_by_name=True)
 
 
 class TsunamiConfigModel(BaseModel):

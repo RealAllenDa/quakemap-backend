@@ -25,7 +25,7 @@ class _TsunamiGeoJsonProperties(_GeoJsonProperties):
 
 class _GeoJsonFeatures(BaseModel):
     type: str
-    geometry: Optional[_GeoJsonGeometry]
+    geometry: Optional[_GeoJsonGeometry] = None
     properties: _GeoJsonProperties
 
 

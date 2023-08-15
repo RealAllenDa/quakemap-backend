@@ -1,6 +1,6 @@
 from typing import Dict, Optional, List
 
-from pydantic import BaseModel
+from pydantic import ConfigDict, BaseModel, Field
 
 __all__ = [
     "LatLngModel", "CentroidModel",
@@ -21,15 +21,9 @@ class LatLngModelWithRegion(LatLngModel):
 
 
 class LatLngModelUppercase(BaseModel):
-    latitude: str
-    longitude: str
-
-    class Config:
-        allow_population_by_field_name = True
-        fields = {
-            "latitude": "Latitude",
-            "longitude": "Longitude"
-        }
+    latitude: str = Field(validation_alias="Latitude")
+    longitude: str = Field(validation_alias="Longitude")
+    model_config = ConfigDict(populate_by_name=True)
 
 
 class CentroidModel(BaseModel):
@@ -46,34 +40,19 @@ class ObsStationPointModel(BaseModel):
 
 
 class ObsStationsCentroidModel(BaseModel):
-    type: str
-    name: str
-    region: str
-    sub_region_code: str
-    region_code: str
-    is_suspended: bool
-    location: LatLngModelUppercase
-    old_location: Optional[LatLngModelUppercase]
-    point: Optional[ObsStationPointModel]
+    type: str = Field(validation_alias="Type")
+    name: str = Field(validation_alias="Name")
+    region: str = Field(validation_alias="Region")
+    sub_region_code: str = Field(validation_alias="SubRegionCode")
+    region_code: str = Field(validation_alias="RegionCode")
+    is_suspended: bool = Field(validation_alias="IsSuspended")
+    location: LatLngModelUppercase = Field(validation_alias="Location")
+    old_location: Optional[LatLngModelUppercase] = Field(None, validation_alias="OldLocation")
+    point: Optional[ObsStationPointModel] = Field(None, validation_alias="Point")
     # All null, so unused at all.
-    classification_id: Optional[str]
-    prefecture_classification_id: Optional[str]
-
-    class Config:
-        allow_population_by_field_name = True
-        fields = {
-            "type": "Type",
-            "name": "Name",
-            "region": "Region",
-            "sub_region_code": "SubRegionCode",
-            "region_code": "RegionCode",
-            "is_suspended": "IsSuspended",
-            "location": "Location",
-            "old_location": "OldLocation",
-            "point": "Point",
-            "classification_id": "ClassificationId",
-            "prefecture_classification_id": "PrefectureClassificationId"
-        }
+    classification_id: Optional[str] = Field(None, validation_alias="ClassificationId")
+    prefecture_classification_id: Optional[str] = Field(None, validation_alias="PrefectureClassificationId")
+    model_config = ConfigDict(populate_by_name=True)
 
 
 class AreaToPositionModel(BaseModel):

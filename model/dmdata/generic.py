@@ -1,7 +1,7 @@
 from enum import Enum
 from typing import Optional
 
-from pydantic import BaseModel, Field
+from pydantic import ConfigDict, BaseModel, Field
 
 
 class DmdataMessageTypes(str, Enum):
@@ -23,17 +23,10 @@ class DmdataGenericErrorModel(BaseModel):
 
 
 class DmdataGenericResponse(BaseModel):
-    response_id: str
-    response_time: str
+    response_id: str = Field(validation_alias="responseId")
+    response_time: str = Field(validation_alias="responseTime")
     status: str
-
-    class Config:
-        allow_population_by_field_name = True
-        fields = {
-            "response_id": "responseId",
-            "response_time": "responseTime",
-            "status": "status"
-        }
+    model_config = ConfigDict(populate_by_name=True)
 
 
 class DmdataErrorModel(BaseModel):
@@ -48,7 +41,7 @@ class DmdataGenericErrorResponse(DmdataGenericResponse):
 
 class DmdataStatusModel(BaseModel):
     status: str
-    active_socket_id: Optional[str]
+    active_socket_id: Optional[str] = None
     websocket_errored: bool
     last_pong_time: int
     pong_time_delta: int

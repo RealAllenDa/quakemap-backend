@@ -82,7 +82,7 @@ class P2PInfo(BaseModule):
         :param content: The raw earthquake information
         """
         try:
-            model: P2PQuakeModel = P2PQuakeModel.parse_obj(content)
+            model: P2PQuakeModel = P2PQuakeModel.model_validate(content)
         except Exception:
             logger.exception("An unexpected error occurred while parsing P2P earthquake info.")
             return
@@ -170,7 +170,7 @@ class P2PInfo(BaseModule):
         :param content: The raw tsunami information
         """
         try:
-            model = P2PTsunamiModel.parse_obj(content)
+            model = P2PTsunamiModel.model_validate(content)
         except Exception:
             logger.exception("An unexpected exception occurred while parsing P2P tsunami info.")
             return

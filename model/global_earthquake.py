@@ -1,4 +1,4 @@
-from pydantic import BaseModel
+from pydantic import ConfigDict, BaseModel, Field
 
 __all__ = ["CEICApiModel", "EpicenterModel", "GlobalEarthquakeReturnModel",
            "GlobalEarthquakeApiModel"]
@@ -6,60 +6,31 @@ __all__ = ["CEICApiModel", "EpicenterModel", "GlobalEarthquakeReturnModel",
 
 class CEICApiModel(BaseModel):
     id: int
-    category_id: str
-    save_time: str
-    o_time: str
-    latitude: str
-    longitude: str
-    depth: int
-    is_auto: str
-    eq_type: str
-    o_time_fra: int
-    m: str
-    m_ms: int
-    m_ms7: int
-    m_ml: int
-    m_mb: int
-    m_mb2: int
-    sum_stn: int
-    loc_stn: int
-    location_c: str
-    location_s: str
-    category_type: str
-    sync_time: str
-    is_del: str
-    eq_category: str
+    category_id: str = Field(validation_alias="CATA_ID")
+    save_time: str = Field(validation_alias="SAVE_TIME")
+    o_time: str = Field(validation_alias="O_TIME")
+    latitude: str = Field(validation_alias="EPI_LAT")
+    longitude: str = Field(validation_alias="EPI_LON")
+    depth: int = Field(validation_alias="EPI_DEPTH")
+    is_auto: str = Field(validation_alias="AUTO_FLAG")
+    eq_type: str = Field(validation_alias="EQ_TYPE")
+    o_time_fra: int = Field(validation_alias="O_TIME_FRA")
+    m: str = Field(validation_alias="M")
+    m_ms: int = Field(validation_alias="M_MS")
+    m_ms7: int = Field(validation_alias="M_MS7")
+    m_ml: int = Field(validation_alias="M_ML")
+    m_mb: int = Field(validation_alias="M_MB")
+    m_mb2: int = Field(validation_alias="M_MB2")
+    sum_stn: int = Field(validation_alias="SUM_STN")
+    loc_stn: int = Field(validation_alias="LOC_STN")
+    location_c: str = Field(validation_alias="LOCATION_C")
+    location_s: str = Field(validation_alias="LOCATION_S")
+    category_type: str = Field(validation_alias="CATA_TYPE")
+    sync_time: str = Field(validation_alias="SYNC_TIME")
+    is_del: str = Field(validation_alias="IS_DEL")
+    eq_category: str = Field(validation_alias="EQ_CATA_TYPE")
     t: int
-
-    class Config:
-        allow_population_by_field_name = True
-        fields = {
-            "id": "id",
-            "category_id": "CATA_ID",
-            "save_time": "SAVE_TIME",
-            "o_time": "O_TIME",
-            "latitude": "EPI_LAT",
-            "longitude": "EPI_LON",
-            "depth": "EPI_DEPTH",
-            "is_auto": "AUTO_FLAG",
-            "eq_type": "EQ_TYPE",
-            "o_time_fra": "O_TIME_FRA",
-            "m": "M",
-            "m_ms": "M_MS",
-            "m_ms7": "M_MS7",
-            "m_ml": "M_ML",
-            "m_mb": "M_MB",
-            "m_mb2": "M_MB2",
-            "sum_stn": "SUM_STN",
-            "loc_stn": "LOC_STN",
-            "location_c": "LOCATION_C",
-            "location_s": "LOCATION_S",
-            "category_type": "CATA_TYPE",
-            "sync_time": "SYNC_TIME",
-            "is_del": "IS_DEL",
-            "eq_category": "EQ_CATA_TYPE",
-            "t": "t"
-        }
+    model_config = ConfigDict(populate_by_name=True)
 
 
 class EpicenterModel(BaseModel):

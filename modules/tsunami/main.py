@@ -72,7 +72,7 @@ class TsunamiInfo(BaseModule):
         """
         if self.previous_tsunami_info is None:
             logger.debug("New JMA XML updated. Parsing messages.")
-        elif self.previous_tsunami_info.dict() != content.dict():
+        elif self.previous_tsunami_info.model_dump() != content.model_dump():
             logger.debug("New JMA XML updated. Parsing messages.")
         elif not Env.config.debug.tsunami.enabled:
             logger.debug("No new JMA XML info.")
@@ -144,7 +144,7 @@ class TsunamiInfo(BaseModule):
         :param xml_message: The message
         :param parse_type: Tsunami expectation/watch information"""
         if parse_type == DmdataMessageTypes.tsunami_warning:
-            content = JMATsunamiExpectationApiModel.parse_obj(xml_message)
+            content = JMATsunamiExpectationApiModel.model_validate(xml_message)
             if not self._parse_flag(content):
                 logger.warning(f"Drill/Other tsunami message: {content.report.control.status.name}. Skipped.")
                 return
@@ -154,7 +154,7 @@ class TsunamiInfo(BaseModule):
                 content.report.head.report_date
             )
         elif parse_type == DmdataMessageTypes.tsunami_info:
-            content = JMATsunamiWatchApiModel.parse_obj(xml_message)
+            content = JMATsunamiWatchApiModel.model_validate(xml_message)
             if content.report.head.title != "津波観測に関する情報":
                 logger.warning(f"Tsunami observation message: {content.report.head.title} not parsed.")
                 return
@@ -203,7 +203,7 @@ class TsunamiInfo(BaseModule):
         else:
             with open(relpath(Env.config.debug.tsunami.file), encoding="utf-8") as f:
                 response = xmltodict.parse(f.read(), encoding="utf-8")
-                content = JMATsunamiExpectationApiModel.parse_obj(response)
+                content = JMATsunamiExpectationApiModel.model_validate(response)
                 f.close()
         if not self._parse_flag(content):
             logger.warning(f"Drill/Other tsunami message: {content.report.control.status.name}. Skipped.")
@@ -372,7 +372,7 @@ class TsunamiInfo(BaseModule):
         else:
             with open(relpath(Env.config.debug.tsunami_watch.file), encoding="utf-8") as f:
                 response = xmltodict.parse(f.read(), encoding="utf-8")
-                to_parse_content = JMATsunamiWatchApiModel.parse_obj(response)
+                to_parse_content = JMATsunamiWatchApiModel.model_validate(response)
                 f.close()
         if not to_parse_content:
             logger.debug("No tsunami watch information.")
