@@ -84,7 +84,10 @@ class EEWInfoMiddleWare:
                 logger.trace("Use svir info because specified only_dmdata in config.")
 
                 # Check whether the kmoni version of eew's id is the same
-                kmoni_svir_same = kmoni_info.report_id == svir_info.report_id
+                if kmoni_on:
+                    kmoni_svir_same = kmoni_info.report_id == svir_info.report_id
+                else:
+                    kmoni_svir_same = False
                 if kmoni_on and kmoni_svir_same:
                     logger.trace("Combining intensities together.")
                     if svir_info.is_cancel:
