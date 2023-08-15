@@ -4,8 +4,8 @@ from typing import Optional
 
 from pydantic import ConfigDict, BaseModel, Field
 
-from model.eew.eew_svir import SvirForecastInt, SvirForecastLgInt
-from model.jma.tsunami_expectation import JMAEarthquakeHypocenterCoordinateModel, JMAEarthquakeHypocenterCodeModel, \
+from schemas.eew.eew_svir import SvirForecastInt, SvirForecastLgInt
+from schemas.jma.tsunami_expectation import JMAEarthquakeHypocenterCoordinateModel, JMAEarthquakeHypocenterCodeModel, \
     JMAEarthquakeHypocenterMagnitudeModel, JMAControlModel, JMAHeadModel, JMAWarningCommentModel, JMANameCodeModel
 
 

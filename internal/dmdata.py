@@ -14,18 +14,19 @@ import websocket
 import xmltodict
 from loguru import logger
 
-from model.config import RunEnvironment
-from model.dmdata.auth import DmdataRefreshTokenResponseModel, DmdataRequestTokenBodyModel, DmdataRefreshTokenErrorModel
-from model.dmdata.generic import DmdataGenericErrorResponse, DmdataMessageTypes, DmdataStatusModel
-from model.dmdata.socket import DmdataSocketStartResponse, DmdataSocketStartBody, DmdataSocketError, DmdataPing, \
+from schemas.config import RunEnvironment
+from schemas.dmdata.auth import DmdataRefreshTokenResponseModel, DmdataRequestTokenBodyModel, \
+    DmdataRefreshTokenErrorModel
+from schemas.dmdata.generic import DmdataGenericErrorResponse, DmdataMessageTypes, DmdataStatusModel
+from schemas.dmdata.socket import DmdataSocketStartResponse, DmdataSocketStartBody, DmdataSocketError, DmdataPing, \
     DmdataSocketStart, DmdataPong, DmdataSocketData
-from model.eew import IedredEEWModel, IedredParseStatus, IedredEventType, SvirEventType, IedredEventTypeEnum, \
+from schemas.eew import IedredEEWModel, IedredParseStatus, IedredEventType, SvirEventType, IedredEventTypeEnum, \
     IedredCodeStringDetail, IedredTime, IedredHypocenter, IedredLocation, IedredEpicenterDepth, IedredMagnitude, \
     IedredMaxIntensity, EEWIntensityEnum, IedredForecastAreasArrival, IedredForecastAreas, IedredForecastAreasIntensity
-from model.eew.eew_svir import SvirToIntensityEnum, SvirLgToIntensityEnum
-from model.jma.eew import JMAEEWApiModel
-from model.jma.tsunami_expectation import JMAInfoType, JMAControlStatus
-from model.sdk import ResponseTypeModel, ResponseTypes, RequestTypes
+from schemas.eew.eew_svir import SvirToIntensityEnum, SvirLgToIntensityEnum
+from schemas.jma.eew import JMAEEWApiModel
+from schemas.jma.tsunami_expectation import JMAInfoType, JMAControlStatus
+from schemas.sdk import ResponseTypeModel, ResponseTypes, RequestTypes
 from sdk import web_request, func_timer, obj_to_model, generate_list
 
 

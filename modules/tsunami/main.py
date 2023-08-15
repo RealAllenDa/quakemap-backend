@@ -6,19 +6,19 @@ import xmltodict
 from loguru import logger
 
 from env import Env
-from model.config import RunEnvironment
-from model.dmdata.generic import DmdataMessageTypes
-from model.jma import JMAList
-from model.jma.tsunami_expectation import JMAMessageTypeEnum, JMATsunamiExpectationApiModel, JMAControlStatus, \
+from modules.base_module import BaseModule
+from schemas.config import RunEnvironment
+from schemas.dmdata.generic import DmdataMessageTypes
+from schemas.jma import JMAList
+from schemas.jma.tsunami_expectation import JMAMessageTypeEnum, JMATsunamiExpectationApiModel, JMAControlStatus, \
     JMATsunamiForecastItem, JMATsunamiFirstHeightCondition, JMAInfoType, JMATsunamiModel
-from model.jma.tsunami_watch import JMATsunamiWatchApiModel, JMAWatchMaxHeightCondition, JMATsunamiWatchContentModel
-from model.sdk import ResponseTypeModel, ResponseTypes
-from model.tsunami import TsunamiExpectationReturnModel, TsunamiParseOrigin, TsunamiExpectationModel, \
+from schemas.jma.tsunami_watch import JMATsunamiWatchApiModel, JMAWatchMaxHeightCondition, JMATsunamiWatchContentModel
+from schemas.sdk import ResponseTypeModel, ResponseTypes
+from schemas.tsunami import TsunamiExpectationReturnModel, TsunamiParseOrigin, TsunamiExpectationModel, \
     TsunamiExpectationGrade, TsunamiExpectationSpecialTimeModel, TsunamiExpectationTimeModel, \
     TsunamiExpectationHeight, TsunamiObservationReturnModel, TsunamiObservationAreaModel, \
     TsunamiObservationCondition, \
     TsunamiObservationHeightCondition
-from modules.base_module import BaseModule
 from sdk import func_timer, web_request, verify_none, relpath, generate_list
 
 

@@ -4,8 +4,8 @@ from fastapi import APIRouter
 from starlette.responses import JSONResponse
 
 from internal.modules_init import module_manager
-from model.router import GENERIC_STATUS, GenericResponseModel
-from model.shake_level import ShakeLevelApiModel
+from schemas.router import GENERIC_STATUS, GenericResponseModel
+from schemas.shake_level import ShakeLevelApiModel
 
 shake_level_router = APIRouter(
     prefix="/api",

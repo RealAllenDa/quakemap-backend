@@ -27,10 +27,10 @@ from internal.geojson import GeoJson
 from internal.intensity2color import IntensityToColor
 from internal.modules_init import module_manager
 from internal.pswave import PSWave
-from model.config import RunEnvironment
-from model.router import GenericResponseModel
 from routers import global_earthquake_router, earthquake_router, shake_level_router, tsunami_router, debug_router, \
     heartbeat_router, index_router
+from schemas.config import RunEnvironment
+from schemas.router import GenericResponseModel
 from sdk import relpath
 
 # --- Constants

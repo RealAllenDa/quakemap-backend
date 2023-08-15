@@ -2,7 +2,7 @@ import re
 
 from loguru import logger
 
-from model.pswave import TravelTimeTableModel, PSWaveTimeModel
+from schemas.pswave import TravelTimeTableModel, PSWaveTimeModel
 from sdk import open_file, relpath, verify_none, func_timer
 
 

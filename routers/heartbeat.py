@@ -2,7 +2,7 @@ from fastapi import APIRouter
 
 __all__ = ["heartbeat_router"]
 
-from model.dmdata.generic import DmdataStatusModel
+from schemas.dmdata.generic import DmdataStatusModel
 
 heartbeat_router = APIRouter(
     tags=["heartbeat"]

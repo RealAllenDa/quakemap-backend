@@ -4,7 +4,7 @@ from typing import Optional
 
 from pydantic import ConfigDict, BaseModel, Field
 
-from model.jma.tsunami_expectation import JMANameCodeModel, JMAHeadModel, JMAControlModel, JMACommentModel, \
+from schemas.jma.tsunami_expectation import JMANameCodeModel, JMAHeadModel, JMAControlModel, JMACommentModel, \
     JMAEarthquakeModel, JMATsunamiForecastModel
 
 __all__ = ["JMATsunamiWatchApiModel", "JMAWatchMaxHeightCondition"]

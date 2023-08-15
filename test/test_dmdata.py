@@ -13,11 +13,11 @@ import xmltodict
 sys.path.insert(0, "../")
 os.environ["ENV"] = "testing"
 
-from model.dmdata.generic import DmdataMessageTypes
+from schemas.dmdata.generic import DmdataMessageTypes
 from sdk import relpath
 from starlette.testclient import TestClient
 from main import app
-from model.dmdata.socket import DmdataSocketData, DmdataSocketDataHead
+from schemas.dmdata.socket import DmdataSocketData, DmdataSocketDataHead
 from internal.dmdata import DMDataFetcher
 
 client = TestClient(app)

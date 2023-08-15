@@ -3,7 +3,7 @@ from internal.dmdata import DMDataFetcher
 from internal.geojson import GeoJson
 from internal.intensity2color import IntensityToColor
 from internal.pswave import PSWave
-from model.config import ConfigModel, RunEnvironment
+from schemas.config import ConfigModel, RunEnvironment
 
 __all__ = ["Env"]
 

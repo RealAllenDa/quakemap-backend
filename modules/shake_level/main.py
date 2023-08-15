@@ -3,9 +3,9 @@ import random
 from loguru import logger
 
 from env import Env
-from model.sdk import ResponseTypeModel, ResponseTypes
-from model.shake_level import ShakeLevelReturnModel, ShakeLevelApiModel
 from modules.base_module import BaseModule
+from schemas.sdk import ResponseTypeModel, ResponseTypes
+from schemas.shake_level import ShakeLevelReturnModel, ShakeLevelApiModel
 from sdk import func_timer, web_request, verify_none
 
 

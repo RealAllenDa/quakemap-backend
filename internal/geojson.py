@@ -1,7 +1,7 @@
 from loguru import logger
 
-from model.geojson import GeoJsonModel, TsunamiGeoJsonModel
-from model.p2p_info import TsunamiAreaModel, TsunamiAreaGradeEnum
+from schemas.geojson import GeoJsonModel, TsunamiGeoJsonModel
+from schemas.p2p_info import TsunamiAreaModel, TsunamiAreaGradeEnum
 from sdk import func_timer, json_to_model, relpath
 
 

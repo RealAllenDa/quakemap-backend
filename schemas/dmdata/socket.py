@@ -3,7 +3,7 @@ from typing import Optional
 
 from pydantic import ConfigDict, Field, BaseModel
 
-from model.dmdata.generic import DmdataGenericResponse, DmdataMessageTypes
+from schemas.dmdata.generic import DmdataGenericResponse, DmdataMessageTypes
 
 
 class DmdataSocketStartBody(BaseModel):

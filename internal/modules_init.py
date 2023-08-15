@@ -11,9 +11,9 @@ from apscheduler.schedulers.background import BackgroundScheduler
 from loguru import logger
 
 from env import Env
-from model.config import RunEnvironment
-from model.modules import ModulesEnum, ModulesClassEnum
 from modules.base_module import BaseModule
+from schemas.config import RunEnvironment
+from schemas.modules import ModulesEnum, ModulesClassEnum
 from sdk import func_timer, verify_none, verify_not_used
 
 __all__ = ["module_manager"]

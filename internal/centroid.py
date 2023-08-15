@@ -1,6 +1,6 @@
 from loguru import logger
 
-from model.centroid import CentroidModel, LatLngModel, CentroidModelWithRegion, LatLngModelWithRegion, \
+from schemas.centroid import CentroidModel, LatLngModel, CentroidModelWithRegion, LatLngModelWithRegion, \
     ObsStationsCentroidModel, AreaToPositionCentroidModel
 from sdk import func_timer, read_csv, relpath, verify_none, todo, read_json, obj_to_model
 

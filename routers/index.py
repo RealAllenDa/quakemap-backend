@@ -6,7 +6,7 @@ __all__ = ["index_router"]
 
 from starlette.responses import PlainTextResponse
 
-from model.index import TimeSyncModel
+from schemas.index import TimeSyncModel
 
 index_router = APIRouter()
 
