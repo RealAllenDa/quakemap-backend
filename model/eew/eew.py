@@ -86,7 +86,7 @@ class KmoniEEWModel(BaseModel):
     latitude: str
     origin_time: str
     security: _KmoniSecurityModel
-    magnitude: str
+    magnitude: Optional[str] = Field("")
     report_number: int | OnlyBlankStr = Field(validation_alias="report_num")
     request_hypocenter_type: str = Field(validation_alias="request_hypo_type")
     report_id: str
