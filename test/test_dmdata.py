@@ -71,7 +71,7 @@ class TestJMAParse(unittest.TestCase):
             self.assertEqual(dmdata.parse_data_message(mocked_dmdata_socket), 0)
 
             current_info = module_manager.get_module_info("eew_info")
-            self.assertNotEqual(current_info.dict(), previous_info.dict())
+            self.assertNotEqual(current_info.model_dump(), previous_info.model_dump())
 
     def test_xml_eew_warnings(self):
         from internal.modules_init import module_manager
@@ -93,7 +93,7 @@ class TestJMAParse(unittest.TestCase):
             self.assertEqual(dmdata.parse_data_message(mocked_dmdata_socket), 0)
 
             current_info = module_manager.get_module_info("eew_info")
-            self.assertNotEqual(current_info.dict(), previous_info.dict())
+            self.assertNotEqual(current_info.model_dump(), previous_info.model_dump())
 
     def test_xml_tsunami_warnings(self):
         from internal.modules_init import module_manager
@@ -118,8 +118,10 @@ class TestJMAParse(unittest.TestCase):
             from internal.modules_init import module_manager
             current_tsunami_expectation_info = module_manager.classes.get("tsunami").tsunami_expectation_info
             current_tsunami_observation_info = module_manager.classes.get("tsunami").tsunami_obs_info
-            self.assertNotEqual(current_tsunami_expectation_info.dict(), previous_tsunami_expectation_info.dict())
-            self.assertEqual(current_tsunami_observation_info.dict(), previous_tsunami_observation_info.dict())
+            self.assertNotEqual(current_tsunami_expectation_info.model_dump(),
+                                previous_tsunami_expectation_info.model_dump())
+            self.assertEqual(current_tsunami_observation_info.model_dump(),
+                             previous_tsunami_observation_info.model_dump())
 
     def test_xml_tsunami_watches(self):
         from internal.modules_init import module_manager
@@ -147,7 +149,8 @@ class TestJMAParse(unittest.TestCase):
                     xmltodict.parse(content, encoding="utf-8")["Report"]["Head"]["InfoType"] != "取消":
                 print(current_tsunami_expectation_info)
                 self.assertIsNotNone(current_tsunami_expectation_info.receive_time)
-                self.assertNotEqual(current_tsunami_observation_info.dict(), previous_tsunami_observation_info.dict())
+                self.assertNotEqual(current_tsunami_observation_info.model_dump(),
+                                    previous_tsunami_observation_info.model_dump())
 
 
 if __name__ == '__main__':
