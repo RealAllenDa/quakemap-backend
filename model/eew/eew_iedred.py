@@ -6,7 +6,7 @@ __all__ = ["IedredEEWModel", "IedredParseStatus", "IedredCodeStringDetail", "Ied
 from enum import Enum
 from typing import Optional
 
-from pydantic import BaseModel
+from pydantic import ConfigDict, BaseModel, Field
 
 from model.eew import EEWIntensityEnum
 from model.eew.eew_svir import SvirLgIntensityEnum
@@ -25,281 +25,143 @@ class IedredEventTypeEnum(str, Enum):
 
 
 class IedredTime(BaseModel):
-    time_string: str
-    unix_time: int
-    rfc_time: Optional[str]
-
-    class Config:
-        allow_population_by_field_name = True
-        fields = {
-            "time_string": "String",
-            "unix_time": "UnixTime",
-            "rfc_time": "RFC1123"
-        }
+    time_string: str = Field(validation_alias="String")
+    unix_time: int = Field(validation_alias="UnixTime")
+    rfc_time: Optional[str] = Field(None, validation_alias="RFC1123")
+    model_config = ConfigDict(populate_by_name=True)
 
 
 class IedredCodeString(BaseModel):
-    code: int
-    string: str
-
-    class Config:
-        allow_population_by_field_name = True
-        fields = {
-            "code": "Code",
-            "string": "String"
-        }
+    code: int = Field(validation_alias="Code")
+    string: str = Field(validation_alias="String")
+    model_config = ConfigDict(populate_by_name=True)
 
 
 class IedredEpicenter(BaseModel):
-    code: int
-    string: str
-    trust_rank: int
-    trust_string: str
-
-    class Config:
-        allow_population_by_field_name = True
-        fields = {
-            "code": "Code",
-            "string": "String",
-            "trust_rank": "Rank2",
-            "trust_string": "String2"
-        }
+    code: int = Field(validation_alias="Code")
+    string: str = Field(validation_alias="String")
+    trust_rank: int = Field(validation_alias="Rank2")
+    trust_string: str = Field(validation_alias="String2")
+    model_config = ConfigDict(populate_by_name=True)
 
 
 class IedredAccuracy(BaseModel):
-    epicenter: IedredEpicenter
-    depth: IedredCodeString
-    magnitude: IedredCodeString
-    magnitude_calculated_times: int
-
-    class Config:
-        allow_population_by_field_name = True
-        fields = {
-            "epicenter": "Epicenter",
-            "depth": "Depth",
-            "magnitude": "Magnitude",
-            "magnitude_calculated_times": "NumberOfMagnitudeCalculation"
-        }
+    epicenter: IedredEpicenter = Field(validation_alias="Epicenter")
+    depth: IedredCodeString = Field(validation_alias="Depth")
+    magnitude: IedredCodeString = Field(validation_alias="Magnitude")
+    magnitude_calculated_times: int = Field(validation_alias="NumberOfMagnitudeCalculation")
+    model_config = ConfigDict(populate_by_name=True)
 
 
 class IedredEpicenterDepth(BaseModel):
-    depth_int: int
-    depth_string: str
-
-    class Config:
-        allow_population_by_field_name = True
-        fields = {
-            "depth_int": "Int",
-            "depth_string": "String",
-        }
+    depth_int: int = Field(validation_alias="Int")
+    depth_string: str = Field(validation_alias="String")
+    model_config = ConfigDict(populate_by_name=True)
 
 
 class IedredLocation(BaseModel):
-    latitude: float
-    longitude: float
-    depth: IedredEpicenterDepth
-
-    class Config:
-        allow_population_by_field_name = True
-        fields = {
-            "latitude": "Lat",
-            "longitude": "Long",
-            "depth": "Depth"
-        }
+    latitude: float = Field(validation_alias="Lat")
+    longitude: float = Field(validation_alias="Long")
+    depth: IedredEpicenterDepth = Field(validation_alias="Depth")
+    model_config = ConfigDict(populate_by_name=True)
 
 
 class IedredMagnitude(BaseModel):
-    magnitude_float: float | Unknown
-    magnitude_string: Optional[str]
-    magnitude_long_string: Optional[str]
-
-    class Config:
-        allow_population_by_field_name = True
-        fields = {
-            "magnitude_float": "Float",
-            "magnitude_string": "String",
-            "magnitude_long_string": "LongString"
-        }
+    magnitude_float: float | Unknown = Field(validation_alias="Float")
+    magnitude_string: Optional[str] = Field(None, validation_alias="String")
+    magnitude_long_string: Optional[str] = Field(None, validation_alias="LongString")
+    model_config = ConfigDict(populate_by_name=True)
 
 
 class IedredHypocenter(BaseModel):
-    code: str
-    name: str
-    is_assumption: bool
-    location: IedredLocation
-    magnitude: IedredMagnitude
-    accuracy: Optional[IedredAccuracy]
-    is_sea: Optional[bool]
-
-    class Config:
-        allow_population_by_field_name = True
-        fields = {
-            "code": "Code",
-            "name": "Name",
-            "is_assumption": "isAssumption",
-            "location": "Location",
-            "magnitude": "Magnitude",
-            "accuracy": "Accuracy",
-            "is_sea": "isSea"
-        }
+    code: str = Field(validation_alias="Code")
+    name: str = Field(validation_alias="Name")
+    is_assumption: bool = Field(validation_alias="isAssumption")
+    location: IedredLocation = Field(validation_alias="Location")
+    magnitude: IedredMagnitude = Field(validation_alias="Magnitude")
+    accuracy: Optional[IedredAccuracy] = Field(None, validation_alias="Accuracy")
+    is_sea: Optional[bool] = Field(None, validation_alias="isSea")
+    model_config = ConfigDict(populate_by_name=True)
 
 
 class IedredMaxIntensity(BaseModel):
-    lowest: EEWIntensityEnum
-    highest: Optional[EEWIntensityEnum]
-    string: Optional[int]
-    long_string: Optional[str]
-
-    class Config:
-        allow_population_by_field_name = True
-        fields = {
-            "lowest": "From",
-            "highest": "To",
-            "string": "String",
-            "long_string": "LongString"
-        }
+    lowest: EEWIntensityEnum = Field(validation_alias="From")
+    highest: Optional[EEWIntensityEnum] = Field(None, validation_alias="To")
+    string: Optional[int] = Field(None, validation_alias="String")
+    long_string: Optional[str] = Field(None, validation_alias="LongString")
+    model_config = ConfigDict(populate_by_name=True)
 
 
 class IedredChange(BaseModel):
-    code: int
-    string: str
-    reason: IedredCodeString
-
-    class Config:
-        allow_population_by_field_name = True
-        fields = {
-            "code": "Code",
-            "string": "String",
-            "reason": "Reason"
-        }
+    code: int = Field(validation_alias="Code")
+    string: str = Field(validation_alias="String")
+    reason: IedredCodeString = Field(validation_alias="Reason")
+    model_config = ConfigDict(populate_by_name=True)
 
 
 class IedredOption(BaseModel):
-    change: IedredChange
-
-    class Config:
-        allow_population_by_field_name = True
-        fields = {
-            "change": "Change"
-        }
+    change: IedredChange = Field(validation_alias="Change")
+    model_config = ConfigDict(populate_by_name=True)
 
 
 class IedredCodeStringDetail(BaseModel):
-    code: Optional[str]
-    string: Optional[str]
-    detail: Optional[str]
-
-    class Config:
-        allow_population_by_field_name = True
-        fields = {
-            "code": "Code",
-            "string": "String",
-            "detail": "Detail"
-        }
+    code: Optional[str] = Field(None, validation_alias="Code")
+    string: Optional[str] = Field(None, validation_alias="String")
+    detail: Optional[str] = Field(None, validation_alias="Detail")
+    model_config = ConfigDict(populate_by_name=True)
 
 
 class IedredEventType(BaseModel):
-    code: Optional[str]
-    string: Optional[str]
-    detail: Optional[str]
-
-    class Config:
-        allow_population_by_field_name = True
-        fields = {
-            "code": "Code",
-            "string": "String",
-            "detail": "Detail"
-        }
+    code: Optional[str] = Field(None, validation_alias="Code")
+    string: Optional[str] = Field(None, validation_alias="String")
+    detail: Optional[str] = Field(None, validation_alias="Detail")
+    model_config = ConfigDict(populate_by_name=True)
 
 
 class IedredTitle(BaseModel):
-    code: str
-    string: IedredTypeEnum
-    detail: str
-
-    class Config:
-        allow_population_by_field_name = True
-        fields = {
-            "code": "Code",
-            "string": "String",
-            "detail": "Detail"
-        }
+    code: str = Field(validation_alias="Code")
+    string: IedredTypeEnum = Field(validation_alias="String")
+    detail: str = Field(validation_alias="Detail")
+    model_config = ConfigDict(populate_by_name=True)
 
 
 class IedredWarnForecastHypocenter(BaseModel):
-    code: int
-    name: str
-
-    class Config:
-        allow_population_by_field_name = True
-        fields = {
-            "code": "Code",
-            "name": "Name"
-        }
+    code: int = Field(validation_alias="Code")
+    name: str = Field(validation_alias="Name")
+    model_config = ConfigDict(populate_by_name=True)
 
 
 class IedredWarnForecast(BaseModel):
-    hypocenter: IedredWarnForecastHypocenter
-    district: list[str]
-    local_areas: list[str]
-    regions: list[str]
-
-    class Config:
-        allow_population_by_field_name = True
-        fields = {
-            "hypocenter": "Hypocenter",
-            "district": "District",
-            "local_areas": "LocalAreas",
-            "regions": "Regions"
-        }
+    hypocenter: IedredWarnForecastHypocenter = Field(validation_alias="Hypocenter")
+    district: list[str] = Field(validation_alias="District")
+    local_areas: list[str] = Field(validation_alias="LocalAreas")
+    regions: list[str] = Field(validation_alias="Regions")
+    model_config = ConfigDict(populate_by_name=True)
 
 
 class IedredForecastAreasIntensity(BaseModel):
-    code: str
-    name: str
-    lowest: EEWIntensityEnum
-    highest: EEWIntensityEnum
-    lg_intensity_lowest: Optional[SvirLgIntensityEnum]
-    lg_intensity_highest: Optional[SvirLgIntensityEnum]
-    description: str
-
-    class Config:
-        allow_population_by_field_name = True
-        fields = {
-            "code": "Code",
-            "name": "Name",
-            "lowest": "From",
-            "highest": "To",
-            "description": "Description"
-        }
+    code: str = Field(validation_alias="Code")
+    name: str = Field(validation_alias="Name")
+    lowest: EEWIntensityEnum = Field(validation_alias="From")
+    highest: EEWIntensityEnum = Field(validation_alias="To")
+    lg_intensity_lowest: Optional[SvirLgIntensityEnum] = Field(None)
+    lg_intensity_highest: Optional[SvirLgIntensityEnum] = Field(None)
+    description: str = Field(validation_alias="Description")
+    model_config = ConfigDict(populate_by_name=True)
 
 
 class IedredForecastAreasArrival(BaseModel):
-    flag: Optional[bool] = None
-    condition: Optional[str]
-    time: Optional[str] = None
-
-    class Config:
-        allow_population_by_field_name = True
-        fields = {
-            "flag": "Flag",
-            "condition": "Condition",
-            "time": "Time"
-        }
+    flag: Optional[bool] = Field(None, validation_alias="Flag")
+    condition: Optional[str] = Field(None, validation_alias="Condition")
+    time: Optional[str] = Field(None, validation_alias="Time")
+    model_config = ConfigDict(populate_by_name=True)
 
 
 class IedredForecastAreas(BaseModel):
-    intensity: IedredForecastAreasIntensity
-    is_warn: bool
-    has_arrived: IedredForecastAreasArrival
-
-    class Config:
-        allow_population_by_field_name = True
-        fields = {
-            "intensity": "Intensity",
-            "is_warn": "Warn",
-            "has_arrived": "Arrival"
-        }
+    intensity: IedredForecastAreasIntensity = Field(validation_alias="Intensity")
+    is_warn: bool = Field(validation_alias="Warn")
+    has_arrived: IedredForecastAreasArrival = Field(validation_alias="Arrival")
+    model_config = ConfigDict(populate_by_name=True)
 
 
 class IedredParseStatus(str, Enum):
@@ -308,40 +170,20 @@ class IedredParseStatus(str, Enum):
 
 
 class IedredEEWModel(BaseModel):
-    parse_status: IedredParseStatus
-    title: Optional[IedredCodeStringDetail]
-    source: Optional[IedredCodeString]
-    status: Optional[IedredCodeStringDetail]
-    announced_time: Optional[IedredTime]
-    origin_time: Optional[IedredTime]
-    event_id: Optional[str]
-    event_type: Optional[IedredEventType]
-    serial: Optional[str]
-    hypocenter: Optional[IedredHypocenter]
-    max_intensity: Optional[IedredMaxIntensity]
-    is_warn: Optional[bool]
-    optional_arguments: Optional[IedredOption]
-    original_text: Optional[str]
-    warning_area_list: Optional[IedredWarnForecast]
-    forecast_areas: Optional[list[IedredForecastAreas]]
-
-    class Config:
-        allow_population_by_field_name = True
-        fields = {
-            "parse_status": "ParseStatus",
-            "title": "Title",
-            "source": "Source",
-            "status": "Status",
-            "announced_time": "AnnouncedTime",
-            "origin_time": "OriginTime",
-            "event_id": "EventID",
-            "event_type": "Type",
-            "serial_id": "Serial",
-            "hypocenter": "Hypocenter",
-            "max_intensity": "MaxIntensity",
-            "is_warn": "Warn",
-            "optional_arguments": "Option",
-            "original_text": "OriginalText",
-            "warning_area_list": "WarnForecast",
-            "forecast_areas": "Forecast"
-        }
+    parse_status: IedredParseStatus = Field(validation_alias="ParseStatus")
+    title: Optional[IedredCodeStringDetail] = Field(None, validation_alias="Title")
+    source: Optional[IedredCodeString] = Field(None, validation_alias="Source")
+    status: Optional[IedredCodeStringDetail] = Field(None, validation_alias="Status")
+    announced_time: Optional[IedredTime] = Field(None, validation_alias="AnnouncedTime")
+    origin_time: Optional[IedredTime] = Field(None, validation_alias="OriginTime")
+    event_id: Optional[str] = Field(None, validation_alias="EventID")
+    event_type: Optional[IedredEventType] = Field(None, validation_alias="Type")
+    serial: Optional[str] = Field(None, validation_alias="Serial")
+    hypocenter: Optional[IedredHypocenter] = Field(None, validation_alias="Hypocenter")
+    max_intensity: Optional[IedredMaxIntensity] = Field(None, validation_alias="MaxIntensity")
+    is_warn: Optional[bool] = Field(None, validation_alias="Warn")
+    optional_arguments: Optional[IedredOption] = Field(None, validation_alias="Option")
+    original_text: Optional[str] = Field(None, validation_alias="OriginalText")
+    warning_area_list: Optional[IedredWarnForecast] = Field(None, validation_alias="WarnForecast")
+    forecast_areas: Optional[list[IedredForecastAreas]] = Field(None, validation_alias="Forecast")
+    model_config = ConfigDict(populate_by_name=True)

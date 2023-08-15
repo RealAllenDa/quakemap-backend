@@ -1,7 +1,7 @@
 from enum import Enum
 from typing import Optional
 
-from pydantic import BaseModel
+from pydantic import ConfigDict, BaseModel, Field
 
 __all__ = ["KmoniTimeModel", "KmoniEEWModel", "EEWReturnModel",
            "EEWAlertTypeEnum", "EEWConvertedIntensityEnum", "EEWIntensityEnum",
@@ -80,41 +80,18 @@ class KmoniEEWModel(BaseModel):
     longitude: str
     is_cancel: bool | OnlyBlankStr
     depth: str
-    calculated_intensity: EEWIntensityEnum
+    calculated_intensity: EEWIntensityEnum = Field(validation_alias="calcintensity")
     is_final: bool | OnlyBlankStr
     is_training: bool | OnlyBlankStr
     latitude: str
     origin_time: str
     security: _KmoniSecurityModel
     magnitude: str
-    report_number: int | OnlyBlankStr
-    request_hypocenter_type: str
+    report_number: int | OnlyBlankStr = Field(validation_alias="report_num")
+    request_hypocenter_type: str = Field(validation_alias="request_hypo_type")
     report_id: str
-    alert_flag: Optional[str]
-
-    class Config:
-        allow_population_by_field_name = True
-        fields = {
-            "result": "result",
-            "report_time": "report_time",
-            "region_code": "region_code",
-            "request_time": "request_time",
-            "region_name": "region_name",
-            "longitude": "longitude",
-            "is_cancel": "is_cancel",
-            "depth": "depth",
-            "calculated_intensity": "calcintensity",
-            "is_final": "is_final",
-            "is_training": "is_training",
-            "latitude": "latitude",
-            "origin_time": "origin_time",
-            "security": "security",
-            "magnitude": "magunitude",
-            "report_number": "report_num",
-            "request_hypocenter_type": "request_hypo_type",
-            "report_id": "report_id",
-            "alert_flag": "alertflg",
-        }
+    alert_flag: Optional[str] = Field(None, validation_alias="alertflg")
+    model_config = ConfigDict(populate_by_name=True)
 
 
 class KmoniReturnHypocenterModel(BaseModel):
@@ -150,12 +127,12 @@ class EEWParseReturnModel(BaseModel):
     is_final: bool
     magnitude: str
     hypocenter: KmoniReturnHypocenterModel
-    area_intensity: Optional[dict[str, StationIntensityModel]]
+    area_intensity: Optional[dict[str, StationIntensityModel]] = None
     area_coloring: KmoniReturnAreaColoringModel
-    s_wave: Optional[float]
-    p_wave: Optional[float]
+    s_wave: Optional[float] = None
+    p_wave: Optional[float] = None
 
 
 class EEWReturnModel(BaseModel):
-    kmoni: Optional[EEWParseReturnModel]
-    svir: Optional[EEWParseReturnModel | EEWCancelledModel]
+    kmoni: Optional[EEWParseReturnModel] = None
+    svir: Optional[EEWParseReturnModel | EEWCancelledModel] = None

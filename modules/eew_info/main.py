@@ -260,7 +260,7 @@ class EEWInfo(BaseModule):
             occur_timestamp=(
                 content.origin_time.unix_time if not Env.eew_debugging_enabled else int(time.time() + 3600)),
             is_final=is_final,
-            magnitude=content.hypocenter.magnitude.magnitude_float,
+            magnitude=str(content.hypocenter.magnitude.magnitude_float),
             hypocenter=KmoniReturnHypocenterModel(
                 name=content.hypocenter.name,
                 longitude=content.hypocenter.location.longitude,

@@ -46,7 +46,7 @@ class TestMessageParse(unittest.TestCase):
             with open(i, "r", encoding="utf-8") as f:
                 raw = json.loads(f.read())
                 f.close()
-            parsed = DmdataSocketData.parse_obj(raw)
+            parsed = DmdataSocketData.model_validate(raw)
             self.assertEqual(dmdata.parse_data_message(parsed), 0)
 
 

@@ -1,7 +1,7 @@
 from enum import Enum
-from typing import Optional
+from typing import Literal, Optional
 
-from pydantic import BaseModel, Field
+from pydantic import ConfigDict, BaseModel, Field
 
 __all__ = ["EarthquakeInfoReturnModel",
 
@@ -20,7 +20,7 @@ __all__ = ["EarthquakeInfoReturnModel",
 
 # Not really optional, since all the data tagged with this
 # would be filled after variable initialization.
-from model.eew import EEWParseReturnModel
+from model.eew import EEWParseReturnModel, EEWCancelledModel
 from model.geojson import TsunamiGeoJsonModel
 
 FakeOptional = Optional
@@ -54,19 +54,19 @@ class _EarthquakeIssueCorrectEnum(str, Enum):
 
 
 class _EarthquakeIssueModel(BaseModel):
-    source: Optional[str]
+    source: Optional[str] = None
     time: str
     type: EarthquakeIssueTypeEnum
-    correct: Optional[_EarthquakeIssueCorrectEnum]
+    correct: Optional[_EarthquakeIssueCorrectEnum] = None
 
 
 # --- Earthquake - Epicenter
 class EarthquakeEpicenterModel(BaseModel):
-    name: Optional[str]
-    latitude: Optional[float]
-    longitude: Optional[float]
-    depth: Optional[int]
-    magnitude: Optional[float]
+    name: Optional[str] = None
+    latitude: Optional[float] = None
+    longitude: Optional[float] = None
+    depth: Optional[int] = None
+    magnitude: Optional[float] = None
 
 
 class EarthquakeScaleEnum(int, Enum):
@@ -107,20 +107,11 @@ class EarthquakeForeignTsunamiEnum(str, Enum):
 # --- Earthquake - Content
 class _EarthquakeModel(BaseModel):
     time: str
-    hypocenter: Optional[EarthquakeEpicenterModel]
-    max_scale: Optional[EarthquakeScaleEnum]
-    domestic_tsunami: Optional[EarthquakeDomesticTsunamiEnum]
-    foreign_tsunami: Optional[EarthquakeForeignTsunamiEnum]
-
-    class Config:
-        allow_population_by_field_name = True
-        fields = {
-            "time": "time",
-            "hypocenter": "hypocenter",
-            "max_scale": "maxScale",
-            "domestic_tsunami": "domesticTsunami",
-            "foreign_tsunami": "foreignTsunami"
-        }
+    hypocenter: Optional[EarthquakeEpicenterModel] = None
+    max_scale: Optional[EarthquakeScaleEnum] = Field(None, validation_alias="maxScale")
+    domestic_tsunami: Optional[EarthquakeDomesticTsunamiEnum] = Field(None, validation_alias="domesticTsunami")
+    foreign_tsunami: Optional[EarthquakeForeignTsunamiEnum] = Field(None, validation_alias="foreignTsunami")
+    model_config = ConfigDict(populate_by_name=True)
 
 
 # --- Earthquake - Points
@@ -138,27 +129,19 @@ class EarthquakePointsScaleEnum(int, Enum):
 
 
 class _EarthquakePoints(BaseModel):
-    prefecture: str
-    address: str
-    is_area: bool
+    prefecture: str = Field(validation_alias="pref")
+    address: str = Field(validation_alias="addr")
+    is_area: bool = Field(validation_alias="isArea")
     scale: EarthquakePointsScaleEnum
-
-    class Config:
-        allow_population_by_field_name = True
-        fields = {
-            "prefecture": "pref",
-            "address": "addr",
-            "is_area": "isArea",
-            "scale": "scale"
-        }
+    model_config = ConfigDict(populate_by_name=True)
 
 
 # --- Earthquake - Export
 class P2PQuakeModel(_BasicDataModel):
-    code = Field(551, const=True)
+    code: Literal[551]
     issue: _EarthquakeIssueModel
     earthquake: _EarthquakeModel
-    points: Optional[list[_EarthquakePoints]]
+    points: Optional[list[_EarthquakePoints]] = None
 
 
 # --- Tsunami - Area
@@ -170,9 +153,9 @@ class TsunamiAreaGradeEnum(str, Enum):
 
 
 class TsunamiAreaModel(BaseModel):
-    grade: Optional[TsunamiAreaGradeEnum]
-    immediate: Optional[bool]
-    name: Optional[str]
+    grade: Optional[TsunamiAreaGradeEnum] = None
+    immediate: Optional[bool] = None
+    name: Optional[str] = None
 
 
 # --- Tsunami - Issue
@@ -184,10 +167,10 @@ class _TsunamiIssueModel(BaseModel):
 
 # --- Tsunami - Export
 class P2PTsunamiModel(_BasicDataModel):
-    code = Field(552, const=True)
+    code: Literal[552]
     cancelled: bool
     issue: _TsunamiIssueModel
-    areas: Optional[list[TsunamiAreaModel]]
+    areas: Optional[list[TsunamiAreaModel]] = None
 
 
 # ========== Internal Parsing
@@ -210,12 +193,12 @@ class EarthquakeAreaIntensityPointModel(BaseModel):
     intensity: EarthquakeIntensityEnum
     latitude: str
     longitude: str
-    is_area: bool = Field(True, const=True)
+    is_area: Literal[True] = True
     intensity_code: EarthquakePointsScaleEnum
 
 
 class EarthquakeStationIntensityPointModel(EarthquakeAreaIntensityPointModel):
-    is_area: bool = Field(False, const=True)
+    is_area: Literal[False] = False
     region_code: str
     region_name: str
 
@@ -255,16 +238,16 @@ class EarthquakeReturnModel(BaseModel):
 
 
 class TsunamiReturnModel(BaseModel):
-    time: Optional[str]
-    areas: Optional[TsunamiGeoJsonModel]
+    time: Optional[str] = None
+    areas: Optional[TsunamiGeoJsonModel] = None
 
 
 class P2PTotalInfoModel(BaseModel):
     earthquake: list[EarthquakeReturnModel] = []
-    tsunami: Optional[TsunamiReturnModel]
+    tsunami: Optional[TsunamiReturnModel] = None
     tsunami_in_effect: str = "0"
 
 
 class EarthquakeInfoReturnModel(BaseModel):
     info: list[EarthquakeReturnModel]
-    eew: dict | EEWParseReturnModel
+    eew: dict | EEWParseReturnModel | EEWCancelledModel

@@ -1,7 +1,7 @@
 from datetime import datetime
 from typing import Optional
 
-from pydantic import Field, BaseModel
+from pydantic import ConfigDict, Field, BaseModel
 
 from model.dmdata.generic import DmdataGenericResponse, DmdataMessageTypes
 
@@ -9,15 +9,8 @@ from model.dmdata.generic import DmdataGenericResponse, DmdataMessageTypes
 class DmdataSocketStartBody(BaseModel):
     classifications: list[str]
     types: list[str]
-    app_name: str
-
-    class Config:
-        allow_population_by_field_name = True
-        fields = {
-            "classifications": "classifications",
-            "types": "types",
-            "app_name": "appName"
-        }
+    app_name: str = Field(validation_alias="appName")
+    model_config = ConfigDict(populate_by_name=True)
 
 
 class DmdataSocketModel(BaseModel):
@@ -33,7 +26,7 @@ class DmdataSocketStartResponse(DmdataGenericResponse):
     websocket: DmdataSocketModel
     classifications: list[str]
     test: str
-    types: Optional[list[str]]
+    types: Optional[list[str]] = None
     formats: list[str]
     # appName omitted
 
@@ -47,49 +40,26 @@ class DmdataSocketError(BaseModel):
 
 class DmdataPing(BaseModel):
     type: str = Field("ping")
-    ping_id: str
-
-    class Config:
-        allow_population_by_field_name = True
-        fields = {
-            "type": "type",
-            "ping_id": "pingId"
-        }
+    ping_id: str = Field(validation_alias="pingId")
+    model_config = ConfigDict(populate_by_name=True)
 
 
 class DmdataPong(BaseModel):
     type: str = "pong"
-    ping_id: str
-
-    class Config:
-        allow_population_by_field_name = True
-        fields = {
-            "type": "type",
-            "ping_id": "pingId"
-        }
+    ping_id: str = Field(validation_alias="pingId")
+    model_config = ConfigDict(populate_by_name=True)
 
 
 class DmdataSocketStart(BaseModel):
     type: str = Field("start")
-    socket_id: int
+    socket_id: int = Field(validation_alias="socketId")
     classifications: list[str]
-    types: Optional[list[str]]
+    types: Optional[list[str]] = None
     test: str
     formats: list[str]
     # appName omitted
     time: datetime
-
-    class Config:
-        allow_population_by_field_name = True
-        fields = {
-            "type": "type",
-            "socket_id": "socketId",
-            "classifications": "classifications",
-            "types": "types",
-            "test": "test",
-            "format": "format",
-            "time": "time"
-        }
+    model_config = ConfigDict(populate_by_name=True)
 
 
 class DmdataSocketDataPassing(BaseModel):
@@ -101,7 +71,7 @@ class DmdataSocketDataHead(BaseModel):
     type: DmdataMessageTypes
     author: str
     time: datetime
-    designation: Optional[str]
+    designation: Optional[str] = None
     test: bool
     xml: bool
 
@@ -115,6 +85,6 @@ class DmdataSocketData(BaseModel):
     head: DmdataSocketDataHead
     # xmlReport omitted
     format: str
-    compression: Optional[str]
+    compression: Optional[str] = None
     encoding: str
     body: str

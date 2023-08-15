@@ -1,7 +1,8 @@
 from datetime import datetime
 from enum import Enum
-from pydantic import BaseModel
 from typing import Optional
+
+from pydantic import ConfigDict, BaseModel, Field
 
 
 class JMAMessageTypeEnum(str, Enum):
@@ -26,21 +27,12 @@ class JMAControlStatus(str, Enum):
 
 
 class JMAControlModel(BaseModel):
-    title: str
-    date: datetime
-    status: JMAControlStatus
-    editorial_office: str
-    publishing_office: str
-
-    class Config:
-        allow_population_by_field_name = True
-        fields = {
-            "title": "Title",
-            "date": "DateTime",
-            "status": "Status",
-            "editorial_office": "EditorialOffice",
-            "publishing_office": "PublishingOffice"
-        }
+    title: str = Field(validation_alias="Title")
+    date: datetime = Field(validation_alias="DateTime")
+    status: JMAControlStatus = Field(validation_alias="Status")
+    editorial_office: str = Field(validation_alias="EditorialOffice")
+    publishing_office: str = Field(validation_alias="PublishingOffice")
+    model_config = ConfigDict(populate_by_name=True)
 
 
 class JMAInfoType(str, Enum):
@@ -55,65 +47,32 @@ class JMAInfoType(str, Enum):
 
 
 class JMAHeadHeadlineModel(BaseModel):
-    text: Optional[str]
-
-    # Information omitted
-
-    class Config:
-        allow_population_by_field_name = True
-        fields = {
-            "text": "Text"
-        }
+    text: Optional[str] = Field(None, validation_alias="Text")
+    model_config = ConfigDict(populate_by_name=True)
 
 
 class JMAHeadModel(BaseModel):
-    title: str
-    report_date: datetime
-    target_date: Optional[datetime]
-    event_id: str
-    info_status: JMAInfoType
-    serial: Optional[str]
-    info_type: str
-    headline: JMAHeadHeadlineModel
-
-    # InfoKindVersion omitted
-
-    class Config:
-        allow_population_by_field_name = True
-        fields = {
-            "title": "Title",
-            "report_date": "ReportDateTime",
-            "target_date": "TargetDateTime",
-            "event_id": "EventID",
-            "info_status": "InfoType",
-            "serial": "Serial",
-            "info_type": "InfoKind",
-            "headline": "Headline"
-        }
+    title: str = Field(validation_alias="Title")
+    report_date: datetime = Field(validation_alias="ReportDateTime")
+    target_date: Optional[datetime] = Field(None, validation_alias="TargetDateTime")
+    event_id: str = Field(validation_alias="EventID")
+    info_status: JMAInfoType = Field(validation_alias="InfoType")
+    serial: Optional[str] = Field(None, validation_alias="Serial")
+    info_type: str = Field(validation_alias="InfoKind")
+    headline: JMAHeadHeadlineModel = Field(validation_alias="Headline")
+    model_config = ConfigDict(populate_by_name=True)
 
 
 class JMANameCodeModel(BaseModel):
-    name: str
-    code: str
-
-    class Config:
-        allow_population_by_field_name = True
-        fields = {
-            "name": "Name",
-            "code": "Code"
-        }
+    name: str = Field(validation_alias="Name")
+    code: str = Field(validation_alias="Code")
+    model_config = ConfigDict(populate_by_name=True)
 
 
 class JMATsunamiCategoryModel(BaseModel):
-    kind: JMANameCodeModel
-    last_kind: JMANameCodeModel
-
-    class Config:
-        allow_population_by_field_name = True
-        fields = {
-            "kind": "Kind",
-            "last_kind": "LastKind"
-        }
+    kind: JMANameCodeModel = Field(validation_alias="Kind")
+    last_kind: JMANameCodeModel = Field(validation_alias="LastKind")
+    model_config = ConfigDict(populate_by_name=True)
 
 
 class JMATsunamiFirstHeightCondition(str, Enum):
@@ -128,17 +87,9 @@ class JMATsunamiFirstHeightCondition(str, Enum):
 
 
 class JMATsunamiFirstHeightModel(BaseModel):
-    arrival_time: Optional[datetime]
-    condition: Optional[JMATsunamiFirstHeightCondition]
-
-    # Revise omitted
-
-    class Config:
-        allow_population_by_field_name = True
-        fields = {
-            "arrival_time": "ArrivalTime",
-            "condition": "Condition"
-        }
+    arrival_time: Optional[datetime] = Field(None, validation_alias="ArrivalTime")
+    condition: Optional[JMATsunamiFirstHeightCondition] = Field(None, validation_alias="Condition")
+    model_config = ConfigDict(populate_by_name=True)
 
 
 class JMATsunamiHeightDescription(str, Enum):
@@ -162,212 +113,111 @@ class JMATsunamiHeightDescription(str, Enum):
 class JMATsunamiHeightModel(BaseModel):
     # @type omitted
     # @unit omitted
-    description: JMATsunamiHeightDescription
-    detail: str
-
-    class Config:
-        allow_population_by_field_name = True
-        fields = {
-            "description": "@description",
-            "detail": "#text"
-        }
+    description: JMATsunamiHeightDescription = Field(validation_alias="@description")
+    detail: str = Field(validation_alias="#text")
+    model_config = ConfigDict(populate_by_name=True)
 
 
 class JMATsunamiMaxHeightModel(BaseModel):
     # Condition omitted
     # Revise omitted
-    height: JMATsunamiHeightModel
-
-    class Config:
-        allow_population_by_field_name = True
-        fields = {
-            "height": "jmx_eb:TsunamiHeight"
-        }
+    height: JMATsunamiHeightModel = Field(validation_alias="jmx_eb:TsunamiHeight")
+    model_config = ConfigDict(populate_by_name=True)
 
 
 class JMATsunamiForecastItem(BaseModel):
-    area: JMANameCodeModel
-    category: JMATsunamiCategoryModel
-    first_height: Optional[JMATsunamiFirstHeightModel]
-    max_height: Optional[JMATsunamiMaxHeightModel]
-
-    class Config:
-        allow_population_by_field_name = True
-        fields = {
-            "area": "Area",
-            "category": "Category",
-            "first_height": "FirstHeight",
-            "max_height": "MaxHeight"
-        }
+    area: JMANameCodeModel = Field(validation_alias="Area")
+    category: JMATsunamiCategoryModel = Field(validation_alias="Category")
+    first_height: Optional[JMATsunamiFirstHeightModel] = Field(None, validation_alias="FirstHeight")
+    max_height: Optional[JMATsunamiMaxHeightModel] = Field(None, validation_alias="MaxHeight")
+    model_config = ConfigDict(populate_by_name=True)
 
 
 class JMATsunamiForecastModel(BaseModel):
     # CodeDefine omitted
-    item: JMATsunamiForecastItem | list[JMATsunamiForecastItem]
-
-    class Config:
-        allow_population_by_field_name = True
-        fields = {
-            "item": "Item"
-        }
+    item: JMATsunamiForecastItem | list[JMATsunamiForecastItem] = Field(validation_alias="Item")
+    model_config = ConfigDict(populate_by_name=True)
 
 
 class JMATsunamiModel(BaseModel):
-    forecast: JMATsunamiForecastModel
-
-    class Config:
-        allow_population_by_field_name = True
-        fields = {
-            "forecast": "Forecast"
-        }
+    forecast: JMATsunamiForecastModel = Field(validation_alias="Forecast")
+    model_config = ConfigDict(populate_by_name=True)
 
 
 class JMAEarthquakeHypocenterCodeModel(BaseModel):
     # @type omitted
-    code: str
-
-    class Config:
-        allow_population_by_field_name = True
-        fields = {
-            "code": "#text"
-        }
+    code: str = Field(validation_alias="#text")
+    model_config = ConfigDict(populate_by_name=True)
 
 
 class JMAEarthquakeHypocenterCoordinateModel(BaseModel):
     # @datum omitted
-    description: str
-    coordinate: Optional[str]
-
-    class Config:
-        allow_population_by_field_name = True
-        fields = {
-            "description": "@description",
-            "coordinate": "#text"
-        }
+    description: str = Field(validation_alias="@description")
+    coordinate: Optional[str] = Field(None, validation_alias="#text")
+    model_config = ConfigDict(populate_by_name=True)
 
 
 class JMAEarthquakeHypocenterMagnitudeModel(BaseModel):
     # @type omitted
     # @condition omitted
-    description: str
-    magnitude: str
-
-    class Config:
-        allow_population_by_field_name = True
-        fields = {
-            "description": "@description",
-            "magnitude": "#text"
-        }
+    description: str = Field(validation_alias="@description")
+    magnitude: str = Field(None, validation_alias="#text")
+    model_config = ConfigDict(populate_by_name=True)
 
 
 class JMAEarthquakeHypocenterAreaModel(BaseModel):
-    name: str
-    code: JMAEarthquakeHypocenterCodeModel
-    coordinate: JMAEarthquakeHypocenterCoordinateModel
-    detailed_name: Optional[str]
-    name_from_mark: Optional[str]
+    name: str = Field(validation_alias="Name")
+    code: JMAEarthquakeHypocenterCodeModel = Field(validation_alias="Code")
+    coordinate: JMAEarthquakeHypocenterCoordinateModel = Field(validation_alias="jmx_eb:Coordinate")
+    detailed_name: Optional[str] = Field(None, validation_alias="DetailName")
+    name_from_mark: Optional[str] = Field(None, validation_alias="NameFromMark")
     # MarkCode, Direction, Distance omitted
-    source: Optional[str]
-
-    class Config:
-        allow_population_by_field_name = True
-        fields = {
-            "name": "Name",
-            "code": "Code",
-            "coordinate": "jmx_eb:Coordinate",
-            "detailed_name": "DetailName",
-            "name_from_mark": "NameFromMark",
-            "source": "Source"
-        }
+    source: Optional[str] = Field(None, validation_alias="Source")
+    model_config = ConfigDict(populate_by_name=True)
 
 
 class JMAEarthquakeHypocenterModel(BaseModel):
-    area: JMAEarthquakeHypocenterAreaModel
-
-    class Config:
-        allow_population_by_field_name = True
-        fields = {
-            "area": "Area"
-        }
+    area: JMAEarthquakeHypocenterAreaModel = Field(validation_alias="Area")
+    model_config = ConfigDict(populate_by_name=True)
 
 
 class JMAEarthquakeModel(BaseModel):
-    origin_time: datetime
-    arrival_time: Optional[datetime]
-    hypocenter: JMAEarthquakeHypocenterModel
-    magnitude: JMAEarthquakeHypocenterMagnitudeModel
-
-    class Config:
-        allow_population_by_field_name = True
-        fields = {
-            "origin_time": "OriginTime",
-            "arrival_time": "ArrivalTime",
-            "hypocenter": "Hypocenter",
-            "magnitude": "jmx_eb:Magnitude"
-        }
+    origin_time: datetime = Field(validation_alias="OriginTime")
+    arrival_time: Optional[datetime] = Field(None, validation_alias="ArrivalTime")
+    hypocenter: JMAEarthquakeHypocenterModel = Field(validation_alias="Hypocenter")
+    magnitude: JMAEarthquakeHypocenterMagnitudeModel = Field(validation_alias="jmx_eb:Magnitude")
+    model_config = ConfigDict(populate_by_name=True)
 
 
 class JMAWarningCommentModel(BaseModel):
     # @codeType omitted
-    text: str
-    code: str
-
-    class Config:
-        allow_population_by_field_name = True
-        fields = {
-            "text": "Text",
-            "code": "Code"
-        }
+    text: str = Field(validation_alias="Text")
+    code: str = Field(validation_alias="Code")
+    model_config = ConfigDict(populate_by_name=True)
 
 
 class JMACommentModel(BaseModel):
-    warning_comment: Optional[JMAWarningCommentModel]
-    freeform_comment: Optional[str]
-
-    class Config:
-        allow_population_by_field_name = True
-        fields = {
-            "warning_comment": "WarningComment",
-            "freeform_comment": "FreeFormComment"
-        }
+    warning_comment: Optional[JMAWarningCommentModel] = Field(None, validation_alias="WarningComment")
+    freeform_comment: Optional[str] = Field(None, validation_alias="FreeFormComment")
+    model_config = ConfigDict(populate_by_name=True)
 
 
 class JMATsunamiBodyModel(BaseModel):
     # optional: only when cancelled
-    tsunami: Optional[JMATsunamiModel]
-    earthquake: Optional[JMAEarthquakeModel | list[JMAEarthquakeModel]]
-    text: Optional[str]
-    comments: Optional[JMACommentModel]
-
-    class Config:
-        allow_population_by_field_name = True
-        fields = {
-            "tsunami": "Tsunami",
-            "earthquake": "Earthquake",
-            "text": "Text",
-            "comments": "Comments"
-        }
+    tsunami: Optional[JMATsunamiModel] = Field(None, validation_alias="Tsunami")
+    earthquake: Optional[JMAEarthquakeModel | list[JMAEarthquakeModel]] = Field(None, validation_alias="Earthquake")
+    text: Optional[str] = Field(None, validation_alias="Text")
+    comments: Optional[JMACommentModel] = Field(None, validation_alias="Comments")
+    model_config = ConfigDict(populate_by_name=True)
 
 
 class JMATsunamiExpectationModel(BaseModel):
-    control: JMAControlModel
-    head: JMAHeadModel
-    body: JMATsunamiBodyModel
-
-    class Config:
-        allow_population_by_field_name = True
-        fields = {
-            "control": "Control",
-            "head": "Head",
-            "body": "Body"
-        }
+    control: JMAControlModel = Field(validation_alias="Control")
+    head: JMAHeadModel = Field(validation_alias="Head")
+    body: JMATsunamiBodyModel = Field(validation_alias="Body")
+    model_config = ConfigDict(populate_by_name=True)
 
 
 class JMATsunamiExpectationApiModel(BaseModel):
-    report: JMATsunamiExpectationModel
-
-    class Config:
-        allow_population_by_field_name = True
-        fields = {
-            "report": "Report"
-        }
+    report: JMATsunamiExpectationModel = Field(validation_alias="Report")
+    model_config = ConfigDict(populate_by_name=True)

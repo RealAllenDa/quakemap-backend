@@ -2,7 +2,7 @@ from datetime import datetime
 from enum import Enum
 from typing import Optional
 
-from pydantic import BaseModel
+from pydantic import ConfigDict, BaseModel, Field
 
 from model.jma.tsunami_expectation import JMANameCodeModel, JMAHeadModel, JMAControlModel, JMACommentModel, \
     JMAEarthquakeModel, JMATsunamiForecastModel
@@ -42,135 +42,70 @@ class JMAWatchMaxHeightCondition(str, Enum):
 class JMATsunamiWatchFirstHeightModel(BaseModel):
     # Initial omitted
     # Revise omitted
-    arrival_time: Optional[datetime]
-    condition: Optional[JMAWatchFirstHeightCondition]
-
-    class Config:
-        allow_population_by_field_name = True
-        fields = {
-            "arrival_time": "ArrivalTime",
-            "condition": "Condition"
-        }
+    arrival_time: Optional[datetime] = Field(None, validation_alias="ArrivalTime")
+    condition: Optional[JMAWatchFirstHeightCondition] = Field(None, validation_alias="Condition")
+    model_config = ConfigDict(populate_by_name=True)
 
 
 class JMAWatchTsunamiHeightModel(BaseModel):
     # @type omitted
     # @unit omitted
-    condition: Optional[JMAWatchHeightCondition]
-    description: str
-    text: str
-
-    class Config:
-        allow_population_by_field_name = True
-        fields = {
-            "condition": "@condition",
-            "description": "@description",
-            "text": "#text"
-        }
+    condition: Optional[JMAWatchHeightCondition] = Field(None, validation_alias="@condition")
+    description: str = Field(validation_alias="@description")
+    text: str = Field(validation_alias="#text")
+    model_config = ConfigDict(populate_by_name=True)
 
 
 class JMATsunamiWatchMaxHeightModel(BaseModel):
     # Revise omitted
-    condition: Optional[JMAWatchMaxHeightCondition]
-    date: Optional[datetime]
-    height: Optional[JMAWatchTsunamiHeightModel]
-
-    class Config:
-        allow_population_by_field_name = True
-        fields = {
-            "condition": "Condition",
-            "date": "DateTime",
-            "height": "jmx_eb:TsunamiHeight"
-        }
+    condition: Optional[JMAWatchMaxHeightCondition] = Field(None, validation_alias="Condition")
+    date: Optional[datetime] = Field(None, validation_alias="DateTime")
+    height: Optional[JMAWatchTsunamiHeightModel] = Field(None, validation_alias="jmx_eb:TsunamiHeight")
+    model_config = ConfigDict(populate_by_name=True)
 
 
 class JMATsunamiWatchStation(BaseModel):
-    name: str
-    code: str
-    first_height: JMATsunamiWatchFirstHeightModel
-    max_height: JMATsunamiWatchMaxHeightModel
-
-    class Config:
-        allow_population_by_field_name = True
-        fields = {
-            "name": "Name",
-            "code": "Code",
-            "first_height": "FirstHeight",
-            "max_height": "MaxHeight"
-        }
+    name: str = Field(validation_alias="Name")
+    code: str = Field(validation_alias="Code")
+    first_height: JMATsunamiWatchFirstHeightModel = Field(validation_alias="FirstHeight")
+    max_height: JMATsunamiWatchMaxHeightModel = Field(validation_alias="MaxHeight")
+    model_config = ConfigDict(populate_by_name=True)
 
 
 class JMATsunamiWatchItem(BaseModel):
-    area: JMANameCodeModel
-    station: JMATsunamiWatchStation | list[JMATsunamiWatchStation]
-
-    class Config:
-        allow_population_by_field_name = True
-        fields = {
-            "area": "Area",
-            "station": "Station"
-        }
+    area: JMANameCodeModel = Field(validation_alias="Area")
+    station: JMATsunamiWatchStation | list[JMATsunamiWatchStation] = Field(validation_alias="Station")
+    model_config = ConfigDict(populate_by_name=True)
 
 
 class JMATsunamiWatchObservationModel(BaseModel):
     # CodeDefine omitted
-    item: JMATsunamiWatchItem | list[JMATsunamiWatchItem]
-
-    class Config:
-        allow_population_by_field_name = True
-        fields = {
-            "item": "Item"
-        }
+    item: JMATsunamiWatchItem | list[JMATsunamiWatchItem] = Field(validation_alias="Item")
+    model_config = ConfigDict(populate_by_name=True)
 
 
 class JMATsunamiWatchContentModel(BaseModel):
-    observation: Optional[JMATsunamiWatchObservationModel]
-    forecast: JMATsunamiForecastModel
-
-    class Config:
-        allow_population_by_field_name = True
-        fields = {
-            "observation": "Observation",
-            "forecast": "Forecast"
-        }
+    observation: Optional[JMATsunamiWatchObservationModel] = Field(None, validation_alias="Observation")
+    forecast: JMATsunamiForecastModel = Field(validation_alias="Forecast")
+    model_config = ConfigDict(populate_by_name=True)
 
 
 class JMATsunamiWatchBodyModel(BaseModel):
     # optional: only when cancelled
-    tsunami: Optional[JMATsunamiWatchContentModel]
-    earthquake: Optional[JMAEarthquakeModel | list[JMAEarthquakeModel]]
-    text: Optional[str]
-    comments: Optional[JMACommentModel]
-
-    class Config:
-        allow_population_by_field_name = True
-        fields = {
-            "tsunami": "Tsunami",
-            "earthquake": "Earthquake",
-            "text": "Text",
-            "comments": "Comments"
-        }
+    tsunami: Optional[JMATsunamiWatchContentModel] = Field(None, validation_alias="Tsunami")
+    earthquake: Optional[JMAEarthquakeModel | list[JMAEarthquakeModel]] = Field(None, validation_alias="Earthquake")
+    text: Optional[str] = Field(None, validation_alias="Text")
+    comments: Optional[JMACommentModel] = Field(None, validation_alias="Comments")
+    model_config = ConfigDict(populate_by_name=True)
 
 
 class JMATsunamiWatchModel(BaseModel):
-    control: JMAControlModel
-    head: JMAHeadModel
-    body: JMATsunamiWatchBodyModel
-
-    class Config:
-        allow_population_by_field_name = True
-        fields = {
-            "control": "Control",
-            "head": "Head",
-            "body": "Body"
-        }
+    control: JMAControlModel = Field(validation_alias="Control")
+    head: JMAHeadModel = Field(validation_alias="Head")
+    body: JMATsunamiWatchBodyModel = Field(validation_alias="Body")
+    model_config = ConfigDict(populate_by_name=True)
 
 
 class JMATsunamiWatchApiModel(BaseModel):
-    report: JMATsunamiWatchModel
-
-    class Config:
-        allow_population_by_field_name = True
-        fields = {
-            "report": "Report"
-        }
+    report: JMATsunamiWatchModel = Field(validation_alias="Report")
+    model_config = ConfigDict(populate_by_name=True)

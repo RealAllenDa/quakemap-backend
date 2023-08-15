@@ -148,7 +148,7 @@ class DMDataFetcher:
             client_id=self.client_id,
             client_secret=self.client_token,
             refresh_token=self.refresh_token
-        ).dict()
+        ).model_dump()
         response = web_request(
             url="https://manager.dmdata.jp/account/oauth2/v1/token",
             response_type=ResponseTypeModel(
@@ -201,7 +201,7 @@ class DMDataFetcher:
                 "VXSE45"
             ],
             app_name="JQuake-1.8.5"
-        ).json(by_alias=True)
+        ).model_dump_json(by_alias=True)
         response = web_request(
             url=f"https://api.dmdata.jp/v2/socket",
             response_type=ResponseTypeModel(
@@ -295,7 +295,7 @@ class DMDataFetcher:
             return
         self.pong = DmdataPong(
             ping_id=message.ping_id
-        ).json(by_alias=True)
+        ).model_dump_json(by_alias=True)
         logger.debug(f"Sending pong: {self.pong}")
         self.websocket.send(self.pong)
         self.last_pong_time = int(time.time())

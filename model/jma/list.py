@@ -1,4 +1,4 @@
-from pydantic import BaseModel
+from pydantic import ConfigDict, BaseModel, Field
 
 __all__ = ["JMAList"]
 
@@ -8,27 +8,15 @@ class JMAListAuthor(BaseModel):
 
 
 class JMAListContent(BaseModel):
-    text: str
-    type: str
-
-    class Config:
-        allow_population_by_field_name = True
-        fields = {
-            "text": "#text",
-            "type": "@type"
-        }
+    text: str = Field(validation_alias="#text")
+    type: str = Field(validation_alias="@type")
+    model_config = ConfigDict(populate_by_name=True)
 
 
 class JMAListEntryLink(BaseModel):
-    href: str
-    type: str
-
-    class Config:
-        allow_population_by_field_name = True
-        fields = {
-            "href": "@href",
-            "type": "@type"
-        }
+    href: str = Field(validation_alias="@href")
+    type: str = Field(validation_alias="@type")
+    model_config = ConfigDict(populate_by_name=True)
 
 
 class JMAListEntry(BaseModel):

@@ -22,7 +22,7 @@ class StationIntensityModel(BaseModel):
 class AreaIntensityModel(BaseModel):
     name: str
     intensity: str
-    lg_intensity: Optional[Any]
+    lg_intensity: Optional[Any] = None
     is_area: bool
     latitude: str
     longitude: str

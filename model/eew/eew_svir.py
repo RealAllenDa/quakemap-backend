@@ -4,71 +4,39 @@ __all__ = ["SvirEEWModel", "SvirEventType", "SvirForecastLgInt", "SvirForecastIn
 from enum import Enum
 from typing import Optional
 
-from pydantic import BaseModel, Field
+from pydantic import ConfigDict, BaseModel, Field
 
 
 class SvirEarthquakeAccuracy(BaseModel):
-    epicenter: list[str]
-    depth: str
-    magnitude: str
-    magnitude_calculation_times: str
-
-    class Config:
-        allow_population_by_field_name = True
-        fields = {
-            "epicenter": "Epicenter",
-            "depth": "Depth",
-            "magnitude": "MagnitudeCalculation",
-            "magnitude_calculation_times": "NumberOfMagnitudeCalculation"
-        }
+    epicenter: list[str] = Field(validation_alias="Epicenter")
+    depth: str = Field(validation_alias="Depth")
+    magnitude: str = Field(validation_alias="MagnitudeCalculation")
+    magnitude_calculation_times: str = Field(validation_alias="NumberOfMagnitudeCalculation")
+    model_config = ConfigDict(populate_by_name=True)
 
 
 class SvirHypocenter(BaseModel):
-    name: str
-    code: str
-    latitude: str
-    longitude: str
-    depth: str
-    land_or_sea: Optional[str]
-
-    class Config:
-        allow_population_by_field_name = True
-        fields = {
-            "name": "Name",
-            "code": "Code",
-            "latitude": "Lat",
-            "longitude": "Lon",
-            "depth": "Depth",
-            "land_or_sea": "LandOrSea"
-        }
+    name: str = Field(validation_alias="Name")
+    code: str = Field(validation_alias="Code")
+    latitude: str = Field(validation_alias="Lat")
+    longitude: str = Field(validation_alias="Lon")
+    depth: str = Field(validation_alias="Depth")
+    land_or_sea: Optional[str] = Field(None, validation_alias="LandOrSea")
+    model_config = ConfigDict(populate_by_name=True)
 
 
 class SvirEarthquake(BaseModel):
-    origin_time: str
-    hypocenter: SvirHypocenter
-    accuracy: SvirEarthquakeAccuracy
-    magnitude: str
-
-    class Config:
-        allow_population_by_field_name = True
-        fields = {
-            "origin_time": "OriginTime",
-            "hypocenter": "Hypocenter",
-            "accuracy": "Accuracy",
-            "magnitude": "Magnitude"
-        }
+    origin_time: str = Field(validation_alias="OriginTime")
+    hypocenter: SvirHypocenter = Field(validation_alias="Hypocenter")
+    accuracy: SvirEarthquakeAccuracy = Field(validation_alias="Accuracy")
+    magnitude: str = Field(validation_alias="Magnitude")
+    model_config = ConfigDict(populate_by_name=True)
 
 
 class SvirAppendix(BaseModel):
-    max_intensity_change: str
-    max_intensity_change_reason: str
-
-    class Config:
-        allow_population_by_field_name = True
-        fields = {
-            "max_intensity_change": "MaxIntChange",
-            "max_intensity_change_reason": "MaxIntChangeReason"
-        }
+    max_intensity_change: str = Field(validation_alias="MaxIntChange")
+    max_intensity_change_reason: str = Field(validation_alias="MaxIntChangeReason")
+    model_config = ConfigDict(populate_by_name=True)
 
 
 class SvirIntensityEnum(str, Enum):
@@ -134,27 +102,15 @@ class SvirLgToIntensityEnum(str, Enum):
 
 
 class SvirForecastInt(BaseModel):
-    lowest: SvirIntensityEnum
-    highest: SvirToIntensityEnum
-
-    class Config:
-        allow_population_by_field_name = True
-        fields = {
-            "lowest": "From",
-            "highest": "To"
-        }
+    lowest: SvirIntensityEnum = Field(validation_alias="From")
+    highest: SvirToIntensityEnum = Field(validation_alias="To")
+    model_config = ConfigDict(populate_by_name=True)
 
 
 class SvirForecastLgInt(BaseModel):
-    lowest: SvirLgIntensityEnum
-    highest: SvirLgToIntensityEnum
-
-    class Config:
-        allow_population_by_field_name = True
-        fields = {
-            "lowest": "From",
-            "highest": "To"
-        }
+    lowest: SvirLgIntensityEnum = Field(validation_alias="From")
+    highest: SvirLgToIntensityEnum = Field(validation_alias="To")
+    model_config = ConfigDict(populate_by_name=True)
 
 
 class SvirEEWType(str, Enum):
@@ -163,77 +119,40 @@ class SvirEEWType(str, Enum):
 
 
 class SvirForecastKind(BaseModel):
-    name: SvirEEWType
-    code: str
-
-    class Config:
-        allow_population_by_field_name = True
-        fields = {
-            "name": "Name",
-            "code": "Code"
-        }
+    name: SvirEEWType = Field(validation_alias="Name")
+    code: str = Field(validation_alias="Code")
+    model_config = ConfigDict(populate_by_name=True)
 
 
 class SvirAreas(BaseModel):
-    name: str
-    code: str
-    forecast_kind: SvirForecastKind
-    max_intensity: SvirIntensityEnum
-    text_intensity: str
-    forecast_intensity: SvirForecastInt
-    arrival_time: Optional[str]
-    condition: Optional[str]
-
-    class Config:
-        allow_population_by_field_name = True
-        fields = {
-            "name": "Name",
-            "code": "Code",
-            "forecast_kind": "Kind",
-            "max_intensity": "MaxInt",
-            "text_intensity": "TextInt",
-            "forecast_intensity": "ForecastInt",
-            "arrival_time": "ArrivalTime",
-            "condition": "Condition"
-        }
+    name: str = Field(validation_alias="Name")
+    code: str = Field(validation_alias="Code")
+    forecast_kind: SvirForecastKind = Field(validation_alias="Kind")
+    max_intensity: SvirIntensityEnum = Field(validation_alias="MaxInt")
+    text_intensity: str = Field(validation_alias="TextInt")
+    forecast_intensity: SvirForecastInt = Field(validation_alias="ForecastInt")
+    arrival_time: Optional[str] = Field(None, validation_alias="ArrivalTime")
+    condition: Optional[str] = Field(None, validation_alias="Condition")
+    model_config = ConfigDict(populate_by_name=True)
 
 
 class SvirIntensity(BaseModel):
-    max_intensity: SvirIntensityEnum
-    text_intensity: str
-    forecast_intensity: SvirForecastInt
-    areas: Optional[list[SvirAreas]]
-    appendix: Optional[SvirAppendix]
-
-    class Config:
-        allow_population_by_field_name = True
-        fields = {
-            "max_intensity": "MaxInt",
-            "text_intensity": "TextInt",
-            "forecast_intensity": "ForecastInt",
-            "areas": "Areas",
-            "appendix": "Appendix"
-        }
+    max_intensity: SvirIntensityEnum = Field(validation_alias="MaxInt")
+    text_intensity: str = Field(validation_alias="TextInt")
+    forecast_intensity: SvirForecastInt = Field(validation_alias="ForecastInt")
+    areas: Optional[list[SvirAreas]] = Field(None, validation_alias="Areas")
+    appendix: Optional[SvirAppendix] = Field(None, validation_alias="Appendix")
+    model_config = ConfigDict(populate_by_name=True)
 
 
 class SvirBody(BaseModel):
-    earthquake: Optional[SvirEarthquake]
-    intensity: SvirIntensity
-    is_plum: Optional[str]
-    is_warn: Optional[str]
-    is_end: Optional[str]
-    comments: Optional[str]
-
-    class Config:
-        allow_population_by_field_name = True
-        fields = {
-            "earthquake": "Earthquake",
-            "intensity": "Intensity",
-            "is_plum": "PLUMFlag",
-            "is_warn": "WarningFlag",
-            "is_end": "EndFlag",
-            "comments": "Text"
-        }
+    earthquake: Optional[SvirEarthquake] = Field(None, validation_alias="Earthquake")
+    intensity: SvirIntensity = Field(validation_alias="Intensity")
+    is_plum: Optional[str] = Field(None, validation_alias="PLUMFlag")
+    is_warn: Optional[str] = Field(None, validation_alias="WarningFlag")
+    is_end: Optional[str] = Field(None, validation_alias="EndFlag")
+    comments: Optional[str] = Field(None, validation_alias="Text")
+    model_config = ConfigDict(populate_by_name=True)
 
 
 class SvirEventType(str, Enum):
@@ -245,36 +164,18 @@ class SvirEventType(str, Enum):
 
 
 class SvirHead(BaseModel):
-    title: str = Field("緊急地震速報（予報）", const=True)
-    publish_time: str
-    edit_office: str
-    publish_office: str = Field("気象庁", const=True)
-    event_id: str
-    status: SvirEventType
-    serial: str
-    version: str = Field("1.1", const=True)
-
-    class Config:
-        allow_population_by_field_name = True
-        fields = {
-            "title": "Title",
-            "publish_time": "DateTime",
-            "edit_office": "EditorialOffice",
-            "publish_office": "PublishingOffice",
-            "event_id": "EventID",
-            "status": "Status",
-            "serial": "Serial",
-            "version": "Version"
-        }
+    title: str = Field(validation_alias="Title")
+    publish_time: str = Field(validation_alias="DateTime")
+    edit_office: str = Field(validation_alias="EditorialOffice")
+    publish_office: str = Field(validation_alias="PublishingOffice")
+    event_id: str = Field(validation_alias="EventID")
+    status: SvirEventType = Field(validation_alias="Status")
+    serial: str = Field(validation_alias="Serial")
+    version: str = Field(validation_alias="Version")
+    model_config = ConfigDict(populate_by_name=True)
 
 
 class SvirEEWModel(BaseModel):
-    head: SvirHead
-    body: SvirBody
-
-    class Config:
-        allow_population_by_field_name = True
-        fields = {
-            "head": "Head",
-            "body": "Body"
-        }
+    head: SvirHead = Field(validation_alias="Head")
+    body: SvirBody = Field(validation_alias="Body")
+    model_config = ConfigDict(populate_by_name=True)

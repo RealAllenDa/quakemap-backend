@@ -2,7 +2,7 @@ from datetime import datetime
 from enum import Enum
 from typing import Optional
 
-from pydantic import BaseModel
+from pydantic import ConfigDict, BaseModel, Field
 
 from model.eew.eew_svir import SvirForecastInt, SvirForecastLgInt
 from model.jma.tsunami_expectation import JMAEarthquakeHypocenterCoordinateModel, JMAEarthquakeHypocenterCodeModel, \
@@ -20,174 +20,87 @@ class JMAEEWLandSea(str, Enum):
 
 
 class JMAEEWEarthquakeHypocenterArea(BaseModel):
-    name: str
-    code: JMAEarthquakeHypocenterCodeModel
-    coordinate: JMAEarthquakeHypocenterCoordinateModel
-    reduced_name: Optional[str]
-    reduced_code: Optional[JMAEarthquakeHypocenterCodeModel]
-    land_or_sea: Optional[JMAEEWLandSea]
-
-    class Config:
-        allow_population_by_field_name = True
-        fields = {
-            "name": "Name",
-            "code": "Code",
-            "coordinate": "jmx_eb:Coordinate",
-            "reduced_name": "ReduceName",
-            "reduced_code": "ReduceCode",
-            "land_or_sea": "LandOrSea"
-        }
+    name: str = Field(validation_alias="Name")
+    code: JMAEarthquakeHypocenterCodeModel = Field(validation_alias="Code")
+    coordinate: JMAEarthquakeHypocenterCoordinateModel = Field(validation_alias="jmx_eb:Coordinate")
+    reduced_name: Optional[str] = Field(None, validation_alias="ReduceName")
+    reduced_code: Optional[JMAEarthquakeHypocenterCodeModel] = Field(None, validation_alias="ReduceCode")
+    land_or_sea: Optional[JMAEEWLandSea] = Field(None, validation_alias="LandOrSea")
+    model_config = ConfigDict(populate_by_name=True)
 
 
 class JMAEEWEarthquakeHypocenter(BaseModel):
-    area: JMAEEWEarthquakeHypocenterArea
-
-    # Accuracy omitted
-
-    class Config:
-        allow_population_by_field_name = True
-        fields = {
-            "area": "Area"
-        }
+    area: JMAEEWEarthquakeHypocenterArea = Field(validation_alias="Area")
+    model_config = ConfigDict(populate_by_name=True)
 
 
 class JMAEEWEarthquake(BaseModel):
-    origin_time: Optional[datetime]
-    condition: Optional[str]
-    arrival_time: datetime
-    hypocenter: JMAEEWEarthquakeHypocenter
-    magnitude: JMAEarthquakeHypocenterMagnitudeModel
-
-    class Config:
-        allow_population_by_field_name = True
-        fields = {
-            "origin_time": "OriginTime",
-            "condition": "Condition",
-            "arrival_time": "ArrivalTime",
-            "hypocenter": "Hypocenter",
-            "magnitude": "jmx_eb:Magnitude"
-        }
+    origin_time: Optional[datetime] = Field(None, validation_alias="OriginTime")
+    condition: Optional[str] = Field(None, validation_alias="Condition")
+    arrival_time: datetime = Field(validation_alias="ArrivalTime")
+    hypocenter: JMAEEWEarthquakeHypocenter = Field(validation_alias="Hypocenter")
+    magnitude: JMAEarthquakeHypocenterMagnitudeModel = Field(validation_alias="jmx_eb:Magnitude")
+    model_config = ConfigDict(populate_by_name=True)
 
 
 class JMAEEWForecastKind(BaseModel):
-    kind: JMANameCodeModel
-
-    class Config:
-        allow_population_by_field_name = True
-        fields = {
-            "kind": "Kind"
-        }
+    kind: JMANameCodeModel = Field(validation_alias="Kind")
+    model_config = ConfigDict(populate_by_name=True)
 
 
 class JMAEEWAreaDetail(BaseModel):
-    name: str
-    code: str
-    forecast_kind: JMAEEWForecastKind
-    forecast_intensity: SvirForecastInt
-    arrival_time: Optional[datetime]
-    condition: Optional[str]
-    forecast_long_period_intensity: Optional[SvirForecastLgInt]
-
-    class Config:
-        allow_population_by_field_name = True
-        fields = {
-            "name": "Name",
-            "code": "Code",
-            "forecast_kind": "Category",
-            "forecast_intensity": "ForecastInt",
-            "forecast_long_period_intensity": "ForecastLgInt",
-            "arrival_time": "ArrivalTime",
-            "condition": "Condition"
-        }
+    name: str = Field(validation_alias="Name")
+    code: str = Field(validation_alias="Code")
+    forecast_kind: JMAEEWForecastKind = Field(validation_alias="Category")
+    forecast_intensity: SvirForecastInt = Field(validation_alias="ForecastInt")
+    forecast_long_period_intensity: Optional[SvirForecastLgInt] = Field(None, validation_alias="ForecastLgInt")
+    arrival_time: Optional[datetime] = Field(None, validation_alias="ArrivalTime")
+    condition: Optional[str] = Field(None, validation_alias="Condition")
+    model_config = ConfigDict(populate_by_name=True)
 
 
 class JMAEEWAreaIntensity(BaseModel):
-    name: str
-    code: str
-    area: JMAEEWAreaDetail
-
-    class Config:
-        allow_population_by_field_name = True
-        fields = {
-            "name": "Name",
-            "code": "Code",
-            "area": "Area"
-        }
+    name: str = Field(validation_alias="Name")
+    code: str = Field(validation_alias="Code")
+    area: JMAEEWAreaDetail = Field(validation_alias="Area")
+    model_config = ConfigDict(populate_by_name=True)
 
 
 class JMAEEWIntensityForecast(BaseModel):
     # CodeDefine omitted
-    forecast_intensity: SvirForecastInt
+    forecast_intensity: SvirForecastInt = Field(validation_alias="ForecastInt")
     # Appendix omitted
-    forecast_long_period_intensity: Optional[SvirForecastLgInt]
-    areas: Optional[list[JMAEEWAreaIntensity] | JMAEEWAreaIntensity]
-
-    class Config:
-        allow_population_by_field_name = True
-        fields = {
-            "forecast_intensity": "ForecastInt",
-            "forecast_long_period_intensity": "ForecastLgInt",
-            "areas": "Pref"
-        }
+    forecast_long_period_intensity: Optional[SvirForecastLgInt] = Field(None, validation_alias="ForecastLgInt")
+    areas: Optional[list[JMAEEWAreaIntensity] | JMAEEWAreaIntensity] = Field(None, validation_alias="Pref")
+    model_config = ConfigDict(populate_by_name=True)
 
 
 class JMAEEWIntensity(BaseModel):
-    forecast: Optional[JMAEEWIntensityForecast]
-
-    class Config:
-        allow_population_by_field_name = True
-        fields = {
-            "forecast": "Forecast"
-        }
+    forecast: Optional[JMAEEWIntensityForecast] = Field(None, validation_alias="Forecast")
+    model_config = ConfigDict(populate_by_name=True)
 
 
 class JMAEEWComments(BaseModel):
-    warning_comment: Optional[JMAWarningCommentModel]
-
-    class Config:
-        allow_population_by_field_name = True
-        fields = {
-            "warning_comment": "WarningComment"
-        }
+    warning_comment: Optional[JMAWarningCommentModel] = Field(None, validation_alias="WarningComment")
+    model_config = ConfigDict(populate_by_name=True)
 
 
 class JMAEEWBody(BaseModel):
-    earthquake: Optional[JMAEEWEarthquake]
-    intensity: Optional[JMAEEWIntensity]
-    text: Optional[str]
-    comments: Optional[JMAEEWComments]
-    next_advisory: Optional[str]
-
-    class Config:
-        allow_population_by_field_name = True
-        fields = {
-            "earthquake": "Earthquake",
-            "intensity": "Intensity",
-            "text": "Text",
-            "comments": "Comments",
-            "next_advisory": "NextAdvisory"
-        }
+    earthquake: Optional[JMAEEWEarthquake] = Field(None, validation_alias="Earthquake")
+    intensity: Optional[JMAEEWIntensity] = Field(None, validation_alias="Intensity")
+    text: Optional[str] = Field(None, validation_alias="Text")
+    comments: Optional[JMAEEWComments] = Field(None, validation_alias="Comments")
+    next_advisory: Optional[str] = Field(None, validation_alias="NextAdvisory")
+    model_config = ConfigDict(populate_by_name=True)
 
 
 class JMAEEWModel(BaseModel):
-    control: JMAControlModel
-    head: JMAHeadModel
-    body: JMAEEWBody
-
-    class Config:
-        allow_population_by_field_name = True
-        fields = {
-            "control": "Control",
-            "head": "Head",
-            "body": "Body"
-        }
+    control: JMAControlModel = Field(validation_alias="Control")
+    head: JMAHeadModel = Field(validation_alias="Head")
+    body: JMAEEWBody = Field(validation_alias="Body")
+    model_config = ConfigDict(populate_by_name=True)
 
 
 class JMAEEWApiModel(BaseModel):
-    report: JMAEEWModel
-
-    class Config:
-        allow_population_by_field_name = True
-        fields = {
-            "report": "Report"
-        }
+    report: JMAEEWModel = Field(validation_alias="Report")
+    model_config = ConfigDict(populate_by_name=True)
