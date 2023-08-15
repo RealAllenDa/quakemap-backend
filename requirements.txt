@@ -1,11 +1,11 @@
 pydantic~=2.1.1
-loguru~=0.6.0
-requests~=2.27.1
+loguru~=0.7.0
+requests~=2.31.0
 xmltodict~=0.13.0
 pyyaml~=6.0
 urllib3~=1.26.14
 uvicorn~=0.23.2
-python-dotenv~=0.20.0
+python-dotenv~=0.21.1
 fastapi~=0.101.0
 starlette~=0.27.0
 websocket-client~=1.6.1
