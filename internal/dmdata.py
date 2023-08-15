@@ -1,3 +1,4 @@
+import asyncio
 import base64
 import functools
 import gzip
@@ -6,6 +7,7 @@ import json
 import os
 import re
 import sys
+import threading
 import time
 from typing import Callable, Optional
 
@@ -14,18 +16,20 @@ import websocket
 import xmltodict
 from loguru import logger
 
-from model.config import RunEnvironment
-from model.dmdata.auth import DmdataRefreshTokenResponseModel, DmdataRequestTokenBodyModel, DmdataRefreshTokenErrorModel
-from model.dmdata.generic import DmdataGenericErrorResponse, DmdataMessageTypes, DmdataStatusModel
-from model.dmdata.socket import DmdataSocketStartResponse, DmdataSocketStartBody, DmdataSocketError, DmdataPing, \
+from models import DbMessages
+from schemas.config import RunEnvironment
+from schemas.dmdata.auth import DmdataRefreshTokenResponseModel, DmdataRequestTokenBodyModel, \
+    DmdataRefreshTokenErrorModel
+from schemas.dmdata.generic import DmdataGenericErrorResponse, DmdataMessageTypes, DmdataStatusModel
+from schemas.dmdata.socket import DmdataSocketStartResponse, DmdataSocketStartBody, DmdataSocketError, DmdataPing, \
     DmdataSocketStart, DmdataPong, DmdataSocketData
-from model.eew import IedredEEWModel, IedredParseStatus, IedredEventType, SvirEventType, IedredEventTypeEnum, \
+from schemas.eew import IedredEEWModel, IedredParseStatus, IedredEventType, SvirEventType, IedredEventTypeEnum, \
     IedredCodeStringDetail, IedredTime, IedredHypocenter, IedredLocation, IedredEpicenterDepth, IedredMagnitude, \
     IedredMaxIntensity, EEWIntensityEnum, IedredForecastAreasArrival, IedredForecastAreas, IedredForecastAreasIntensity
-from model.eew.eew_svir import SvirToIntensityEnum, SvirLgToIntensityEnum
-from model.jma.eew import JMAEEWApiModel
-from model.jma.tsunami_expectation import JMAInfoType, JMAControlStatus
-from model.sdk import ResponseTypeModel, ResponseTypes, RequestTypes
+from schemas.eew.eew_svir import SvirToIntensityEnum, SvirLgToIntensityEnum
+from schemas.jma.eew import JMAEEWApiModel
+from schemas.jma.generic import JMAControlStatus, JMAInfoType
+from schemas.sdk import ResponseTypeModel, ResponseTypes, RequestTypes
 from sdk import web_request, func_timer, obj_to_model, generate_list
 
 
@@ -93,7 +97,7 @@ class DMDataFetcher:
         status = (self.active_socket_id is not None and not self.websocket.has_errored and pong_time_delta < 1800)
         return DmdataStatusModel(
             status="OK" if status else "FAIL",
-            active_socket_id=self.active_socket_id,
+            active_socket_id=str(self.active_socket_id),
             websocket_errored=websocket_errored,
             last_pong_time=self.last_pong_time,
             pong_time_delta=pong_time_delta
@@ -200,7 +204,7 @@ class DMDataFetcher:
                 "VXSE43",
                 "VXSE45"
             ],
-            app_name="JQuake-1.8.5"
+            appName="JQuake-1.8.5"
         ).model_dump_json(by_alias=True)
         response = web_request(
             url=f"https://api.dmdata.jp/v2/socket",
@@ -294,11 +298,47 @@ class DMDataFetcher:
             logger.error("Failed to parse ping message: message is None")
             return
         self.pong = DmdataPong(
-            ping_id=message.ping_id
+            pingId=message.ping_id
         ).model_dump_json(by_alias=True)
         logger.debug(f"Sending pong: {self.pong}")
         self.websocket.send(self.pong)
         self.last_pong_time = int(time.time())
+
+    @staticmethod
+    async def store_message(message: DmdataSocketData, xml_message: dict):
+        """Stores data message to the database."""
+        base = message.xmlReport
+        logger.debug(
+            f"Storing message to the database -> {base.head.event_id} / {base.head.serial} at {base.head.report_date}"
+        )
+        from env import Env
+        if base.head.serial is None:
+            serial = 0
+        else:
+            serial = int(base.head.serial)
+
+        session = None
+        try:
+            session = await Env.db_instance.get_session()
+            message = DbMessages(
+                type=message.head.type.value,
+                event_id=base.head.event_id,
+                serial=serial,
+                event_time=base.head.target_date,
+                data=xml_message
+            )
+            session.add(message)
+            await session.commit()
+            await session.refresh(message)
+        except Exception:
+            logger.exception("Failed to store message to the database.")
+        finally:
+            if session:
+                await session.invalidate()
+
+    @staticmethod
+    def store_message_middleware(*params):
+        asyncio.run(DMDataFetcher.store_message(*params))
 
     @func_timer(log_func=logger.success)
     def parse_data_message(self, message: Optional[DmdataSocketData]) -> int:
@@ -322,6 +362,8 @@ class DMDataFetcher:
         if message.compression != "gzip" or message.encoding != "base64":
             logger.error("Failed to parse data message: Data compression is not gzip/Encoding is not base64")
             return 1
+        if message.xmlReport is None:
+            logger.error("Suspicious message: format is XML but no xmlReport")
 
         try:
             raw_io = io.BytesIO(base64.b64decode(message.body))
@@ -332,6 +374,10 @@ class DMDataFetcher:
         except Exception:
             logger.exception("Failed to parse data message.")
             return 1
+
+        t = threading.Thread(target=DMDataFetcher.store_message_middleware, args=(message, xml_message),
+                             daemon=True)
+        t.start()
 
         from internal.modules_init import module_manager
         if message.head.type == DmdataMessageTypes.eew_warning \
@@ -363,6 +409,8 @@ class DMDataFetcher:
             except Exception:
                 logger.exception("Failed to parse Dmdata tsunami.")
                 return 1
+
+        t.join(5)
         return 0
         # earthquake todo
 

@@ -38,8 +38,8 @@ from loguru import logger
 from pydantic import BaseModel
 from requests import ReadTimeout, Response
 
-from model.config import ProxyConfigModel
-from model.sdk import ResponseTypeModel, ResponseModel, ResponseTypes, RequestTypes
+from schemas.config import ProxyConfigModel
+from schemas.sdk import ResponseTypeModel, ResponseModel, ResponseTypes, RequestTypes
 
 OnlyModel = TypeVar("OnlyModel", bound=Type[BaseModel])
 T = TypeVar("T")

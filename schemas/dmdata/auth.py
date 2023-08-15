@@ -2,7 +2,7 @@ from enum import Enum
 
 from pydantic import BaseModel
 
-from model.dmdata.generic import DmdataGenericErrorModel
+from schemas.dmdata.generic import DmdataGenericErrorModel
 
 
 class DmdataRequestTokenBodyModel(BaseModel):

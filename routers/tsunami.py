@@ -5,8 +5,8 @@ from loguru import logger
 from starlette.responses import PlainTextResponse
 
 from internal.modules_init import module_manager
-from model.router import GENERIC_STATUS
-from model.tsunami import TsunamiTotalInfoModel
+from schemas.router import GENERIC_STATUS
+from schemas.tsunami import TsunamiTotalInfoModel
 
 tsunami_router = APIRouter(
     prefix="/api",

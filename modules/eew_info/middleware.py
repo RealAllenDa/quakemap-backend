@@ -2,8 +2,8 @@ import time
 
 from loguru import logger
 
-from model.eew import EEWParseReturnModel, EEWReturnModel, EEWAlertTypeEnum
-from model.intensity2color import AreaIntensityModel
+from schemas.eew import EEWParseReturnModel, EEWReturnModel, EEWAlertTypeEnum
+from schemas.intensity2color import AreaIntensityModel
 
 __all__ = ["EEWInfoMiddleWare"]
 

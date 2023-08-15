@@ -4,18 +4,18 @@ from typing import Optional
 from loguru import logger
 
 from env import Env
-from model.config import EEWTargetEnum
-from model.eew import KmoniTimeModel, KmoniEEWModel, EEWReturnModel, EEWAlertTypeEnum, EEWConvertedIntensityEnum, \
+from modules.base_module import BaseModule
+from schemas.config import EEWTargetEnum
+from schemas.eew import KmoniTimeModel, KmoniEEWModel, EEWReturnModel, EEWAlertTypeEnum, EEWConvertedIntensityEnum, \
     KmoniReturnHypocenterModel, KmoniReturnAreaColoringModel, EEWParseReturnModel, IedredEEWModel, SvirEEWModel, \
     IedredParseStatus, EEWIntensityEnum, SvirEventType
-from model.eew.eew import EEWCancelledModel
-from model.eew.eew_iedred import IedredCodeStringDetail, IedredTime, IedredHypocenter, IedredLocation, \
+from schemas.eew.eew import EEWCancelledModel
+from schemas.eew.eew_iedred import IedredCodeStringDetail, IedredTime, IedredHypocenter, IedredLocation, \
     IedredEpicenterDepth, IedredMagnitude, IedredMaxIntensity, IedredEventType, IedredEventTypeEnum, \
     IedredForecastAreasArrival, IedredForecastAreas, IedredForecastAreasIntensity
-from model.intensity2color import IntensityToColorReturnModel, AreaIntensityModel
-from model.pswave import PSWaveTimeModel
-from model.sdk import ResponseTypeModel, ResponseTypes
-from modules.base_module import BaseModule
+from schemas.intensity2color import IntensityToColorReturnModel, AreaIntensityModel
+from schemas.pswave import PSWaveTimeModel
+from schemas.sdk import ResponseTypeModel, ResponseTypes
 from sdk import func_timer, web_request, verify_none, json_to_model, relpath
 
 

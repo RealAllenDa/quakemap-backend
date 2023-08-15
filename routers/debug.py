@@ -8,11 +8,11 @@ from fastapi import APIRouter
 from starlette.responses import JSONResponse
 
 from env import Env
-from model.dmdata.generic import DmdataMessageTypes
-from model.dmdata.socket import DmdataSocketData, DmdataSocketDataHead
-from model.eew import EEWReturnModel
-from model.p2p_info import EarthquakeIssueTypeEnum
-from model.router import GenericResponseModel
+from schemas.dmdata.generic import DmdataMessageTypes
+from schemas.dmdata.socket import DmdataSocketData, DmdataSocketDataHead
+from schemas.eew import EEWReturnModel
+from schemas.p2p_info import EarthquakeIssueTypeEnum
+from schemas.router import GenericResponseModel
 from sdk import relpath
 
 debug_router = APIRouter(

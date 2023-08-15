@@ -22,15 +22,16 @@ from urllib3.exceptions import InsecureRequestWarning
 import config
 from env import Env
 from internal.centroid import Centroid
+from internal.db import Database
 from internal.dmdata import DMDataFetcher
 from internal.geojson import GeoJson
 from internal.intensity2color import IntensityToColor
 from internal.modules_init import module_manager
 from internal.pswave import PSWave
-from model.config import RunEnvironment
-from model.router import GenericResponseModel
 from routers import global_earthquake_router, earthquake_router, shake_level_router, tsunami_router, debug_router, \
     heartbeat_router, index_router
+from schemas.config import RunEnvironment
+from schemas.router import GenericResponseModel
 from sdk import relpath
 
 # --- Constants
@@ -140,6 +141,7 @@ Env.intensity2color_instance = IntensityToColor()
 Env.pswave_instance = PSWave()
 if Env.config.dmdata.enabled:
     Env.dmdata_instance = DMDataFetcher()
+Env.db_instance = Database()
 module_manager.init()
 
 if __name__ == "__main__":

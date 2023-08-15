@@ -3,8 +3,8 @@ from io import BytesIO
 from PIL import Image
 from loguru import logger
 
-from model.eew import EEWConvertedIntensityEnum
-from model.intensity2color import IntensityToColorReturnModel, StationIntensityModel, AreaIntensityModel, \
+from schemas.eew import EEWConvertedIntensityEnum
+from schemas.intensity2color import IntensityToColorReturnModel, StationIntensityModel, AreaIntensityModel, \
     IntensityToColorIntEnum
 from sdk import verify_type, func_timer
 

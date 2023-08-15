@@ -8,7 +8,7 @@ __all__ = ["KmoniTimeModel", "KmoniEEWModel", "EEWReturnModel",
            "EEWParseReturnModel", "KmoniReturnHypocenterModel", "KmoniReturnAreaColoringModel",
            "EEWCancelledModel"]
 
-from model.intensity2color import StationIntensityModel, AreaIntensityModel
+from schemas.intensity2color import StationIntensityModel, AreaIntensityModel
 
 OnlyBlankStr = str
 

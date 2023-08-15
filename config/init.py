@@ -5,7 +5,7 @@ import time
 from loguru import logger
 
 from env import Env
-from model.config import ConfigModel, RunEnvironment
+from schemas.config import ConfigModel, RunEnvironment
 from sdk import yaml_to_model, relpath
 
 __all__ = ["init_config"]
