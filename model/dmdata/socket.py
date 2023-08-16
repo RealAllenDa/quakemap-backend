@@ -1,7 +1,7 @@
 from datetime import datetime
 from typing import Optional
 
-from pydantic import ConfigDict, Field, BaseModel
+from pydantic import Field, BaseModel
 
 from model.dmdata.generic import DmdataGenericResponse, DmdataMessageTypes
 
@@ -9,8 +9,7 @@ from model.dmdata.generic import DmdataGenericResponse, DmdataMessageTypes
 class DmdataSocketStartBody(BaseModel):
     classifications: list[str]
     types: list[str]
-    app_name: str = Field(validation_alias="appName")
-    model_config = ConfigDict(populate_by_name=True)
+    app_name: str = Field(alias="appName")
 
 
 class DmdataSocketModel(BaseModel):
@@ -40,26 +39,23 @@ class DmdataSocketError(BaseModel):
 
 class DmdataPing(BaseModel):
     type: str = Field("ping")
-    ping_id: str = Field(validation_alias="pingId")
-    model_config = ConfigDict(populate_by_name=True)
+    ping_id: str = Field(alias="pingId")
 
 
 class DmdataPong(BaseModel):
     type: str = "pong"
-    ping_id: str = Field(validation_alias="pingId")
-    model_config = ConfigDict(populate_by_name=True)
+    ping_id: str = Field(alias="pingId")
 
 
 class DmdataSocketStart(BaseModel):
     type: str = Field("start")
-    socket_id: int = Field(validation_alias="socketId")
+    socket_id: int = Field(alias="socketId")
     classifications: list[str]
     types: Optional[list[str]] = None
     test: str
     formats: list[str]
     # appName omitted
     time: datetime
-    model_config = ConfigDict(populate_by_name=True)
 
 
 class DmdataSocketDataPassing(BaseModel):

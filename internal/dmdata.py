@@ -93,7 +93,7 @@ class DMDataFetcher:
         status = (self.active_socket_id is not None and not self.websocket.has_errored and pong_time_delta < 1800)
         return DmdataStatusModel(
             status="OK" if status else "FAIL",
-            active_socket_id=self.active_socket_id,
+            active_socket_id=str(self.active_socket_id),
             websocket_errored=websocket_errored,
             last_pong_time=self.last_pong_time,
             pong_time_delta=pong_time_delta
@@ -200,7 +200,7 @@ class DMDataFetcher:
                 "VXSE43",
                 "VXSE45"
             ],
-            app_name="JQuake-1.8.5"
+            appName="JQuake-1.8.5"
         ).model_dump_json(by_alias=True)
         response = web_request(
             url=f"https://api.dmdata.jp/v2/socket",
@@ -294,7 +294,7 @@ class DMDataFetcher:
             logger.error("Failed to parse ping message: message is None")
             return
         self.pong = DmdataPong(
-            ping_id=message.ping_id
+            pingId=message.ping_id
         ).model_dump_json(by_alias=True)
         logger.debug(f"Sending pong: {self.pong}")
         self.websocket.send(self.pong)
