@@ -5,7 +5,7 @@ from pydantic import ConfigDict, BaseModel, Field
 
 
 class DmdataMessageTypes(str, Enum):
-    eew_forecast = "VXSE44"
+    eew_forecast = "VXSE45"
     eew_warning = "VXSE43"
 
     eq_intensity_report = "VXSE51"
