@@ -1,8 +1,8 @@
 """init
 
-Revision ID: 18d4944eb6bb
+Revision ID: 95e43a4db357
 Revises: 
-Create Date: 2023-08-16 14:43:17.979786
+Create Date: 2023-08-17 11:50:02.027551
 
 """
 from typing import Sequence, Union
@@ -11,7 +11,7 @@ import sqlalchemy as sa
 from alembic import op
 
 # revision identifiers, used by Alembic.
-revision: str = '18d4944eb6bb'
+revision: str = '95e43a4db357'
 down_revision: Union[str, None] = None
 branch_labels: Union[str, Sequence[str], None] = None
 depends_on: Union[str, Sequence[str], None] = None
@@ -22,11 +22,11 @@ def upgrade() -> None:
     op.create_table('messages',
                     sa.Column('id', sa.Integer(), autoincrement=True, nullable=False),
                     sa.Column('type', sa.String(), nullable=True),
-                    sa.Column('event_id', sa.Integer(), nullable=True),
+                    sa.Column('event_id', sa.String(), nullable=True),
                     sa.Column('serial', sa.Integer(), nullable=True),
-                    sa.Column('event_time', sa.DateTime(), nullable=True),
-                    sa.Column('store_time', sa.DateTime(), server_default=sa.text('now()'), nullable=True),
-                    sa.Column('data', sa.String(), nullable=True),
+                    sa.Column('event_time', sa.DateTime(timezone=True), nullable=True),
+                    sa.Column('store_time', sa.DateTime(timezone=True), server_default=sa.text('now()'), nullable=True),
+                    sa.Column('data', sa.JSON(), nullable=True),
                     sa.PrimaryKeyConstraint('id')
                     )
     op.create_index(op.f('ix_messages_event_id'), 'messages', ['event_id'], unique=False)
