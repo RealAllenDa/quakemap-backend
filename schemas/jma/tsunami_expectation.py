@@ -4,6 +4,8 @@ from typing import Optional
 
 from pydantic import ConfigDict, BaseModel, Field
 
+from schemas.jma.generic import JMAReportBaseModel
+
 
 class JMAMessageTypeEnum(str, Enum):
     tsunami_information = "VTSE41"
@@ -13,54 +15,6 @@ class JMAMessageTypeEnum(str, Enum):
     @classmethod
     def _missing_(cls, value: object):
         return JMAMessageTypeEnum.others
-
-
-class JMAControlStatus(str, Enum):
-    normal = "通常"
-    train = "訓練"
-    test = "試験"
-    unknown = ""
-
-    @classmethod
-    def _missing_(cls, value: object):
-        return JMAControlStatus.unknown
-
-
-class JMAControlModel(BaseModel):
-    title: str = Field(validation_alias="Title")
-    date: datetime = Field(validation_alias="DateTime")
-    status: JMAControlStatus = Field(validation_alias="Status")
-    editorial_office: str = Field(validation_alias="EditorialOffice")
-    publishing_office: str = Field(validation_alias="PublishingOffice")
-    model_config = ConfigDict(populate_by_name=True)
-
-
-class JMAInfoType(str, Enum):
-    issued = "発表"
-    correction = "訂正"
-    cancel = "取消"
-    unknown = ""
-
-    @classmethod
-    def _missing_(cls, value: object):
-        return JMAInfoType.unknown
-
-
-class JMAHeadHeadlineModel(BaseModel):
-    text: Optional[str] = Field(None, validation_alias="Text")
-    model_config = ConfigDict(populate_by_name=True)
-
-
-class JMAHeadModel(BaseModel):
-    title: str = Field(validation_alias="Title")
-    report_date: datetime = Field(validation_alias="ReportDateTime")
-    target_date: Optional[datetime] = Field(None, validation_alias="TargetDateTime")
-    event_id: str = Field(validation_alias="EventID")
-    info_status: JMAInfoType = Field(validation_alias="InfoType")
-    serial: Optional[str] = Field(None, validation_alias="Serial")
-    info_type: str = Field(validation_alias="InfoKind")
-    headline: JMAHeadHeadlineModel = Field(validation_alias="Headline")
-    model_config = ConfigDict(populate_by_name=True)
 
 
 class JMANameCodeModel(BaseModel):
@@ -211,9 +165,7 @@ class JMATsunamiBodyModel(BaseModel):
     model_config = ConfigDict(populate_by_name=True)
 
 
-class JMATsunamiExpectationModel(BaseModel):
-    control: JMAControlModel = Field(validation_alias="Control")
-    head: JMAHeadModel = Field(validation_alias="Head")
+class JMATsunamiExpectationModel(JMAReportBaseModel):
     body: JMATsunamiBodyModel = Field(validation_alias="Body")
     model_config = ConfigDict(populate_by_name=True)
 

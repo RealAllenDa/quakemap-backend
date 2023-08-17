@@ -10,8 +10,10 @@ from modules.base_module import BaseModule
 from schemas.config import RunEnvironment
 from schemas.dmdata.generic import DmdataMessageTypes
 from schemas.jma import JMAList
-from schemas.jma.tsunami_expectation import JMAMessageTypeEnum, JMATsunamiExpectationApiModel, JMAControlStatus, \
-    JMATsunamiForecastItem, JMATsunamiFirstHeightCondition, JMAInfoType, JMATsunamiModel
+from schemas.jma.generic import JMAControlStatus, JMAInfoType
+from schemas.jma.tsunami_expectation import JMAMessageTypeEnum, JMATsunamiExpectationApiModel, JMATsunamiForecastItem, \
+    JMATsunamiFirstHeightCondition, \
+    JMATsunamiModel
 from schemas.jma.tsunami_watch import JMATsunamiWatchApiModel, JMAWatchMaxHeightCondition, JMATsunamiWatchContentModel
 from schemas.sdk import ResponseTypeModel, ResponseTypes
 from schemas.tsunami import TsunamiExpectationReturnModel, TsunamiParseOrigin, TsunamiExpectationModel, \
