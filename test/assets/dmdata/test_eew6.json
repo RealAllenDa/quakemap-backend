@@ -1,0 +1,52 @@
+{
+  "type": "data",
+  "version": "2.0",
+  "id": "6c9f33afbcdc3b27463e721c5e50518f2897705ef19a3b2863f7b420148231819e70f0b639424877c8867efb26560917",
+  "classification": "telegram.earthquake",
+  "passing": [
+    {
+      "name": "socket-04",
+      "time": "2023-08-17T11:55:08.929Z"
+    },
+    {
+      "name": "ires-13",
+      "time": "2023-08-17T11:55:08.931Z"
+    },
+    {
+      "name": "websocket-03",
+      "time": "2023-08-17T11:55:08.933Z"
+    }
+  ],
+  "head": {
+    "type": "VXSE53",
+    "author": "JPOS",
+    "time": "2023-08-17T11:55:00.000Z",
+    "designation": null,
+    "test": false,
+    "xml": true
+  },
+  "xmlReport": {
+    "control": {
+      "title": "震源・震度に関する情報",
+      "dateTime": "2023-08-17T11:55:08Z",
+      "status": "通常",
+      "editorialOffice": "大阪管区気象台",
+      "publishingOffice": "気象庁"
+    },
+    "head": {
+      "title": "震源・震度情報",
+      "reportDateTime": "2023-08-17T20:55:00+09:00",
+      "targetDateTime": "2023-08-17T20:55:00+09:00",
+      "eventId": "20230817205205",
+      "serial": "1",
+      "infoType": "発表",
+      "infoKind": "地震情報",
+      "infoKindVersion": "1.0_1",
+      "headline": "１７日２０時５２分ころ、地震がありました。"
+    }
+  },
+  "format": "xml",
+  "compression": "gzip",
+  "encoding": "base64",
+  "body": "H4sIAAAAAAAAAK1X3VPTWBR/71/RySsD+WhrkQlx1q9ZZ8fV2WV92Bcn0AsE26abBgbeSFnED5AqKCAwiMuHs2qhgoJt0T8mvQl96r+w5yZpaJOKXYRhmtubc3/nnN/56Ln8pdFEPDiClLQkJ7sptoOhgijZJ8ek5EA39UfP9fZO6pIQ4H9DKVlRgyCcTHdTg6qa6qJp+NZxT0oPysMdA3LHUIoeSoiwx9KULdg1lBhtQRjgr8hJVZHjsOqR1DgSKitTRiGrTxRhgQtbuva28uK1ri3pmcfGxCR+ledpWzDAXxVV1CMlkMAxXKid6Wxnoz0s2xWJdDGdf/K0+zrA/66K6nBaqIy/xIeHPO18DfDXYpIqK5IYv9XfL/UhAW9sVxb/NXPreLpg7C4c59fx7C5Pe8UC/O3h3jh4BFQ5W450QeNp37sAT594+TMSY62SKSX7ZSUhqhCgy2JaStuMNeXJy40dtWYMcYzFENPGXIRPnvZIAr6oDKCWjnokgc8RlFRvXLXOMJ1slGMi8A8EOvsB/ga41DOWQoK5VDhef8PT7gZECRGOBRYCZK9s8V+kZEzAK7vEY8dLd/tE4o6dyALk8V32RKK2bRMfl5KWh2hUFaqlp9XSgrGwWS09q5ayxlKmWnoOa/zgvq7N6ZkZfVyzteratK5l9MwjXfuiawu6tqaPZ8B7ggKxrQO21vC8LMfGWg1yL8jSaSSlE3JcHhhrKKG7qPf7ACiOEkBvXYZcExV18K9h8R6x6ZYiDUjJZqFk60JZJxXgf1IUaUSMNzvD1Z2pFwN+x1JyH9iBFAsBifD4VYRXQDHOPjW1RZ62vpOaj6GgCkHvpkj2buSAZ5ydoYToRZbUSowI2e53XZFlBVoS5FgwhtJ9ipRSrX6FpxfMg51qac4K3xMIJekW4+PGat78OG0F132VdV4d5HXtOSyqpXnYrB49rh7NUMEYNINENwVmGivvjMN3YIy5V6SEthDXEW1j4ZNpDzPwR/O0zygSdMdZuoEBR/KmOJCU1GHX35tDVKMf1dJ7y1Iw8xklhDo4V4l7lGA3hPQG6EimJXWMhLc3jZQRq0c4zF5F/U6ag8bgaEpUB7up2wrqt5ilGkqpWpqtTBxVtDlcWDFXps33DyGv7Wr0nSZuNocw93ehaqBn4rW1750Hqx0Qu2VCB3OqbKJoam9xPu/C4sOMOV8wVp+2YBaBdWkh/R34cPTYDfJ4aw9ia2Y+u0h0A1k3xVE4LwD9zgqaPMALdg7jXA7vPwGGnBy2iBbCESdbm522ssJzGpK2MvEGf96rTD2BRQNY9AJzChpxsIZW/IQ/rAM5Hls4JsScBuGlxwsHxuGDVWAcPvH9SShIc+nIXNurlh75NXG1QuUdNeTB+0Lwf9SaB7M4+8CY3zEejjfVGQrV62R/TKfxcYu4Orth5Neaawu3qs3KvrpGcErkIbs/fNW1vz2RZz1hY78ReRvtC+TOARjvsTkcYn3xZ1uIfyOoOb9bLv7jZwTQW+ffywhtlVJjRW1sQ8/wVVT4FAfqea2dLh++9xVSpEU6jf3N8ufJ463HvloKc0z0LFzWIwKv8HsCjPq4JOgh7jyyq8YCnlnws8C1xkL5KFsu7TSjIHIWCly442cfoLTsTyi2JujsD5azq8pY3IRf729QDbV8XnpwbspczjVVEoqel5LKp31IoKZKwmduSbUCpBvHhZOj1uyQIHMkuRddlxXUJ6ZVZysIt0LUY80veLmAcy/LxUX86JXxYoqqTdNkZNZytXn5rZ55QC5s+5vG3muy/3WiMjmjazt1c/Synpmrn6MtxxiOjbgTIO0xA7buiErrNgGHeGYXtLqXs3JxE2+8AIM8MwGxWNuAvqxrcOPM2ROIrm2Te6ffxAvciYknBtkThUshTe4A5Gnfr4TAf91SYmxwDwAA"
+}

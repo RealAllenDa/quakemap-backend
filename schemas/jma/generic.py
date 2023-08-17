@@ -49,7 +49,7 @@ class JMAHeadModel(BaseModel):
     info_status: JMAInfoType = Field(validation_alias=AliasChoices("InfoType", "infoType"))
     serial: Optional[str] = Field(None, validation_alias=AliasChoices("Serial", "serial"))
     info_type: str = Field(validation_alias=AliasChoices("InfoKind", "infoKind"))
-    headline: Optional[JMAHeadHeadlineModel] = Field(validation_alias=AliasChoices("Headline", "headline"))
+    headline: Optional[JMAHeadHeadlineModel] | str = Field(validation_alias=AliasChoices("Headline", "headline"))
     model_config = ConfigDict(populate_by_name=True)
 
 
