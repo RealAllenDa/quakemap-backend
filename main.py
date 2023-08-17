@@ -22,6 +22,7 @@ from urllib3.exceptions import InsecureRequestWarning
 import config
 from env import Env
 from internal.centroid import Centroid
+from internal.db import Database
 from internal.dmdata import DMDataFetcher
 from internal.geojson import GeoJson
 from internal.intensity2color import IntensityToColor
@@ -140,6 +141,7 @@ Env.intensity2color_instance = IntensityToColor()
 Env.pswave_instance = PSWave()
 if Env.config.dmdata.enabled:
     Env.dmdata_instance = DMDataFetcher()
+Env.db_instance = Database()
 module_manager.init()
 
 if __name__ == "__main__":

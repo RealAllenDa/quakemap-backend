@@ -1,4 +1,5 @@
 from internal.centroid import Centroid
+from internal.db import Database
 from internal.dmdata import DMDataFetcher
 from internal.geojson import GeoJson
 from internal.intensity2color import IntensityToColor
@@ -25,6 +26,7 @@ class _Env:
         self._intensity_to_color_instance = None
         self._pswave_instance = None
         self._dmdata_instance = None
+        self._db_instance = None
 
     @property
     def run_env(self) -> RunEnvironment:
@@ -110,6 +112,16 @@ class _Env:
     def dmdata_instance(self, instance: DMDataFetcher) -> None:
         verify_type(instance, DMDataFetcher)
         self._dmdata_instance = instance
+
+    @property
+    def db_instance(self) -> Database:
+        verify_none(self._db_instance)
+        return self._db_instance
+
+    @db_instance.setter
+    def db_instance(self, instance: Database):
+        verify_type(instance, Database)
+        self._db_instance = instance
 
     @property
     def eew_debugging_enabled(self) -> bool:

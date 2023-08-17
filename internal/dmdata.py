@@ -1,3 +1,4 @@
+import asyncio
 import base64
 import functools
 import gzip
@@ -6,6 +7,7 @@ import json
 import os
 import re
 import sys
+import threading
 import time
 from typing import Callable, Optional
 
@@ -14,6 +16,7 @@ import websocket
 import xmltodict
 from loguru import logger
 
+from models import DbMessages
 from schemas.config import RunEnvironment
 from schemas.dmdata.auth import DmdataRefreshTokenResponseModel, DmdataRequestTokenBodyModel, \
     DmdataRefreshTokenErrorModel
@@ -25,7 +28,7 @@ from schemas.eew import IedredEEWModel, IedredParseStatus, IedredEventType, Svir
     IedredMaxIntensity, EEWIntensityEnum, IedredForecastAreasArrival, IedredForecastAreas, IedredForecastAreasIntensity
 from schemas.eew.eew_svir import SvirToIntensityEnum, SvirLgToIntensityEnum
 from schemas.jma.eew import JMAEEWApiModel
-from schemas.jma.tsunami_expectation import JMAInfoType, JMAControlStatus
+from schemas.jma.generic import JMAControlStatus, JMAInfoType
 from schemas.sdk import ResponseTypeModel, ResponseTypes, RequestTypes
 from sdk import web_request, func_timer, obj_to_model, generate_list
 
@@ -301,6 +304,42 @@ class DMDataFetcher:
         self.websocket.send(self.pong)
         self.last_pong_time = int(time.time())
 
+    @staticmethod
+    async def store_message(message: DmdataSocketData, xml_message: dict):
+        """Stores data message to the database."""
+        base = message.xmlReport
+        logger.debug(
+            f"Storing message to the database -> {base.head.event_id} / {base.head.serial} at {base.head.report_date}"
+        )
+        from env import Env
+        if base.head.serial is None:
+            serial = 0
+        else:
+            serial = int(base.head.serial)
+
+        session = None
+        try:
+            session = await Env.db_instance.get_session()
+            message = DbMessages(
+                type=message.head.type.value,
+                event_id=base.head.event_id,
+                serial=serial,
+                event_time=base.head.target_date,
+                data=xml_message
+            )
+            session.add(message)
+            await session.commit()
+            await session.refresh(message)
+        except Exception:
+            logger.exception("Failed to store message to the database.")
+        finally:
+            if session:
+                await session.invalidate()
+
+    @staticmethod
+    def store_message_middleware(*params):
+        asyncio.run(DMDataFetcher.store_message(*params))
+
     @func_timer(log_func=logger.success)
     def parse_data_message(self, message: Optional[DmdataSocketData]) -> int:
         """
@@ -323,6 +362,8 @@ class DMDataFetcher:
         if message.compression != "gzip" or message.encoding != "base64":
             logger.error("Failed to parse data message: Data compression is not gzip/Encoding is not base64")
             return 1
+        if message.xmlReport is None:
+            logger.error("Suspicious message: format is XML but no xmlReport")
 
         try:
             raw_io = io.BytesIO(base64.b64decode(message.body))
@@ -333,6 +374,10 @@ class DMDataFetcher:
         except Exception:
             logger.exception("Failed to parse data message.")
             return 1
+
+        t = threading.Thread(target=DMDataFetcher.store_message_middleware, args=(message, xml_message),
+                             daemon=True)
+        t.start()
 
         from internal.modules_init import module_manager
         if message.head.type == DmdataMessageTypes.eew_warning \
@@ -364,6 +409,8 @@ class DMDataFetcher:
             except Exception:
                 logger.exception("Failed to parse Dmdata tsunami.")
                 return 1
+
+        t.join(5)
         return 0
         # earthquake todo
 
