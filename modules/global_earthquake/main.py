@@ -3,9 +3,9 @@ from typing import List
 from loguru import logger
 
 from env import Env
-from model.global_earthquake import CEICApiModel, GlobalEarthquakeReturnModel, EpicenterModel
-from model.sdk import ResponseTypes, ResponseTypeModel
 from modules.base_module import BaseModule
+from schemas.global_earthquake import CEICApiModel, GlobalEarthquakeReturnModel, EpicenterModel
+from schemas.sdk import ResponseTypes, ResponseTypeModel
 from sdk import func_timer, todo, web_request, verify_none
 
 

@@ -20,8 +20,8 @@ __all__ = ["EarthquakeInfoReturnModel",
 
 # Not really optional, since all the data tagged with this
 # would be filled after variable initialization.
-from model.eew import EEWParseReturnModel, EEWCancelledModel
-from model.geojson import TsunamiGeoJsonModel
+from schemas.eew import EEWParseReturnModel, EEWCancelledModel
+from schemas.geojson import TsunamiGeoJsonModel
 
 FakeOptional = Optional
 # The dict which shall always be blank.

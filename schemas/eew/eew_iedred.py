@@ -8,8 +8,8 @@ from typing import Optional
 
 from pydantic import ConfigDict, BaseModel, Field
 
-from model.eew import EEWIntensityEnum
-from model.eew.eew_svir import SvirLgIntensityEnum
+from schemas.eew import EEWIntensityEnum
+from schemas.eew.eew_svir import SvirLgIntensityEnum
 
 Unknown = str
 

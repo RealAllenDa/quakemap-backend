@@ -8,7 +8,7 @@ from typing import Optional, Literal
 
 from pydantic import BaseModel, Field
 
-from model.p2p_info import TsunamiReturnModel
+from schemas.p2p_info import TsunamiReturnModel
 
 
 class TsunamiExpectationGrade(str, Enum):

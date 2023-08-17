@@ -4,9 +4,10 @@ from typing import Optional
 
 from pydantic import ConfigDict, BaseModel, Field
 
-from model.eew.eew_svir import SvirForecastInt, SvirForecastLgInt
-from model.jma.tsunami_expectation import JMAEarthquakeHypocenterCoordinateModel, JMAEarthquakeHypocenterCodeModel, \
-    JMAEarthquakeHypocenterMagnitudeModel, JMAControlModel, JMAHeadModel, JMAWarningCommentModel, JMANameCodeModel
+from schemas.eew.eew_svir import SvirForecastInt, SvirForecastLgInt
+from schemas.jma.generic import JMAReportBaseModel
+from schemas.jma.tsunami_expectation import JMAEarthquakeHypocenterCoordinateModel, JMAEarthquakeHypocenterCodeModel, \
+    JMAEarthquakeHypocenterMagnitudeModel, JMAWarningCommentModel, JMANameCodeModel
 
 
 class JMAEEWLandSea(str, Enum):
@@ -94,9 +95,7 @@ class JMAEEWBody(BaseModel):
     model_config = ConfigDict(populate_by_name=True)
 
 
-class JMAEEWModel(BaseModel):
-    control: JMAControlModel = Field(validation_alias="Control")
-    head: JMAHeadModel = Field(validation_alias="Head")
+class JMAEEWModel(JMAReportBaseModel):
     body: JMAEEWBody = Field(validation_alias="Body")
     model_config = ConfigDict(populate_by_name=True)
 

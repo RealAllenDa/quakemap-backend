@@ -3,14 +3,14 @@ import json
 from loguru import logger
 
 from env import Env
-from model.p2p_info import P2PQuakeModel, P2PTsunamiModel, EarthquakeIntensityEnum, EarthquakeTsunamiCommentsModel, \
+from modules.base_module import BaseModule
+from schemas.p2p_info import P2PQuakeModel, P2PTsunamiModel, EarthquakeIntensityEnum, EarthquakeTsunamiCommentsModel, \
     EarthquakeForeignTsunamiEnum, EarthquakeDomesticTsunamiEnum, EarthquakeReturnEpicenterModel, \
     EarthquakeIssueTypeEnum, EarthquakeReturnModel, EarthquakeAreaIntensityParsingModel, \
     EarthquakeAreaIntensityPointModel, EarthquakeStationIntensityPointModel, EarthquakeAreaIntensityModel, \
     P2PTotalInfoModel, TsunamiReturnModel
-from model.p2p_info import TsunamiAreaModel
-from model.sdk import ResponseTypeModel, ResponseTypes
-from modules.base_module import BaseModule
+from schemas.p2p_info import TsunamiAreaModel
+from schemas.sdk import ResponseTypeModel, ResponseTypes
 from sdk import func_timer, web_request, verify_none, relpath
 
 

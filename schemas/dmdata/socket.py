@@ -3,7 +3,8 @@ from typing import Optional
 
 from pydantic import Field, BaseModel
 
-from model.dmdata.generic import DmdataGenericResponse, DmdataMessageTypes
+from schemas.dmdata.generic import DmdataGenericResponse, DmdataMessageTypes
+from schemas.jma.generic import JMAReportBaseModel
 
 
 class DmdataSocketStartBody(BaseModel):
@@ -79,7 +80,7 @@ class DmdataSocketData(BaseModel):
     classification: str
     passing: list[DmdataSocketDataPassing]
     head: DmdataSocketDataHead
-    # xmlReport omitted
+    xmlReport: Optional[JMAReportBaseModel] = None
     format: str
     compression: Optional[str] = None
     encoding: str

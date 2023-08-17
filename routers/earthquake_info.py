@@ -1,9 +1,9 @@
 from fastapi import APIRouter
 
 from internal.modules_init import module_manager
-from model.p2p_info import EarthquakeInfoReturnModel
-from model.router import GENERIC_STATUS
 from modules.eew_info.middleware import EEWInfoMiddleWare
+from schemas.p2p_info import EarthquakeInfoReturnModel
+from schemas.router import GENERIC_STATUS
 
 earthquake_router = APIRouter(
     prefix="/api",
