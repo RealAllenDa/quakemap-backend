@@ -162,5 +162,7 @@ cython_debug/
 # Log files
 main.log
 
+.testing.env
+.production.env
 .development.env
 notes
