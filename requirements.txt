@@ -15,6 +15,6 @@ sentry-sdk~=1.29.2
 httpx~=0.23.3
 pytest~=7.4.0
 fastapi-sqlalchemy~=0.2.1
-alembic~=1.11.2
+alembic~=1.13.1
 asyncpg~=0.28.0
 sqlalchemy~=2.0.20
