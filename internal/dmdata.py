@@ -308,6 +308,9 @@ class DMDataFetcher:
     async def store_message(message: DmdataSocketData, xml_message: dict):
         """Stores data message to the database."""
         base = message.xmlReport
+        if base is None:
+            logger.error("Failed to store data message to the database: no xmlReport available")
+            return
         logger.debug(
             f"Storing message to the database -> {base.head.event_id} / {base.head.serial} at {base.head.report_date}"
         )
