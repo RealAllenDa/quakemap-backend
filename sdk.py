@@ -1,7 +1,7 @@
 """
- HomeNetwork Python SDK
+ HomeNetwork Python SDK (Pydantic v2)
  Licensed under GPL.
- 2022-2023 Allen Da.
+ 2022-2024 Allen Da.
  Current Version - 1.2.1
 
  Changelog:
