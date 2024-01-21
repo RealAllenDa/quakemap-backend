@@ -46,15 +46,8 @@ def get_tsunami_status() -> str:
         if is_tsunami_p2p == is_tsunami_jma:
             return get_is_tsunami(is_tsunami_p2p)
         else:
-            if is_tsunami_p2p is True:
-                # P2P will ALWAYS issue warning BEFORE JMA!!!
-                # If P2P has warning but JMA hasn't, maybe there's something wrong with JMA message parsing.
-                logger.warning("Message discrepancy between JMA and P2P: Probably JMA error, choosing P2P")
-                return get_is_tsunami(is_tsunami_p2p)
-            else:
-                # However, if P2P hasn't warning but JMA has, maybe P2P has a mistake.
-                logger.warning("Message discrepancy between JMA and P2P: Probably P2P error, choosing JMA")
-                return get_is_tsunami(is_tsunami_jma)
+            # There must be a tsunami. (False/True or True/False)
+            return get_is_tsunami(True)
     elif (not info) and p2p_info:
         logger.warning("JMA info not avail: returning P2P")
         return get_is_tsunami(is_tsunami_p2p)
