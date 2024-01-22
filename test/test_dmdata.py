@@ -79,6 +79,7 @@ class TestJMAParse(unittest.TestCase):
                           for f in os.listdir(relpath("./assets/eew_forecast"))
                           if isfile(join(relpath("./assets/eew_forecast"), f))]
 
+        module_manager.reload("eew_info")
         for i in forecast_files:
             with self.subTest(i):
                 previous_info = module_manager.get_module_info("eew_info")
@@ -102,6 +103,7 @@ class TestJMAParse(unittest.TestCase):
                          for f in os.listdir(relpath("./assets/eew_warning"))
                          if isfile(join(relpath("./assets/eew_warning"), f))]
 
+        module_manager.reload("eew_info")
         for i in warning_files:
             with self.subTest(i):
                 previous_info = module_manager.get_module_info("eew_info")
@@ -125,6 +127,7 @@ class TestJMAParse(unittest.TestCase):
                          for f in os.listdir(relpath("./assets/tsunami_expectation"))
                          if isfile(join(relpath("./assets/tsunami_expectation"), f))]
 
+        module_manager.reload("tsunami")
         for i in warning_files:
             with self.subTest(i):
                 previous_tsunami_expectation_info = module_manager.classes.get("tsunami").tsunami_expectation_info
@@ -154,6 +157,7 @@ class TestJMAParse(unittest.TestCase):
                          for f in os.listdir(relpath("./assets/tsunami_watch"))
                          if isfile(join(relpath("./assets/tsunami_watch"), f))]
 
+        module_manager.reload("tsunami")
         for i in warning_files:
             with self.subTest(i):
                 previous_tsunami_observation_info = module_manager.classes.get("tsunami").tsunami_obs_info
