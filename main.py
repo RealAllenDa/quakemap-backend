@@ -4,7 +4,6 @@ import sys
 
 import requests
 import sentry_sdk
-import urllib3
 import uvicorn
 from dotenv import load_dotenv
 from fastapi import FastAPI
@@ -78,7 +77,8 @@ if Env.config.sentry.enabled:
         sys.exit(1)
 
 # --- Runtime initialization
-urllib3.disable_warnings(InsecureRequestWarning)
+# noinspection PyUnresolvedReferences
+requests.packages.urllib3.disable_warnings(InsecureRequestWarning)
 # Force IPV4: currently no ipv6 allowed
 # noinspection PyUnresolvedReferences
 requests.packages.urllib3.util.connection.HAS_IPV6 = False
