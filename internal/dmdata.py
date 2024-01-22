@@ -44,16 +44,17 @@ class DMDataFetcher:
     """
 
     def __init__(self):
+        self.socket_url = None
+        self.active_socket_id = None
+        self.websocket: Optional[websocket.WebSocketApp] = None
+
         from env import Env
         if Env.run_env == RunEnvironment.testing:
-            print("Unit testing - skipped initialization")
+            logger.warning("Unit testing - skipped initialization.")
             self.testing = True
             return
         else:
             self.testing = False
-        self.socket_url = None
-        self.active_socket_id = None
-        self.websocket: Optional[websocket.WebSocketApp] = None
 
         self.access_token = None
 
