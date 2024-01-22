@@ -13,6 +13,7 @@ import xmltodict
 sys.path.insert(0, "../")
 os.environ["ENV"] = "testing"
 
+from schemas.jma.generic import JMAReportBaseModel
 from schemas.dmdata.generic import DmdataMessageTypes
 from sdk import relpath
 from starlette.testclient import TestClient
@@ -48,6 +49,25 @@ class TestMessageParse(unittest.TestCase):
                 f.close()
             parsed = DmdataSocketData.model_validate(raw)
             self.assertEqual(dmdata.parse_data_message(parsed), 0)
+
+    def test_raw_message(self):
+        raw_files = [join(relpath("./assets/raw_messages"), f)
+                     for f in os.listdir(relpath("./assets/raw_messages"))
+                     if isfile(join(relpath("./assets/raw_messages"), f)) and f[0] != "."]
+        for file in raw_files:
+            with self.subTest(file):
+                with open(file, "r", encoding="utf-8") as f:
+                    raw = f.read()
+                    f.close()
+                mocked_dmdata_socket.head.type = None
+                for i in DmdataMessageTypes:
+                    if i.value in file:
+                        mocked_dmdata_socket.head.type = i
+                self.assertIsNotNone(mocked_dmdata_socket.head.type)
+                message = base64.b64encode(gzip.compress(raw.encode(encoding="utf-8"))).decode(encoding="utf-8")
+                mocked_dmdata_socket.body = message
+                mocked_dmdata_socket.xmlReport = JMAReportBaseModel.model_validate(json.loads(raw)["Report"])
+                self.assertEqual(dmdata.parse_data_message(mocked_dmdata_socket, True, False), 0)
 
 
 class TestJMAParse(unittest.TestCase):

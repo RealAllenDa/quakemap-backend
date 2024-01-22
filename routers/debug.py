@@ -1,16 +1,19 @@
 import base64
 import datetime
 import gzip
+import json
 import os
 from os.path import join, isfile
 
 from fastapi import APIRouter
+from loguru import logger
 from starlette.responses import JSONResponse
 
 from env import Env
 from schemas.dmdata.generic import DmdataMessageTypes
 from schemas.dmdata.socket import DmdataSocketData, DmdataSocketDataHead
 from schemas.eew import EEWReturnModel
+from schemas.jma.generic import JMAReportBaseModel
 from schemas.p2p_info import EarthquakeIssueTypeEnum
 from schemas.router import GenericResponseModel
 from sdk import relpath
@@ -41,8 +44,13 @@ warning_files = [f
                  for f in os.listdir(relpath("../test/assets/eew_warning"))
                  if isfile(join(relpath("../test/assets/eew_warning"), f))]
 
+raw_files = [f
+             for f in os.listdir(relpath("../test/assets/raw_messages"))
+             if isfile(join(relpath("../test/assets/raw_messages"), f)) and f[0] != "."]
+
 forecast_index = 0
 warning_index = 0
+raw_file_index = 0
 
 
 @debug_router.get("/dmdata/forecast/list")
@@ -113,6 +121,23 @@ async def init_data(id: str, parse_type: str):
     )
 
 
+async def init_file(file: str):
+    mocked_dmdata_socket.head.type = None
+    for i in DmdataMessageTypes:
+        if i.value in file:
+            mocked_dmdata_socket.head.type = i
+    if mocked_dmdata_socket.head.type is None:
+        logger.error(f"Unidentified raw file: {file}")
+        return
+    with open(join(base_path, "raw_messages", file), encoding="utf-8") as f:
+        content = f.read()
+        f.close()
+    message = base64.b64encode(gzip.compress(content.encode(encoding="utf-8"))).decode(encoding="utf-8")
+    mocked_dmdata_socket.body = message
+    mocked_dmdata_socket.xmlReport = JMAReportBaseModel.model_validate(json.loads(content)["Report"])
+    Env.dmdata_instance.parse_data_message(mocked_dmdata_socket, True)
+
+
 @debug_router.get("/dmdata/forecast/cycle")
 async def cycle_forecast():
     """
@@ -151,6 +176,27 @@ async def cycle_warning():
         content={
             "status": 0,
             "current_forecast": warning_files[warning_index]
+        }
+    )
+
+
+@debug_router.get("/dmdata/file/cycle")
+async def cycle_file():
+    """
+    Cycles file.
+    """
+    global raw_file_index
+    await clear_eew()
+    await init_file(raw_files[raw_file_index])
+    raw_file_index += 1
+    if raw_file_index + 1 > len(raw_files):
+        raw_file_index = 0
+
+    return JSONResponse(
+        status_code=200,
+        content={
+            "status": 0,
+            "current_file": raw_files[raw_file_index]
         }
     )
 
