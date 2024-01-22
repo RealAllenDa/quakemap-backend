@@ -5,6 +5,7 @@ import gzip
 import io
 import json
 import os
+import platform
 import re
 import sys
 import threading
@@ -342,14 +343,20 @@ class DMDataFetcher:
 
     @staticmethod
     def store_message_middleware(*params):
+        if platform.system() == 'Windows':
+            # prevent extremely rare cases where there are too many event loops,
+            # preventing new loops from creating.
+            asyncio.set_event_loop_policy(asyncio.WindowsSelectorEventLoopPolicy())
         asyncio.run(DMDataFetcher.store_message(*params))
 
     @func_timer(log_func=logger.success)
-    def parse_data_message(self, message: Optional[DmdataSocketData]) -> int:
+    def parse_data_message(self, message: Optional[DmdataSocketData],
+                           use_raw=False) -> int:
         """
         Parses Dmdata data message.
 
         :param message: Dmdata data message
+        :param use_raw: Whether the contained data message is json or not; only used in testing
         """
         if not message:
             logger.error("Failed to parse data message: message is None")
@@ -373,7 +380,10 @@ class DMDataFetcher:
             raw_io = io.BytesIO(base64.b64decode(message.body))
             raw_message = gzip.decompress(raw_io.read())
             raw_message = raw_message.decode("utf-8")
-            xml_message = xmltodict.parse(raw_message, encoding="utf-8")
+            if not use_raw:
+                xml_message = xmltodict.parse(raw_message, encoding="utf-8")
+            else:
+                xml_message = json.loads(raw_message)
             raw_io.close()
         except Exception:
             logger.exception("Failed to parse data message.")
