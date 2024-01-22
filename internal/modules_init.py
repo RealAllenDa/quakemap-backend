@@ -53,8 +53,7 @@ class ModuleManager:
             self._init_timer()
 
         if Env.run_env == RunEnvironment.testing:
-            self._loaded_classes["tsunami"].get_info()
-            self._loaded_classes["p2p_info"].get_info()
+            pass
 
     def stop_program(self):
         """
