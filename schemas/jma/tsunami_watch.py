@@ -68,8 +68,10 @@ class JMATsunamiWatchMaxHeightModel(BaseModel):
 class JMATsunamiWatchStation(BaseModel):
     name: str = Field(validation_alias="Name")
     code: str = Field(validation_alias="Code")
-    first_height: JMATsunamiWatchFirstHeightModel = Field(validation_alias="FirstHeight")
-    max_height: JMATsunamiWatchMaxHeightModel = Field(validation_alias="MaxHeight")
+    first_height: JMATsunamiWatchFirstHeightModel = Field(JMATsunamiWatchFirstHeightModel(),
+                                                          validation_alias="FirstHeight")
+    max_height: JMATsunamiWatchMaxHeightModel = Field(JMATsunamiWatchMaxHeightModel(),
+                                                      validation_alias="MaxHeight")
     model_config = ConfigDict(populate_by_name=True)
 
 
