@@ -45,11 +45,12 @@ class TestMessageParse(unittest.TestCase):
                       for f in os.listdir(relpath("./assets/dmdata"))
                       if isfile(join(relpath("./assets/dmdata"), f))]
         for i in json_files:
-            with open(i, "r", encoding="utf-8") as f:
-                raw = json.loads(f.read())
-                f.close()
-            parsed = DmdataSocketData.model_validate(raw)
-            self.assertEqual(dmdata.parse_data_message(parsed), 0)
+            with self.subTest(i):
+                with open(i, "r", encoding="utf-8") as f:
+                    raw = json.loads(f.read())
+                    f.close()
+                parsed = DmdataSocketData.model_validate(raw)
+                self.assertEqual(dmdata.parse_data_message(parsed), 0)
 
     def test_raw_message(self):
         raw_files = [join(relpath("./assets/raw_messages"), f)
@@ -79,20 +80,21 @@ class TestJMAParse(unittest.TestCase):
                           if isfile(join(relpath("./assets/eew_forecast"), f))]
 
         for i in forecast_files:
-            previous_info = module_manager.get_module_info("eew_info")
+            with self.subTest(i):
+                previous_info = module_manager.get_module_info("eew_info")
 
-            module_manager.reload("eew_info")
-            print(f"Parsing {i}")
-            with open(i, encoding="utf-8") as f:
-                content = f.read()
-                f.close()
-            mocked_dmdata_socket.head.type = DmdataMessageTypes.eew_forecast
-            message = base64.b64encode(gzip.compress(content.encode(encoding="utf-8"))).decode(encoding="utf-8")
-            mocked_dmdata_socket.body = message
-            self.assertEqual(dmdata.parse_data_message(mocked_dmdata_socket), 0)
+                module_manager.reload("eew_info")
+                print(f"Parsing {i}")
+                with open(i, encoding="utf-8") as f:
+                    content = f.read()
+                    f.close()
+                mocked_dmdata_socket.head.type = DmdataMessageTypes.eew_forecast
+                message = base64.b64encode(gzip.compress(content.encode(encoding="utf-8"))).decode(encoding="utf-8")
+                mocked_dmdata_socket.body = message
+                self.assertEqual(dmdata.parse_data_message(mocked_dmdata_socket), 0)
 
-            current_info = module_manager.get_module_info("eew_info")
-            self.assertNotEqual(current_info.model_dump(), previous_info.model_dump())
+                current_info = module_manager.get_module_info("eew_info")
+                self.assertNotEqual(current_info.model_dump(), previous_info.model_dump())
 
     def test_xml_eew_warnings(self):
         from internal.modules_init import module_manager
@@ -101,20 +103,21 @@ class TestJMAParse(unittest.TestCase):
                          if isfile(join(relpath("./assets/eew_warning"), f))]
 
         for i in warning_files:
-            previous_info = module_manager.get_module_info("eew_info")
+            with self.subTest(i):
+                previous_info = module_manager.get_module_info("eew_info")
 
-            module_manager.reload("eew_info")
-            print(f"Parsing {i}")
-            with open(i, encoding="utf-8") as f:
-                content = f.read()
-                f.close()
-            mocked_dmdata_socket.head.type = DmdataMessageTypes.eew_warning
-            message = base64.b64encode(gzip.compress(content.encode(encoding="utf-8"))).decode(encoding="utf-8")
-            mocked_dmdata_socket.body = message
-            self.assertEqual(dmdata.parse_data_message(mocked_dmdata_socket), 0)
+                module_manager.reload("eew_info")
+                print(f"Parsing {i}")
+                with open(i, encoding="utf-8") as f:
+                    content = f.read()
+                    f.close()
+                mocked_dmdata_socket.head.type = DmdataMessageTypes.eew_warning
+                message = base64.b64encode(gzip.compress(content.encode(encoding="utf-8"))).decode(encoding="utf-8")
+                mocked_dmdata_socket.body = message
+                self.assertEqual(dmdata.parse_data_message(mocked_dmdata_socket), 0)
 
-            current_info = module_manager.get_module_info("eew_info")
-            self.assertNotEqual(current_info.model_dump(), previous_info.model_dump())
+                current_info = module_manager.get_module_info("eew_info")
+                self.assertNotEqual(current_info.model_dump(), previous_info.model_dump())
 
     def test_xml_tsunami_warnings(self):
         from internal.modules_init import module_manager
@@ -123,26 +126,27 @@ class TestJMAParse(unittest.TestCase):
                          if isfile(join(relpath("./assets/tsunami_expectation"), f))]
 
         for i in warning_files:
-            previous_tsunami_expectation_info = module_manager.classes.get("tsunami").tsunami_expectation_info
-            previous_tsunami_observation_info = module_manager.classes.get("tsunami").tsunami_obs_info
+            with self.subTest(i):
+                previous_tsunami_expectation_info = module_manager.classes.get("tsunami").tsunami_expectation_info
+                previous_tsunami_observation_info = module_manager.classes.get("tsunami").tsunami_obs_info
 
-            module_manager.reload("tsunami")
-            print(f"Parsing {i}")
-            with open(i, encoding="utf-8") as f:
-                content = f.read()
-                f.close()
-            mocked_dmdata_socket.head.type = DmdataMessageTypes.tsunami_warning
-            message = base64.b64encode(gzip.compress(content.encode(encoding="utf-8"))).decode(encoding="utf-8")
-            mocked_dmdata_socket.body = message
-            self.assertEqual(dmdata.parse_data_message(mocked_dmdata_socket), 0)
+                module_manager.reload("tsunami")
+                print(f"Parsing {i}")
+                with open(i, encoding="utf-8") as f:
+                    content = f.read()
+                    f.close()
+                mocked_dmdata_socket.head.type = DmdataMessageTypes.tsunami_warning
+                message = base64.b64encode(gzip.compress(content.encode(encoding="utf-8"))).decode(encoding="utf-8")
+                mocked_dmdata_socket.body = message
+                self.assertEqual(dmdata.parse_data_message(mocked_dmdata_socket), 0)
 
-            from internal.modules_init import module_manager
-            current_tsunami_expectation_info = module_manager.classes.get("tsunami").tsunami_expectation_info
-            current_tsunami_observation_info = module_manager.classes.get("tsunami").tsunami_obs_info
-            self.assertNotEqual(current_tsunami_expectation_info.model_dump(),
-                                previous_tsunami_expectation_info.model_dump())
-            self.assertEqual(current_tsunami_observation_info.model_dump(),
-                             previous_tsunami_observation_info.model_dump())
+                from internal.modules_init import module_manager
+                current_tsunami_expectation_info = module_manager.classes.get("tsunami").tsunami_expectation_info
+                current_tsunami_observation_info = module_manager.classes.get("tsunami").tsunami_obs_info
+                self.assertNotEqual(current_tsunami_expectation_info.model_dump(),
+                                    previous_tsunami_expectation_info.model_dump())
+                self.assertEqual(current_tsunami_observation_info.model_dump(),
+                                 previous_tsunami_observation_info.model_dump())
 
     def test_xml_tsunami_watches(self):
         from internal.modules_init import module_manager
@@ -151,27 +155,28 @@ class TestJMAParse(unittest.TestCase):
                          if isfile(join(relpath("./assets/tsunami_watch"), f))]
 
         for i in warning_files:
-            previous_tsunami_observation_info = module_manager.classes.get("tsunami").tsunami_obs_info
+            with self.subTest(i):
+                previous_tsunami_observation_info = module_manager.classes.get("tsunami").tsunami_obs_info
 
-            module_manager.reload("tsunami")
-            print(f"Parsing {i}")
-            with open(i, encoding="utf-8") as f:
-                content = f.read()
-                f.close()
-            mocked_dmdata_socket.head.type = DmdataMessageTypes.tsunami_info
-            message = base64.b64encode(gzip.compress(content.encode(encoding="utf-8"))).decode(encoding="utf-8")
-            mocked_dmdata_socket.body = message
-            self.assertEqual(dmdata.parse_data_message(mocked_dmdata_socket), 0)
+                module_manager.reload("tsunami")
+                print(f"Parsing {i}")
+                with open(i, encoding="utf-8") as f:
+                    content = f.read()
+                    f.close()
+                mocked_dmdata_socket.head.type = DmdataMessageTypes.tsunami_info
+                message = base64.b64encode(gzip.compress(content.encode(encoding="utf-8"))).decode(encoding="utf-8")
+                mocked_dmdata_socket.body = message
+                self.assertEqual(dmdata.parse_data_message(mocked_dmdata_socket), 0)
 
-            from internal.modules_init import module_manager
-            current_tsunami_expectation_info = module_manager.classes.get("tsunami").tsunami_expectation_info
-            current_tsunami_observation_info = module_manager.classes.get("tsunami").tsunami_obs_info
-            if xmltodict.parse(content, encoding="utf-8")["Report"]["Head"]["Title"] == "津波観測に関する情報" and \
-                    xmltodict.parse(content, encoding="utf-8")["Report"]["Head"]["InfoType"] != "取消":
-                print(current_tsunami_expectation_info)
-                self.assertIsNotNone(current_tsunami_expectation_info.receive_time)
-                self.assertNotEqual(current_tsunami_observation_info.model_dump(),
-                                    previous_tsunami_observation_info.model_dump())
+                from internal.modules_init import module_manager
+                current_tsunami_expectation_info = module_manager.classes.get("tsunami").tsunami_expectation_info
+                current_tsunami_observation_info = module_manager.classes.get("tsunami").tsunami_obs_info
+                if xmltodict.parse(content, encoding="utf-8")["Report"]["Head"]["Title"] == "津波観測に関する情報" and \
+                        xmltodict.parse(content, encoding="utf-8")["Report"]["Head"]["InfoType"] != "取消":
+                    print(current_tsunami_expectation_info)
+                    self.assertIsNotNone(current_tsunami_expectation_info.receive_time)
+                    self.assertNotEqual(current_tsunami_observation_info.model_dump(),
+                                        previous_tsunami_observation_info.model_dump())
 
 
 if __name__ == '__main__':
