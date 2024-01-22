@@ -166,3 +166,5 @@ main.log
 .production.env
 .development.env
 notes
+
+/test/assets/raw_messages/*
