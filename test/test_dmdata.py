@@ -11,6 +11,7 @@ import xmltodict
 
 # To mitigate not being found
 sys.path.insert(0, "../")
+sys.path.append(".")
 os.environ["ENV"] = "testing"
 
 from schemas.jma.generic import JMAReportBaseModel

@@ -13,6 +13,7 @@ from unittest.mock import patch
 
 # To mitigate sdk not being found
 sys.path.insert(0, "../")
+sys.path.append(".")
 
 from pydantic import BaseModel
 
