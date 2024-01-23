@@ -1,4 +1,4 @@
-FROM v7odpsx0.mirror.aliyuncs.com/library/python:3.10
+FROM python:3.10
 
 WORKDIR /code
 
