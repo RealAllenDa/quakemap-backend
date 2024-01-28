@@ -67,8 +67,6 @@ necessary.
 Generally, it **SHALL NOT** import any other modules, and it **MAY** import modules that defines the foundation for the
 structures, or defines the data types.
 
-The program contained here **SHALL** enlist publicly available models clearly.
-
 ## 5. Modules
 
 The _modules_ folder **SHALL** store files that are either:

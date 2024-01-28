@@ -3,26 +3,11 @@ from typing import Literal, Optional
 
 from pydantic import ConfigDict, BaseModel, Field
 
-__all__ = ["EarthquakeInfoReturnModel",
-
-           "P2PQuakeModel", "P2PTsunamiModel", "P2PTotalInfoModel",
-           "EarthquakeIntensityEnum", "EarthquakeTsunamiCommentsModel",
-           "EarthquakeReturnModel", "EarthquakeAreaIntensityModel",
-
-           "EarthquakeIssueTypeEnum", "EarthquakeScaleEnum", "EarthquakePointsScaleEnum",
-           "EarthquakeReturnEpicenterModel",
-           "EarthquakeDomesticTsunamiEnum", "EarthquakeForeignTsunamiEnum",
-
-           "EarthquakeAreaIntensityParsingModel", "EarthquakeAreaIntensityPointModel",
-           "EarthquakeStationIntensityPointModel",
-
-           "TsunamiAreaGradeEnum", "TsunamiAreaModel", "TsunamiReturnModel"]
-
-# Not really optional, since all the data tagged with this
-# would be filled after variable initialization.
 from schemas.eew import EEWParseReturnModel, EEWCancelledModel
 from schemas.geojson import TsunamiGeoJsonModel
 
+# Not really optional, since all the data tagged with this
+# would be filled after variable initialization.
 FakeOptional = Optional
 # The dict which shall always be blank.
 BlankDict = dict

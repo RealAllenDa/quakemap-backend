@@ -8,8 +8,6 @@ from schemas.jma.generic import JMAReportBaseModel
 from schemas.jma.tsunami_expectation import JMANameCodeModel, JMACommentModel, \
     JMAEarthquakeModel, JMATsunamiForecastModel
 
-__all__ = ["JMATsunamiWatchApiModel", "JMAWatchMaxHeightCondition"]
-
 
 class JMAWatchFirstHeightCondition(str, Enum):
     cannot_identify = "第１波識別不能"

@@ -3,11 +3,6 @@ from typing import Optional
 
 from pydantic import ConfigDict, BaseModel, Field
 
-__all__ = ["KmoniTimeModel", "KmoniEEWModel", "EEWReturnModel",
-           "EEWAlertTypeEnum", "EEWConvertedIntensityEnum", "EEWIntensityEnum",
-           "EEWParseReturnModel", "KmoniReturnHypocenterModel", "KmoniReturnAreaColoringModel",
-           "EEWCancelledModel"]
-
 from schemas.intensity2color import StationIntensityModel, AreaIntensityModel
 
 OnlyBlankStr = str
@@ -71,6 +66,18 @@ class EEWConvertedIntensityEnum(str, Enum):
     seven = "7"
 
 
+class EEWConvertedLgIntensityEnum(str, Enum):
+    no = ""
+    one = "1"
+    two = "2"
+    three = "3"
+    four = "4"
+
+    @classmethod
+    def _missing_(cls, value: object):
+        return cls.no
+
+
 class KmoniEEWModel(BaseModel):
     result: _KmoniEEWResultModel
     report_time: str
@@ -118,6 +125,7 @@ class EEWParseReturnModel(BaseModel):
     is_cancel: bool
     is_test: bool
     max_intensity: EEWConvertedIntensityEnum
+    max_lg_intensity: EEWConvertedLgIntensityEnum = EEWConvertedLgIntensityEnum.no
     report_time: str
     report_timestamp: int
     report_num: int

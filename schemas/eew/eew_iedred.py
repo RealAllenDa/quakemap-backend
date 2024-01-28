@@ -1,15 +1,10 @@
-__all__ = ["IedredEEWModel", "IedredParseStatus", "IedredCodeStringDetail", "IedredMagnitude",
-           "IedredTime", "IedredHypocenter", "IedredLocation", "IedredEpicenterDepth",
-           "IedredMaxIntensity", "IedredEventType", "IedredEventTypeEnum",
-           "IedredForecastAreasArrival", "IedredForecastAreas", "IedredForecastAreasIntensity"]
-
 from enum import Enum
 from typing import Optional
 
 from pydantic import ConfigDict, BaseModel, Field
 
 from schemas.eew import EEWIntensityEnum
-from schemas.eew.eew_svir import SvirLgIntensityEnum
+from schemas.eew.eew_svir import SvirLgIntensityEnum, SvirForecastLgInt
 
 Unknown = str
 
@@ -181,6 +176,7 @@ class IedredEEWModel(BaseModel):
     serial: Optional[str] = Field(None, validation_alias="Serial")
     hypocenter: Optional[IedredHypocenter] = Field(None, validation_alias="Hypocenter")
     max_intensity: Optional[IedredMaxIntensity] = Field(None, validation_alias="MaxIntensity")
+    max_lg_intensity: Optional[SvirForecastLgInt] = Field(None)
     is_warn: Optional[bool] = Field(None, validation_alias="Warn")
     optional_arguments: Optional[IedredOption] = Field(None, validation_alias="Option")
     original_text: Optional[str] = Field(None, validation_alias="OriginalText")

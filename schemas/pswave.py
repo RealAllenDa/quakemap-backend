@@ -1,5 +1,3 @@
-__all__ = ["TravelTimeTableModel", "PSWaveTimeModel"]
-
 from typing import Optional
 
 from pydantic import BaseModel

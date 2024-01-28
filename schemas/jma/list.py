@@ -1,7 +1,5 @@
 from pydantic import ConfigDict, BaseModel, Field
 
-__all__ = ["JMAList"]
-
 
 class JMAListAuthor(BaseModel):
     name: str
