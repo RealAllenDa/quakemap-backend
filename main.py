@@ -84,6 +84,7 @@ requests.packages.urllib3.disable_warnings(InsecureRequestWarning)
 requests.packages.urllib3.util.connection.HAS_IPV6 = False
 
 app = FastAPI(
+    debug=Env.run_env == RunEnvironment.testing,
     docs_url="/docs" if Env.config.utilities.doc else None,
     redoc_url="/redoc" if Env.config.utilities.redoc else None
 )
