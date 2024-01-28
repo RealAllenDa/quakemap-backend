@@ -48,6 +48,10 @@ raw_files = [f
              for f in os.listdir(relpath("../test/assets/raw_messages"))
              if isfile(join(relpath("../test/assets/raw_messages"), f)) and f[0] != "."]
 
+raw_files.sort()
+forecast_files.sort()
+warning_files.sort()
+
 forecast_index = 0
 warning_index = 0
 raw_file_index = 0
@@ -144,8 +148,9 @@ async def cycle_forecast():
     Cycles forecast.
     """
     global forecast_index
+    current_file = forecast_files[forecast_index]
     await clear_eew()
-    await init_data(forecast_files[forecast_index], "forecast")
+    await init_data(current_file, "forecast")
     forecast_index += 1
     if forecast_index + 1 > len(forecast_files):
         forecast_index = 0
@@ -154,7 +159,7 @@ async def cycle_forecast():
         status_code=200,
         content={
             "status": 0,
-            "current_forecast": forecast_files[forecast_index]
+            "current_forecast": current_file
         }
     )
 
@@ -165,8 +170,9 @@ async def cycle_warning():
     Cycles warning.
     """
     global warning_index
+    current_file = warning_files[warning_index]
     await clear_eew()
-    await init_data(warning_files[warning_index], "warning")
+    await init_data(current_file, "warning")
     warning_index += 1
     if warning_index + 1 > len(warning_files):
         warning_index = 0
@@ -175,7 +181,7 @@ async def cycle_warning():
         status_code=200,
         content={
             "status": 0,
-            "current_forecast": warning_files[warning_index]
+            "current_forecast": current_file
         }
     )
 
@@ -186,8 +192,9 @@ async def cycle_file():
     Cycles file.
     """
     global raw_file_index
+    current_file = raw_files[raw_file_index]
     await clear_eew()
-    await init_file(raw_files[raw_file_index])
+    await init_file(current_file)
     raw_file_index += 1
     if raw_file_index + 1 > len(raw_files):
         raw_file_index = 0
@@ -196,7 +203,7 @@ async def cycle_file():
         status_code=200,
         content={
             "status": 0,
-            "current_file": raw_files[raw_file_index]
+            "current_file": current_file
         }
     )
 
