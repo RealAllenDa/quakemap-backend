@@ -69,7 +69,7 @@ class TestMessageParse(unittest.TestCase):
                 message = base64.b64encode(gzip.compress(raw.encode(encoding="utf-8"))).decode(encoding="utf-8")
                 mocked_dmdata_socket.body = message
                 mocked_dmdata_socket.xmlReport = JMAReportBaseModel.model_validate(json.loads(raw)["Report"])
-                self.assertEqual(dmdata.parse_data_message(mocked_dmdata_socket, True, False), 0)
+                self.assertEqual(dmdata.parse_data_message(mocked_dmdata_socket, True), 0)
 
 
 class TestJMAParse(unittest.TestCase):
