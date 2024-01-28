@@ -90,11 +90,11 @@ app = FastAPI(
 
 app.mount("/static", StaticFiles(directory=relpath("static")), name="static")
 
-
-@app.exception_handler(RequestValidationError)
-async def validation_exception_handler(_, __):
-    return JSONResponse(status_code=500,
-                        content=GenericResponseModel.ServerError.value)
+if RUN_ENV != RunEnvironment.testing:
+    @app.exception_handler(RequestValidationError)
+    async def validation_exception_handler(_, __):
+        return JSONResponse(status_code=500,
+                            content=GenericResponseModel.ServerError.value)
 
 
 @app.exception_handler(StarletteHTTPException)
