@@ -22,6 +22,7 @@ import config
 from env import Env
 from internal.centroid import Centroid
 from internal.db import Database
+from internal.debug import debug_manager
 from internal.dmdata import DMDataFetcher
 from internal.geojson import GeoJson
 from internal.intensity2color import IntensityToColor
@@ -144,6 +145,7 @@ if Env.config.dmdata.enabled:
     Env.dmdata_instance = DMDataFetcher()
 Env.db_instance = Database()
 module_manager.init()
+debug_manager.init()
 
 if __name__ == "__main__":
     # noinspection PyTypeChecker

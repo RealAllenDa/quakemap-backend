@@ -10,6 +10,7 @@ from loguru import logger
 from starlette.responses import JSONResponse
 
 from env import Env
+from internal.debug import debug_manager
 from schemas.dmdata.generic import DmdataMessageTypes
 from schemas.dmdata.socket import DmdataSocketData, DmdataSocketDataHead
 from schemas.eew import EEWReturnModel
@@ -236,3 +237,22 @@ async def set_p2p_message(info_type: EarthquakeIssueTypeEnum):
         status_code=200,
         content=GenericResponseModel.OK.value
     )
+
+
+@debug_router.get("/dmdata/start_cycle")
+def start_cycle(task: str, seconds: int = 2):
+    """Starts refreshing cycle."""
+    debug_manager.change_secs(seconds)
+    if task == "forecast":
+        task = cycle_forecast
+    elif task == "warning":
+        task = cycle_warning
+    elif task == "file":
+        task = cycle_file
+    debug_manager.change_tasks([task])
+
+
+@debug_router.get("/dmdata/end_cycle")
+def end_cycle():
+    """Ends refreshing cycle."""
+    debug_manager.change_tasks([])
