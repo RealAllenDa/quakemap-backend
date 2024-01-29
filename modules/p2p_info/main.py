@@ -75,6 +75,15 @@ class P2PInfo(BaseModule):
                 self._parse_tsunami_info(j)
         logger.info("Refreshed P2P info.")
 
+    def cancel_earthquake_info(self) -> None:
+        """Clears earthquake info and issues a cancellation message."""
+        # fixme proper cancellation
+        self.set_earthquake_info([])
+
+    def set_earthquake_info(self, eq_list: list[EarthquakeReturnModel]) -> None:
+        """Clears earthquake info."""
+        self.info.earthquake = eq_list
+
     @func_timer
     def _parse_earthquake_info(self, content: dict) -> None:
         """
@@ -140,7 +149,7 @@ class P2PInfo(BaseModule):
 
         # --- Area intensity parsing
         if model.issue.type != EarthquakeIssueTypeEnum.Foreign:
-            area_intensity = self._parse_area_intensity(model)
+            area_intensity = self.parse_area_intensity(model.points)
         else:
             logger.debug("Earthquake is foreign. Skipped area intensity parsing.")
             area_intensity = {}
@@ -206,15 +215,15 @@ class P2PInfo(BaseModule):
         return False
 
     @func_timer
-    def _parse_area_intensity(self, content: P2PQuakeModel) -> EarthquakeAreaIntensityModel:
+    def parse_area_intensity(self, points: list[P2PEarthquakePoints]) -> EarthquakeAreaIntensityModel:
         """
         Parses the earthquake's area intensities.
-        :param content: The P2PQuakeModel
+        :param points: The P2PQuakeModel's points
         :return: The area intensity model
         """
         earthquake_area_intensity = EarthquakeAreaIntensityParsingModel()
         # --- Pre-parse: Combine intensities with names and centroids.
-        for i in content.points:
+        for i in points:
             if i.is_area:
                 # Area parsing
                 point = Env.centroid_instance.area_centroid.content.get(i.address, None)
