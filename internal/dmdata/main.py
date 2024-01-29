@@ -40,6 +40,7 @@ class DMDataFetcher:
     """
 
     def __init__(self):
+        self.shutdown = False
         self.socket_url = None
         self.active_socket_id = None
         self.websocket: Optional[websocket.WebSocketApp] = None
@@ -104,6 +105,9 @@ class DMDataFetcher:
         """
         Starts Dmdata connection.
         """
+        if self.shutdown:
+            logger.trace("Shutdown - no websocket needed.")
+            return
         logger.debug("Trying to start a connection...")
         if self.websocket:
             # Active websocket
@@ -232,7 +236,7 @@ class DMDataFetcher:
         logger.debug(f"Ticket: {content.ticket}. Url: {content.websocket.url}")
 
     @func_timer
-    def close_socket(self):
+    def close_socket(self, tries=3):
         """
         Closes socket connection.
         """
@@ -249,7 +253,7 @@ class DMDataFetcher:
                 request_type=RequestTypes.delete,
                 proxy=Env.config.proxy,
                 bearer_token=self.access_token,
-                max_retries=3
+                max_retries=tries
             )
 
             self.socket_url = None
@@ -278,6 +282,10 @@ class DMDataFetcher:
         """
         if not message:
             logger.error("Failed to parse error message: message is None")
+            return
+        if message.code == 4808:
+            logger.warning("DMData socket closed. If this is not during shutdown, "
+                           "something bad has happened.")
             return
         logger.error(f"DMData socket error: "
                      f"code => {message.code}, error => {message.error}, closed => {message.close}")
@@ -471,6 +479,8 @@ class DMDataFetcher:
         :param status_code: The close status code
         :param message: The close message
         """
+        if status_code == "4808" or status_code is None:
+            return
         logger.warning(f"Websocket closed! Status: {status_code}, message: {message}")
         self.close_socket()
         self.start_connection()
@@ -542,4 +552,8 @@ class DMDataFetcher:
         """
         Cleans up.
         """
-        self.close_socket()
+        self.shutdown = True
+        self.websocket.close()
+        self.close_socket(0)
+        self.websocket = True
+        self.websocket.has_errored = False
