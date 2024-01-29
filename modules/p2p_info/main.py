@@ -4,11 +4,12 @@ from loguru import logger
 
 from env import Env
 from modules.base_module import BaseModule
+from schemas.config import RunEnvironment
 from schemas.p2p_info import P2PQuakeModel, P2PTsunamiModel, EarthquakeIntensityEnum, EarthquakeTsunamiCommentsModel, \
     EarthquakeForeignTsunamiEnum, EarthquakeDomesticTsunamiEnum, EarthquakeReturnEpicenterModel, \
     EarthquakeIssueTypeEnum, EarthquakeReturnModel, EarthquakeAreaIntensityParsingModel, \
     EarthquakeAreaIntensityPointModel, EarthquakeStationIntensityPointModel, EarthquakeAreaIntensityModel, \
-    P2PTotalInfoModel, TsunamiReturnModel
+    P2PTotalInfoModel, TsunamiReturnModel, P2PEarthquakePoints
 from schemas.p2p_info import TsunamiAreaModel
 from schemas.sdk import ResponseTypeModel, ResponseTypes
 from sdk import func_timer, web_request, verify_none, relpath
@@ -23,16 +24,22 @@ class P2PInfo(BaseModule):
         super().__init__()
         self._last_response_list = []
         self.info = P2PTotalInfoModel()
+        self.fetched_once = False
 
     def reload(self):
         self._last_response_list = []
         self.info = P2PTotalInfoModel()
+        self.fetched_once = False
 
     @func_timer
     def get_info(self) -> None:
         """
         Gets P2PQuake's JSON telegram.
         """
+        if Env.config.dmdata.enabled and self.fetched_once and not Env.run_env == RunEnvironment.testing:
+            if Env.dmdata_instance.status.status == "OK":
+                logger.trace("DMData OK. No need to fetch P2P.")
+                return
         if not Env.config.debug.p2p_info.enabled:
             response = web_request(url="https://api.p2pquake.net/v2/history?codes=551&codes=552&limit=5",
                                    response_type=ResponseTypeModel(
@@ -42,6 +49,7 @@ class P2PInfo(BaseModule):
                                    proxy=Env.config.proxy)
             verify_none(response.status)
             self.parse_info(response.content)
+            self.fetched_once = True
         else:
             with open(relpath(Env.config.debug.p2p_info.file), encoding="utf-8") as f:
                 content = json.loads(f.read())
