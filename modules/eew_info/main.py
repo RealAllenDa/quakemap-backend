@@ -9,7 +9,7 @@ from schemas.config import EEWTargetEnum
 from schemas.eew import KmoniTimeModel, KmoniEEWModel, EEWReturnModel, EEWAlertTypeEnum, EEWConvertedIntensityEnum, \
     KmoniReturnHypocenterModel, KmoniReturnAreaColoringModel, EEWParseReturnModel, IedredEEWModel, SvirEEWModel, \
     IedredParseStatus, EEWIntensityEnum, SvirEventType
-from schemas.eew.eew import EEWCancelledModel
+from schemas.eew.eew import EEWCancelledModel, EEWConvertedLgIntensityEnum
 from schemas.eew.eew_iedred import IedredCodeStringDetail, IedredTime, IedredHypocenter, IedredLocation, \
     IedredEpicenterDepth, IedredMagnitude, IedredMaxIntensity, IedredEventType, IedredEventTypeEnum, \
     IedredForecastAreasArrival, IedredForecastAreas, IedredForecastAreasIntensity
@@ -252,6 +252,7 @@ class EEWInfo(BaseModule):
             is_cancel=False,
             is_test=(content.status.string != "通常"),
             max_intensity=EEWConvertedIntensityEnum[content.max_intensity.lowest.name],
+            max_lg_intensity=EEWConvertedLgIntensityEnum(content.max_lg_intensity.lowest.value),
             report_time=content.announced_time.time_string,
             report_timestamp=content.announced_time.unix_time,
             report_num=int(content.serial),
