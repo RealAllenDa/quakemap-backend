@@ -1,6 +1,7 @@
 import logging
 import os.path
 import sys
+from contextlib import asynccontextmanager
 
 import requests
 import sentry_sdk
@@ -84,7 +85,15 @@ requests.packages.urllib3.disable_warnings(InsecureRequestWarning)
 # noinspection PyUnresolvedReferences
 requests.packages.urllib3.util.connection.HAS_IPV6 = False
 
+
+@asynccontextmanager
+async def lifespan(_: FastAPI):
+    yield
+    module_manager.stop_program()
+
+
 app = FastAPI(
+    lifespan=lifespan,
     debug=Env.run_env == RunEnvironment.testing,
     docs_url="/docs" if Env.config.utilities.doc else None,
     redoc_url="/redoc" if Env.config.utilities.redoc else None
@@ -129,12 +138,6 @@ if Env.config.utilities.cors:
     logger.success("Added CORS middleware.")
 app.add_middleware(GZipMiddleware)
 logger.success("Added gzip middleware.")
-
-
-@app.on_event("shutdown")
-async def shutdown_wrapper():
-    module_manager.stop_program()
-
 
 # --- Internals initialization
 Env.geojson_instance = GeoJson()

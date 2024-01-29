@@ -4,11 +4,12 @@ from loguru import logger
 
 from env import Env
 from modules.base_module import BaseModule
+from schemas.config import RunEnvironment
 from schemas.p2p_info import P2PQuakeModel, P2PTsunamiModel, EarthquakeIntensityEnum, EarthquakeTsunamiCommentsModel, \
     EarthquakeForeignTsunamiEnum, EarthquakeDomesticTsunamiEnum, EarthquakeReturnEpicenterModel, \
     EarthquakeIssueTypeEnum, EarthquakeReturnModel, EarthquakeAreaIntensityParsingModel, \
     EarthquakeAreaIntensityPointModel, EarthquakeStationIntensityPointModel, EarthquakeAreaIntensityModel, \
-    P2PTotalInfoModel, TsunamiReturnModel
+    P2PTotalInfoModel, TsunamiReturnModel, P2PEarthquakePoints
 from schemas.p2p_info import TsunamiAreaModel
 from schemas.sdk import ResponseTypeModel, ResponseTypes
 from sdk import func_timer, web_request, verify_none, relpath
@@ -23,16 +24,22 @@ class P2PInfo(BaseModule):
         super().__init__()
         self._last_response_list = []
         self.info = P2PTotalInfoModel()
+        self.fetched_once = False
 
     def reload(self):
         self._last_response_list = []
         self.info = P2PTotalInfoModel()
+        self.fetched_once = False
 
     @func_timer
     def get_info(self) -> None:
         """
         Gets P2PQuake's JSON telegram.
         """
+        if Env.config.dmdata.enabled and self.fetched_once and not Env.run_env == RunEnvironment.testing:
+            if Env.dmdata_instance.status.status == "OK":
+                logger.trace("DMData OK. No need to fetch P2P.")
+                return
         if not Env.config.debug.p2p_info.enabled:
             response = web_request(url="https://api.p2pquake.net/v2/history?codes=551&codes=552&limit=5",
                                    response_type=ResponseTypeModel(
@@ -42,6 +49,7 @@ class P2PInfo(BaseModule):
                                    proxy=Env.config.proxy)
             verify_none(response.status)
             self.parse_info(response.content)
+            self.fetched_once = True
         else:
             with open(relpath(Env.config.debug.p2p_info.file), encoding="utf-8") as f:
                 content = json.loads(f.read())
@@ -74,6 +82,15 @@ class P2PInfo(BaseModule):
             if j["code"] == 552:
                 self._parse_tsunami_info(j)
         logger.info("Refreshed P2P info.")
+
+    def cancel_earthquake_info(self) -> None:
+        """Clears earthquake info and issues a cancellation message."""
+        # fixme proper cancellation
+        self.set_earthquake_info([])
+
+    def set_earthquake_info(self, eq_list: list[EarthquakeReturnModel]) -> None:
+        """Clears earthquake info."""
+        self.info.earthquake = eq_list
 
     @func_timer
     def _parse_earthquake_info(self, content: dict) -> None:
@@ -140,7 +157,7 @@ class P2PInfo(BaseModule):
 
         # --- Area intensity parsing
         if model.issue.type != EarthquakeIssueTypeEnum.Foreign:
-            area_intensity = self._parse_area_intensity(model)
+            area_intensity = self.parse_area_intensity(model.points)
         else:
             logger.debug("Earthquake is foreign. Skipped area intensity parsing.")
             area_intensity = {}
@@ -206,15 +223,15 @@ class P2PInfo(BaseModule):
         return False
 
     @func_timer
-    def _parse_area_intensity(self, content: P2PQuakeModel) -> EarthquakeAreaIntensityModel:
+    def parse_area_intensity(self, points: list[P2PEarthquakePoints]) -> EarthquakeAreaIntensityModel:
         """
         Parses the earthquake's area intensities.
-        :param content: The P2PQuakeModel
+        :param points: The P2PQuakeModel's points
         :return: The area intensity model
         """
         earthquake_area_intensity = EarthquakeAreaIntensityParsingModel()
         # --- Pre-parse: Combine intensities with names and centroids.
-        for i in content.points:
+        for i in points:
             if i.is_area:
                 # Area parsing
                 point = Env.centroid_instance.area_centroid.content.get(i.address, None)

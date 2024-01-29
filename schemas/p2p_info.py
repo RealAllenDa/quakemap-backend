@@ -5,6 +5,7 @@ from pydantic import ConfigDict, BaseModel, Field
 
 from schemas.eew import EEWParseReturnModel, EEWCancelledModel
 from schemas.geojson import TsunamiGeoJsonModel
+from schemas.jma.earthquake.generic import JMALgIntensityEnum
 
 # Not really optional, since all the data tagged with this
 # would be filled after variable initialization.
@@ -38,7 +39,7 @@ class _EarthquakeIssueCorrectEnum(str, Enum):
     ScaleAndDestination = "ScaleAndDestination"
 
 
-class _EarthquakeIssueModel(BaseModel):
+class P2PEarthquakeIssueModel(BaseModel):
     source: Optional[str] = None
     time: str
     type: EarthquakeIssueTypeEnum
@@ -78,22 +79,24 @@ class EarthquakeDomesticTsunamiEnum(str, Enum):
 
 class EarthquakeForeignTsunamiEnum(str, Enum):
     No = "None",
-    Unknown = "Unknown",
-    Checking = "Checking",
-    NonEffectiveNearby = "NonEffectiveNearby",
-    WarningNearby = "WarningNearby",
-    WarningPacific = "WarningPacific",
-    WarningPacificWide = "WarningPacificWide",
-    WarningIndian = "WarningIndian",
-    WarningIndianWide = "WarningIndianWide",
+    Unknown = "Unknown"
+    Checking = "Checking"
+    NonEffectiveNearby = "NonEffectiveNearby"
+    WarningNearby = "WarningNearby"
+    WarningPacific = "WarningPacific"
+    WarningNorthwestPacific = "WarningNorthwestPacific"
+    WarningPacificWide = "WarningPacificWide"
+    WarningIndian = "WarningIndian"
+    WarningIndianWide = "WarningIndianWide"
     Potential = "Potential"
 
 
 # --- Earthquake - Content
-class _EarthquakeModel(BaseModel):
+class P2PEarthquakeModel(BaseModel):
     time: str
     hypocenter: Optional[EarthquakeEpicenterModel] = None
     max_scale: Optional[EarthquakeScaleEnum] = Field(None, validation_alias="maxScale")
+    max_lg_scale: Optional[JMALgIntensityEnum] = Field(None)
     domestic_tsunami: Optional[EarthquakeDomesticTsunamiEnum] = Field(None, validation_alias="domesticTsunami")
     foreign_tsunami: Optional[EarthquakeForeignTsunamiEnum] = Field(None, validation_alias="foreignTsunami")
     model_config = ConfigDict(populate_by_name=True)
@@ -113,20 +116,21 @@ class EarthquakePointsScaleEnum(int, Enum):
     seven = 70
 
 
-class _EarthquakePoints(BaseModel):
+class P2PEarthquakePoints(BaseModel):
     prefecture: str = Field(validation_alias="pref")
     address: str = Field(validation_alias="addr")
     is_area: bool = Field(validation_alias="isArea")
     scale: EarthquakePointsScaleEnum
+    lg_scale: Optional[JMALgIntensityEnum] = Field(None)
     model_config = ConfigDict(populate_by_name=True)
 
 
 # --- Earthquake - Export
 class P2PQuakeModel(_BasicDataModel):
     code: Literal[551]
-    issue: _EarthquakeIssueModel
-    earthquake: _EarthquakeModel
-    points: Optional[list[_EarthquakePoints]] = None
+    issue: P2PEarthquakeIssueModel
+    earthquake: P2PEarthquakeModel
+    points: Optional[list[P2PEarthquakePoints]] = None
 
 
 # --- Tsunami - Area

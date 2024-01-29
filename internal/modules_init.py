@@ -2,7 +2,7 @@ import importlib
 import importlib.util
 import sys
 from datetime import datetime
-from typing import Callable, Any
+from typing import Callable, Any, Optional
 
 import sentry_sdk
 from apscheduler.executors.pool import ThreadPoolExecutor
@@ -35,6 +35,7 @@ class ModuleManager:
          the structure of tuple:
             ( module_name, module_class_name )
         """
+        self.scheduler: Optional[BackgroundScheduler] = None
         self._modules_list = set()
         self._loaded_modules = {}
         self._loaded_classes = {}
@@ -60,12 +61,10 @@ class ModuleManager:
         Stops the program.
         """
         logger.info("Stopping the program.")
-        try:
-            if Env.config.dmdata.enabled:
-                Env.dmdata_instance.cleanup()
-        except Exception as e:
-            logger.critical("Failed to gracefully cleanup.")
-            raise e
+        self.scheduler.remove_all_jobs()
+        self.scheduler.shutdown(wait=False)
+        if Env.config.dmdata.enabled:
+            Env.dmdata_instance.cleanup()
 
     @func_timer
     def _init_list(self) -> None:
@@ -119,42 +118,42 @@ class ModuleManager:
             "coalesce": False,
             "max_instances": 5
         }
-        scheduler = BackgroundScheduler(jobstores=job_stores, executors=executors,
-                                        job_defaults=job_defaults)
+        self.scheduler = BackgroundScheduler(jobstores=job_stores, executors=executors,
+                                             job_defaults=job_defaults)
         if Env.config.modules.p2p_earthquake:
-            scheduler.add_job(func=self._module_refresher(self._loaded_classes["p2p_info"]), trigger="interval",
-                              seconds=2,
-                              id="p2p")
+            self.scheduler.add_job(func=self._module_refresher(self._loaded_classes["p2p_info"]), trigger="interval",
+                                   seconds=2,
+                                   id="p2p")
         if Env.config.modules.shake_level:
-            scheduler.add_job(func=self._module_refresher(self._loaded_classes["shake_level"]),
-                              trigger="interval",
-                              seconds=2,
-                              id="shake_level")
+            self.scheduler.add_job(func=self._module_refresher(self._loaded_classes["shake_level"]),
+                                   trigger="interval",
+                                   seconds=2,
+                                   id="shake_level")
         if Env.config.modules.eew:
-            scheduler.add_job(func=self._module_refresher(self._loaded_classes["eew_info"]),
-                              trigger="interval",
-                              seconds=2,
-                              id="eew")
+            self.scheduler.add_job(func=self._module_refresher(self._loaded_classes["eew_info"]),
+                                   trigger="interval",
+                                   seconds=2,
+                                   id="eew")
         if Env.config.modules.tsunami:
-            scheduler.add_job(func=self._module_refresher(self._loaded_classes["tsunami"]), trigger="interval",
-                              seconds=4,
-                              id="tsunami")
+            self.scheduler.add_job(func=self._module_refresher(self._loaded_classes["tsunami"]), trigger="interval",
+                                   seconds=4,
+                                   id="tsunami")
         if Env.config.modules.global_earthquake:
-            scheduler.add_job(func=self._module_refresher(self._loaded_classes["global_earthquake"]),
-                              trigger="interval",
-                              seconds=5,
-                              id="global_eq")
+            self.scheduler.add_job(func=self._module_refresher(self._loaded_classes["global_earthquake"]),
+                                   trigger="interval",
+                                   seconds=5,
+                                   id="global_eq")
         if Env.config.dmdata.enabled and Env.config.dmdata.jquake.use_plan:
-            scheduler.add_job(func=self._module_refresher(Env.dmdata_instance, "get_current_token"),
-                              trigger="interval",
-                              hours=1,
-                              id="dmdata_refresh")
-            scheduler.add_job(func=self._module_refresher(Env.dmdata_instance, "keep_alive"),
-                              trigger="interval",
-                              minutes=1,
-                              next_run_time=datetime.now(),
-                              id="dmdata_connect")
-        scheduler.start()
+            self.scheduler.add_job(func=self._module_refresher(Env.dmdata_instance, "get_current_token"),
+                                   trigger="interval",
+                                   hours=1,
+                                   id="dmdata_refresh")
+            self.scheduler.add_job(func=self._module_refresher(Env.dmdata_instance, "keep_alive"),
+                                   trigger="interval",
+                                   minutes=1,
+                                   next_run_time=datetime.now(),
+                                   id="dmdata_connect")
+        self.scheduler.start()
 
     @func_timer
     def reload(self, name: str) -> None:
