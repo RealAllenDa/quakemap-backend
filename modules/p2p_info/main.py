@@ -92,6 +92,9 @@ class P2PInfo(BaseModule):
         """Clears earthquake info."""
         self.info.earthquake = eq_list
 
+    def get_earthquake_info(self) -> list[EarthquakeReturnModel]:
+        return self.info.earthquake
+
     @func_timer
     def _parse_earthquake_info(self, content: dict) -> None:
         """
@@ -169,6 +172,7 @@ class P2PInfo(BaseModule):
 
         # --- Tidy up information
         self.info.earthquake.append(EarthquakeReturnModel(
+            id=model.id,
             type=model.issue.type,
             occur_time=model.earthquake.time,
             receive_time=model.time,

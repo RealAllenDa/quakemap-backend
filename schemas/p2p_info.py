@@ -216,6 +216,7 @@ class EarthquakeReturnEpicenterModel(BaseModel):
 
 
 class EarthquakeReturnModel(BaseModel):
+    id: Optional[str]
     type: EarthquakeIssueTypeEnum
     occur_time: str
     receive_time: str

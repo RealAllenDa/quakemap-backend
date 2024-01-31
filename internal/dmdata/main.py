@@ -25,6 +25,7 @@ from schemas.dmdata.auth import DmdataRefreshTokenResponseModel, DmdataRequestTo
 from schemas.dmdata.generic import DmdataGenericErrorResponse, DmdataMessageTypes, DmdataStatusModel
 from schemas.dmdata.socket import DmdataSocketStartResponse, DmdataSocketStartBody, DmdataSocketError, DmdataPing, \
     DmdataSocketStart, DmdataPong, DmdataSocketData
+from schemas.p2p_info import EarthquakeReturnModel, EarthquakeIssueTypeEnum
 from schemas.sdk import ResponseTypeModel, ResponseTypes, RequestTypes
 from sdk import web_request, func_timer, obj_to_model
 
@@ -68,6 +69,8 @@ class DMDataFetcher:
         else:
             logger.critical("NOT IMPLEMENTED: Non-Jquake token")
             sys.exit(1)
+
+        self.previous_scale_prompt: Optional[EarthquakeReturnModel] = None
 
         logger.success("DMData instance initialized.")
 
@@ -437,12 +440,31 @@ class DMDataFetcher:
                 logger.error("Failed to parse Dmdata earthquake: is None")
                 return 1
             try:
+                # If info's type is Destination, we do not purge the list
+                # to ensure that scale and destination could appear in the same page.
                 with sentry_sdk.start_span(op="parse_earthquake"):
-                    module_manager.classes["p2p_info"].set_earthquake_info([])
                     if info == "Cancel":
                         module_manager.classes["p2p_info"].cancel_earthquake_info()
                     else:
-                        module_manager.classes["p2p_info"].set_earthquake_info([info])
+                        prev_eq_info: list[EarthquakeReturnModel] = module_manager.classes[
+                            "p2p_info"].get_earthquake_info()
+                        if info.type == EarthquakeIssueTypeEnum.ScalePrompt:
+                            self.previous_scale_prompt = info
+                        if info.type == EarthquakeIssueTypeEnum.Destination:
+                            if prev_eq_info[0].type == EarthquakeIssueTypeEnum.ScalePrompt:
+                                module_manager.classes["p2p_info"].set_earthquake_info([prev_eq_info[0], info])
+                            else:
+                                logger.warning(
+                                    f"Rare case where destination is not after ScalePrompt: {prev_eq_info[0].type}")
+                                # fallback to previous scale prompt
+                                if self.previous_scale_prompt is None:
+                                    assert False, "No previous scale prompt available."
+                                if self.previous_scale_prompt.id != info.id:
+                                    assert False, "Previous scale prompt id != current id."
+                                module_manager.classes["p2p_info"].set_earthquake_info(
+                                    [self.previous_scale_prompt, info])
+                        else:
+                            module_manager.classes["p2p_info"].set_earthquake_info([info])
             except Exception:
                 logger.exception("Failed to parse Dmdata earthquake.")
                 return 1

@@ -151,6 +151,7 @@ def parse_earthquake(content: dict, earthquake_type: DmdataMessageTypes) -> Eart
 
     from internal.modules_init import module_manager
     return EarthquakeReturnModel(
+        id=model.head.event_id,
         type=earthquake_issue_type,
         occur_time=earthquake_time,
         receive_time=datetime.now().strftime("%Y/%m/%d %H:%M:%S.%f")[:-3],
