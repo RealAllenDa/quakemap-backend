@@ -79,7 +79,7 @@ def parse_eew(content: dict, eew_type: DmdataMessageTypes) -> Optional[IedredEEW
             if len(hypocenter_parsed.groups()) == 2:
                 hypocenter_latitude = hypocenter_parsed.group(1)
                 hypocenter_longitude = hypocenter_parsed.group(2)
-            elif len(hypocenter_parsed.groups()) == 3:
+            elif len(hypocenter_parsed.groups()) == 3 and hypocenter_parsed.group(3) is not None:
                 hypocenter_latitude = hypocenter_parsed.group(1)
                 hypocenter_longitude = hypocenter_parsed.group(2)
                 hypocenter_depth = int(int(hypocenter_parsed.group(3)) / 1000 * -1)
