@@ -25,6 +25,7 @@ class P2PInfo(BaseModule):
         self._last_response_list = []
         self.info = P2PTotalInfoModel()
         self.fetched_once = False
+        self.previous_eq_info: list[EarthquakeReturnModel] = []
 
     def reload(self):
         self._last_response_list = []
@@ -85,12 +86,24 @@ class P2PInfo(BaseModule):
 
     def cancel_earthquake_info(self) -> None:
         """Clears earthquake info and issues a cancellation message."""
-        # fixme proper cancellation
-        self.set_earthquake_info([])
+        self.revert_earthquake_info()
 
     def set_earthquake_info(self, eq_list: list[EarthquakeReturnModel]) -> None:
-        """Clears earthquake info."""
+        """Sets earthquake info."""
+        self.previous_eq_info = self.info.earthquake
         self.info.earthquake = eq_list
+
+    def revert_earthquake_info(self) -> None:
+        """Reverts earthquake info in case of a cancellation."""
+        if not self.previous_eq_info:
+            # two ways it can happen:
+            # 1. race condition where a cancellation message is issued before P2P initialized
+            # 2. cancellation following another cancellation message
+            # both cases are extremely edge and very improbable, thus we just throw an error and do nothing.
+            logger.error("Try to revert to an empty earthquake info!")
+            return
+        self.info.earthquake = self.previous_eq_info
+        self.previous_eq_info = []  # previous earthquake info's previous info which we didn't save
 
     def get_earthquake_info(self) -> list[EarthquakeReturnModel]:
         return self.info.earthquake
@@ -182,6 +195,7 @@ class P2PInfo(BaseModule):
             hypocenter=epicenter,
             area_intensity=area_intensity
         ))
+        self.previous_eq_info = self.info.earthquake
         logger.debug(f"Parsed P2P earthquake info id: {model.id} from {model.time}.")
 
     @func_timer

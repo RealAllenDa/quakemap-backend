@@ -455,7 +455,7 @@ class DMDataFetcher:
                                 module_manager.classes["p2p_info"].set_earthquake_info([prev_eq_info[0], info])
                             else:
                                 logger.warning(
-                                    f"Rare case where destination is not after ScalePrompt: {prev_eq_info[0].type}")
+                                    f"Rare case where Destination is not after ScalePrompt: {prev_eq_info[0].type}")
                                 # fallback to previous scale prompt
                                 if self.previous_scale_prompt is None:
                                     assert False, "No previous scale prompt available."
