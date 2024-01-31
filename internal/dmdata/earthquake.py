@@ -198,10 +198,10 @@ def _domestic_tsunami(model: JMADestinationModel | JMAIntDestModel | JMAEpicente
             return EarthquakeDomesticTsunamiEnum.No
         if "若干の海面変動" in text:
             return EarthquakeDomesticTsunamiEnum.NonEffective
-        if "津波注意報" in text or "津波警報" in text and "発表" in text:
+        if ("津波注意報" in text or "津波警報" in text) and "発表" in text:
             return EarthquakeDomesticTsunamiEnum.Warning
 
-    logger.error(f"No valid tsunami message found: text {text} and code {code}")
+    logger.error(f"No valid domestic tsunami message found: text {text} and code {code}")
     return EarthquakeDomesticTsunamiEnum.No
 
 
@@ -232,9 +232,7 @@ def _foreign_tsunami(model: JMADestinationModel | JMAIntDestModel) \
     if "0228" in code:
         return EarthquakeForeignTsunamiEnum.Potential
 
-    logger.error(f"Falling back to string parsing: got code {code}")
     if "この地震による津波の心配はありません" in text:
         return EarthquakeForeignTsunamiEnum.No
 
-    logger.error(f"No valid tsunami message found: text {text} and code {code}")
     return EarthquakeForeignTsunamiEnum.No
