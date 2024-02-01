@@ -63,7 +63,7 @@ def get_tsunami_status() -> str:
                     response_class=PlainTextResponse,
                     tags=["tsunami"],
                     responses=GENERIC_STATUS)
-async def get_shake_level_info():
+async def get_tsunami_state_wrapper():
     """
     Check if the tsunami warning has been issued.
     :return:
@@ -76,7 +76,7 @@ async def get_shake_level_info():
                     response_model=TsunamiTotalInfoModel,
                     tags=["tsunami"],
                     responses=GENERIC_STATUS)
-async def get_shake_level_info():
+async def get_tsunami_info():
     """
     Gets the tsunami info.
     :return:
