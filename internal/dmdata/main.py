@@ -1,11 +1,9 @@
-import asyncio
 import base64
 import functools
 import gzip
 import io
 import json
 import os
-import platform
 import sys
 import threading
 import time
@@ -16,9 +14,10 @@ import websocket
 import xmltodict
 from loguru import logger
 
+from internal.dmdata.db import store_message_middleware
 from internal.dmdata.earthquake import parse_earthquake
 from internal.dmdata.eew import parse_eew
-from models import DbMessages
+from internal.dmdata.webhook import post_message
 from schemas.config import RunEnvironment
 from schemas.dmdata.auth import DmdataRefreshTokenResponseModel, DmdataRequestTokenBodyModel, \
     DmdataRefreshTokenErrorModel
@@ -312,57 +311,12 @@ class DMDataFetcher:
         self.websocket.send(self.pong)
         self.last_pong_time = int(time.time())
 
-    @staticmethod
-    async def store_message(message: DmdataSocketData, xml_message: dict):
-        """Stores data message to the database."""
-        base = message.xmlReport
-        if base is None:
-            logger.error("Failed to store data message to the database: no xmlReport available")
-            return
-        logger.debug(
-            f"Storing message to the database -> {base.head.event_id} / {base.head.serial} at {base.head.report_date}"
-        )
-        from env import Env
-        if base.head.serial is None:
-            serial = 0
-        else:
-            serial = int(base.head.serial)
-
-        session = None
-        try:
-            session = await Env.db_instance.get_session()
-            message = DbMessages(
-                type=message.head.type.value,
-                event_id=base.head.event_id,
-                serial=serial,
-                event_time=base.head.target_date,
-                data=xml_message
-            )
-            session.add(message)
-            await session.commit()
-            await session.refresh(message)
-        except Exception:
-            logger.exception("Failed to store message to the database.")
-        finally:
-            if session:
-                await session.invalidate()
-
-    @staticmethod
-    def store_message_middleware(*params):
-        if platform.system() == 'Windows':
-            # prevent extremely rare cases where there are too many event loops,
-            # preventing new loops from creating.
-            asyncio.set_event_loop_policy(asyncio.WindowsSelectorEventLoopPolicy())
-        asyncio.run(DMDataFetcher.store_message(*params))
-
     @func_timer(log_func=logger.success)
-    def parse_data_message(self, message: Optional[DmdataSocketData],
-                           use_raw=False) -> int:
+    def parse_data_message(self, message: Optional[DmdataSocketData]) -> int:
         """
         Parses Dmdata data message.
 
         :param message: Dmdata data message
-        :param use_raw: Whether the contained data message is json or not; only used in testing
         """
         if not message:
             logger.error("Failed to parse data message: message is None")
@@ -386,18 +340,20 @@ class DMDataFetcher:
             raw_io = io.BytesIO(base64.b64decode(message.body))
             raw_message = gzip.decompress(raw_io.read())
             raw_message = raw_message.decode("utf-8")
-            if not use_raw:
-                xml_message = xmltodict.parse(raw_message, encoding="utf-8")
-            else:
-                xml_message = json.loads(raw_message)
+            xml_message = xmltodict.parse(raw_message, encoding="utf-8")
             raw_io.close()
         except Exception:
             logger.exception("Failed to parse data message.")
             return 1
 
-        t = threading.Thread(target=DMDataFetcher.store_message_middleware, args=(message, xml_message),
+        hooks = [
+            threading.Thread(target=store_message_middleware, args=(message, xml_message),
+                             daemon=True),
+            threading.Thread(target=post_message, args=(message.body,),
                              daemon=True)
-        t.start()
+        ]
+        for t in hooks:
+            t.start()
 
         from internal.modules_init import module_manager
         if message.head.type == DmdataMessageTypes.eew_warning \
@@ -469,7 +425,8 @@ class DMDataFetcher:
                 logger.exception("Failed to parse Dmdata earthquake.")
                 return 1
 
-        t.join(5)
+        for t in hooks:
+            t.join(5)
         return 0
 
     def _ws_func_wrapper(self, func: Callable[..., None]):
