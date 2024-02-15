@@ -59,17 +59,18 @@ class TestMessageParse(unittest.TestCase):
         for file in raw_files:
             with self.subTest(file):
                 with open(file, "r", encoding="utf-8") as f:
-                    raw = f.read()
+                    raw = json.loads(f.read())
                     f.close()
                 mocked_dmdata_socket.head.type = None
                 for i in DmdataMessageTypes:
                     if i.value in file:
                         mocked_dmdata_socket.head.type = i
                 self.assertIsNotNone(mocked_dmdata_socket.head.type)
-                message = base64.b64encode(gzip.compress(raw.encode(encoding="utf-8"))).decode(encoding="utf-8")
+                message = base64.b64encode(gzip.compress(xmltodict.unparse(raw).encode("utf-8"))).decode(
+                    encoding="utf-8")
                 mocked_dmdata_socket.body = message
-                mocked_dmdata_socket.xmlReport = JMAReportBaseModel.model_validate(json.loads(raw)["Report"])
-                self.assertEqual(dmdata.parse_data_message(mocked_dmdata_socket, True), 0)
+                mocked_dmdata_socket.xmlReport = JMAReportBaseModel.model_validate(raw["Report"])
+                self.assertEqual(dmdata.parse_data_message(mocked_dmdata_socket), 0)
 
 
 class TestJMAParse(unittest.TestCase):

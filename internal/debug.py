@@ -28,7 +28,7 @@ class DebugManager:
                                    next_run_time=datetime.now(),
                                    id=f"testing_refresh_{i}")
 
-    def change_secs(self, secs: int):
+    def change_secs(self, secs: float):
         """Changes seconds per run."""
         self.secs = secs
 
