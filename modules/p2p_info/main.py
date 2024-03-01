@@ -38,9 +38,8 @@ class P2PInfo(BaseModule):
         Gets P2PQuake's JSON telegram.
         """
         if Env.config.dmdata.enabled and self.fetched_once and not Env.run_env == RunEnvironment.testing:
-            if Env.dmdata_instance.status.status == "OK":
-                logger.trace("DMData OK. No need to fetch P2P.")
-                return
+            logger.trace("DMData enabled. No need to fetch P2P.")
+            return
         if not Env.config.debug.p2p_info.enabled:
             response = web_request(url="https://api.p2pquake.net/v2/history?codes=551&codes=552&limit=5",
                                    response_type=ResponseTypeModel(

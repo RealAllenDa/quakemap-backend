@@ -420,6 +420,7 @@ class DMDataFetcher:
                                 module_manager.classes["p2p_info"].set_earthquake_info(
                                     [self.previous_scale_prompt, info])
                         else:
+                            self.previous_scale_prompt = None
                             module_manager.classes["p2p_info"].set_earthquake_info([info])
             except Exception:
                 logger.exception("Failed to parse Dmdata earthquake.")
