@@ -40,6 +40,7 @@ class DMDataFetcher:
     """
 
     def __init__(self):
+        self.message = None
         self.shutdown = False
         self.socket_url = None
         self.active_socket_id = None
@@ -352,6 +353,7 @@ class DMDataFetcher:
             threading.Thread(target=post_message, args=(message.body,),
                              daemon=True)
         ]
+        self.message = message.body
         for t in hooks:
             t.start()
 

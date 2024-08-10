@@ -1,5 +1,7 @@
 from fastapi import APIRouter
+from starlette.responses import PlainTextResponse
 
+from env import Env
 from internal.modules_init import module_manager
 from modules.eew_info.middleware import EEWInfoMiddleWare
 from schemas.p2p_info import EarthquakeInfoReturnModel
@@ -28,3 +30,13 @@ async def get_p2p_info():
         info=p2p_info.earthquake,
         eew=EEWInfoMiddleWare.use_svir_or_kmoni(eew_info)
     )
+
+
+@earthquake_router.get("/raw_data",
+                       response_class=PlainTextResponse,
+                       tags=["earthquake"])
+def get_raw_data():
+    """
+    Gets raw earthquake data.
+    """
+    return Env.dmdata_instance.message
