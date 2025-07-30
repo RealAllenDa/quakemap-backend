@@ -416,7 +416,10 @@ class TsunamiInfo(BaseModule):
                         ))
                         continue
                     elif j.max_height.condition == JMAWatchMaxHeightCondition.weak:
-                        time_formatted = time.strftime("%m-%d %H:%M", j.max_height.date.timetuple())
+                        try:
+                            time_formatted = time.strftime("%m-%d %H:%M", j.max_height.date.timetuple())
+                        except Exception:
+                            time_formatted = "None"
                         areas.append(TsunamiObservationAreaModel(
                             name=j.name,
                             time=time_formatted,
@@ -426,8 +429,10 @@ class TsunamiInfo(BaseModule):
                             height_is_max=False
                         ))
                         continue
-
-                time_formatted = time.strftime("%m-%d %H:%M", j.max_height.date.timetuple())
+                try:
+                    time_formatted = time.strftime("%m-%d %H:%M", j.max_height.date.timetuple())
+                except Exception:
+                    time_formatted = "None"
 
                 try:
                     max_height = j.max_height.height
