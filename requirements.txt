@@ -1,7 +1,7 @@
 pydantic~=2.5.3
 loguru~=0.7.2
 requests~=2.31.0
-xmltodict~=0.13.0
+xmltodict~=0.15.1
 pyyaml~=6.0
 uvicorn~=0.23.2
 python-dotenv~=1.0.0
